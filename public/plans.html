@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passes — SubPass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="assets/css/custom.css">
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    bg:'#EEF1F6', surface:'#FFFFFF', ink:'#12172B', inksoft:'#4A5068',
+    navy:'#1B2340', gold:'#E8A33D', goldink:'#7A4E0E', teal:'#1F9C8B', line:'#C9CEDB', danger:'#D64545'
+  } } } };
+</script>
+</head>
+<body class="bg-bg text-ink font-sans">
+<div id="toast-wrap" class="fixed top-4 right-4 z-50 flex flex-col gap-2 items-end"></div>
+
+<header class="sticky top-0 z-40 bg-bg/90 backdrop-blur border-b border-line">
+  <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2 font-display font-bold text-xl">
+      <span class="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center text-sm">SP</span>
+      SubPass
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-inksoft">
+      <a href="products.html" class="hover:text-ink transition">Products</a>
+      <a href="plans.html" class="text-ink font-semibold">Passes</a>
+      <a href="dashboard.html" class="hover:text-ink transition">My Passes</a>
+      <a href="admin/index.html" id="nav-admin-link" class="hidden hover:text-ink transition">Admin</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="cart.html" class="relative p-2 hover:bg-line/40 rounded-full transition" aria-label="Cart">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+        <span id="cart-badge" class="hidden absolute -top-1 -right-1 bg-gold text-goldink text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"></span>
+      </a>
+      <div id="nav-auth-area" class="flex items-center gap-4"></div>
+    </div>
+  </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-16">
+  <div class="text-center max-w-xl mx-auto">
+    <span class="stamp text-teal" style="color:#1F9C8B">Membership passes</span>
+    <h1 class="font-display text-4xl font-bold mt-4">Pick your pass</h1>
+    <p class="text-inksoft mt-3">Recurring access with perks across the whole marketplace — cashback, priority support, and early access to new drops.</p>
+  </div>
+
+  <div id="plans-grid" class="grid md:grid-cols-3 gap-8 mt-14">
+    <p class="text-inksoft col-span-3 text-center">Loading passes…</p>
+  </div>
+</main>
+
+<footer class="max-w-7xl mx-auto px-6 py-10 text-sm text-inksoft flex flex-wrap justify-between gap-4">
+  <p>© 2026 SubPass. Digital goods marketplace, Dhaka, Bangladesh.</p>
+  <p>Payments secured by SSLCommerz.</p>
+</footer>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/plans.js"></script>
+</body>
+</html>

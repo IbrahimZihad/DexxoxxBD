@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Passes — SubPass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="assets/css/custom.css">
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    bg:'#EEF1F6', surface:'#FFFFFF', ink:'#12172B', inksoft:'#4A5068',
+    navy:'#1B2340', gold:'#E8A33D', goldink:'#7A4E0E', teal:'#1F9C8B', line:'#C9CEDB', danger:'#D64545'
+  } } } };
+</script>
+</head>
+<body class="bg-bg text-ink font-sans">
+<div id="toast-wrap" class="fixed top-4 right-4 z-50 flex flex-col gap-2 items-end"></div>
+
+<header class="sticky top-0 z-40 bg-bg/90 backdrop-blur border-b border-line">
+  <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2 font-display font-bold text-xl">
+      <span class="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center text-sm">SP</span>
+      SubPass
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-inksoft">
+      <a href="products.html" class="hover:text-ink transition">Products</a>
+      <a href="plans.html" class="hover:text-ink transition">Passes</a>
+      <a href="dashboard.html" class="text-ink font-semibold">My Passes</a>
+      <a href="admin/index.html" id="nav-admin-link" class="hidden hover:text-ink transition">Admin</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="cart.html" class="relative p-2 hover:bg-line/40 rounded-full transition" aria-label="Cart">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+        <span id="cart-badge" class="hidden absolute -top-1 -right-1 bg-gold text-goldink text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"></span>
+      </a>
+      <div id="nav-auth-area" class="flex items-center gap-4"></div>
+    </div>
+  </nav>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-12">
+  <div id="payment-success-banner" class="hidden mb-8 rounded-xl p-4 text-sm font-medium bg-teal/10" style="color:#1F9C8B">
+    Payment confirmed — your passes are ready below. 🎉
+  </div>
+
+  <h1 class="font-display text-3xl font-bold">My passes</h1>
+  <p class="text-inksoft mt-1">Active subscription passes and order history.</p>
+
+  <section class="mt-10">
+    <h2 class="font-display text-xl font-semibold mb-4">Active passes</h2>
+    <div id="passes-grid" class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <p class="text-inksoft">Loading…</p>
+    </div>
+  </section>
+
+  <section class="mt-14">
+    <h2 class="font-display text-xl font-semibold mb-4">Order history</h2>
+    <div id="orders-list" class="space-y-3">
+      <p class="text-inksoft">Loading…</p>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>

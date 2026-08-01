@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products — SubPass Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../assets/css/custom.css">
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    bg:'#EEF1F6', surface:'#FFFFFF', ink:'#12172B', inksoft:'#4A5068',
+    navy:'#1B2340', gold:'#E8A33D', goldink:'#7A4E0E', teal:'#1F9C8B', line:'#C9CEDB', danger:'#D64545'
+  } } } };
+</script>
+</head>
+<body class="bg-bg text-ink font-sans">
+<div id="toast-wrap" class="fixed top-4 right-4 z-50 flex flex-col gap-2 items-end"></div>
+
+<div class="flex min-h-screen">
+  <aside class="w-64 bg-navy text-white shrink-0 hidden md:flex flex-col">
+    <div class="p-6 flex items-center gap-2 font-display font-bold text-lg">
+      <span class="w-8 h-8 rounded-full bg-gold text-goldink flex items-center justify-center text-sm">SP</span>
+      SubPass Admin
+    </div>
+    <nav class="flex-1 px-4 space-y-1 text-sm font-medium">
+      <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Dashboard</a>
+      <a href="products.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/10">Products</a>
+      <a href="plans.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Passes / Plans</a>
+      <a href="orders.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Orders</a>
+      <a href="users.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Users</a>
+    </nav>
+    <div class="p-4 border-t border-white/10 text-sm">
+      <p class="admin-user-name font-semibold"></p>
+      <button id="admin-logout-btn" class="text-white/60 hover:text-white text-xs mt-1">Sign out</button>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-8">
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="font-display text-2xl font-bold">Products</h1>
+      <button id="new-product-btn" class="bg-navy text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-ink transition">+ New product</button>
+    </div>
+
+    <div class="pass-card overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-inksoft border-b border-line">
+            <th class="p-4">Product</th>
+            <th class="p-4">Category</th>
+            <th class="p-4">Price</th>
+            <th class="p-4">Duration</th>
+            <th class="p-4">Status</th>
+            <th class="p-4"></th>
+          </tr>
+        </thead>
+        <tbody id="products-tbody">
+          <tr><td class="p-4 text-inksoft" colspan="6">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- Product modal -->
+<div id="product-modal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-6">
+  <div class="bg-surface rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <h2 id="modal-title" class="font-display text-xl font-bold mb-4">New product</h2>
+    <form id="product-form" class="space-y-4">
+      <input type="hidden" id="p_id">
+      <div>
+        <label class="text-sm font-medium">Name</label>
+        <input id="p_name" required class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+      </div>
+      <div>
+        <label class="text-sm font-medium">Description</label>
+        <textarea id="p_description" rows="3" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"></textarea>
+      </div>
+      <div>
+        <label class="text-sm font-medium">Image URL</label>
+        <input id="p_image_url" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm font-medium">Price (Tk)</label>
+          <input id="p_price" type="number" step="0.01" required class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+        </div>
+        <div>
+          <label class="text-sm font-medium">Compare-at price</label>
+          <input id="p_compare_at_price" type="number" step="0.01" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm font-medium">Duration (days)</label>
+          <input id="p_duration_days" type="number" value="30" required class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+        </div>
+        <div>
+          <label class="text-sm font-medium">Stock</label>
+          <input id="p_stock" type="number" value="999" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm font-medium">Category</label>
+          <select id="p_category_id" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+            <option value="1">Streaming</option>
+            <option value="2">Music</option>
+            <option value="3">Software & Tools</option>
+            <option value="4">Gaming</option>
+            <option value="5">Education</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-sm font-medium">Status</label>
+          <select id="p_status" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+      <label class="flex items-center gap-2 text-sm"><input id="p_is_featured" type="checkbox"> Featured on homepage</label>
+      <div class="flex gap-3 pt-2">
+        <button type="button" id="cancel-product-btn" class="flex-1 border border-line font-semibold py-2.5 rounded-full hover:border-ink transition">Cancel</button>
+        <button type="submit" class="flex-1 bg-navy text-white font-semibold py-2.5 rounded-full hover:bg-ink transition">Save product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="assets/js/admin-api.js"></script>
+<script src="assets/js/products.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+/* =========================================================
+   SubPass design tokens
+   Concept: subscriptions as "passes" — ticket-stub motif
+   ========================================================= */
+:root {
+  --bg: #EEF1F6;
+  --surface: #FFFFFF;
+  --ink: #12172B;
+  --ink-soft: #4A5068;
+  --navy: #1B2340;
+  --gold: #E8A33D;
+  --gold-ink: #7A4E0E;
+  --teal: #1F9C8B;
+  --line: #C9CEDB;
+  --danger: #D64545;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+}
+
+.font-display { font-family: 'Space Grotesk', sans-serif; }
+.font-mono { font-family: 'IBM Plex Mono', monospace; }
+
+/* ---- Ticket / Pass card: the signature element ---- */
+.pass-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: visible;
+}
+
+.pass-perforation {
+  position: relative;
+  border-top: 2px dashed var(--line);
+  margin: 0 1.25rem;
+}
+.pass-perforation::before,
+.pass-perforation::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  width: 20px;
+  height: 20px;
+  background: var(--bg);
+  border-radius: 50%;
+}
+.pass-perforation::before { left: -1.5rem; }
+.pass-perforation::after { right: -1.5rem; }
+
+.pass-code {
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Scrollbar polish */
+::-webkit-scrollbar { height: 8px; width: 8px; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+
+/* Focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — SubPass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="assets/css/custom.css">
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    bg:'#EEF1F6', surface:'#FFFFFF', ink:'#12172B', inksoft:'#4A5068',
+    navy:'#1B2340', gold:'#E8A33D', goldink:'#7A4E0E', teal:'#1F9C8B', line:'#C9CEDB', danger:'#D64545'
+  } } } };
+</script>
+</head>
+<body class="bg-bg text-ink font-sans min-h-screen flex flex-col">
+<div id="toast-wrap" class="fixed top-4 right-4 z-50 flex flex-col gap-2 items-end"></div>
+
+<header class="px-6 py-4">
+  <a href="index.html" class="flex items-center gap-2 font-display font-bold text-xl w-fit">
+    <span class="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center text-sm">SP</span>
+    SubPass
+  </a>
+</header>
+
+<main class="flex-1 flex items-center justify-center px-6 py-12">
+  <div class="pass-card p-8 w-full max-w-md">
+    <h1 class="font-display text-2xl font-bold">Welcome back</h1>
+    <p class="text-inksoft text-sm mt-1">Sign in to manage your passes and orders.</p>
+    <form id="login-form" class="space-y-4 mt-6">
+      <div>
+        <label class="text-sm font-medium">Email</label>
+        <input id="email" type="email" required class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+      </div>
+      <div>
+        <label class="text-sm font-medium">Password</label>
+        <input id="password" type="password" required class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+      </div>
+      <button type="submit" class="w-full bg-navy text-white font-semibold py-3 rounded-full hover:bg-ink transition">Sign in</button>
+    </form>
+    <p class="text-sm text-inksoft mt-6 text-center">New here? <a href="register.html" class="text-navy font-semibold hover:underline">Create an account</a></p>
+  </div>
+</main>
+
+<script src="assets/js/api.js"></script>
+<script>
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    try {
+      await Api.login({ email: document.getElementById('email').value.trim(), password: document.getElementById('password').value });
+      const redirect = new URLSearchParams(location.search).get('redirect') || 'dashboard.html';
+      location.href = redirect;
+    } catch (err) {
+      alert(err.message);
+      btn.disabled = false; btn.textContent = 'Sign in';
+    }
+  });
+</script>
+</body>
+</html>

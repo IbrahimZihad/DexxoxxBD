@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — SubPass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="assets/css/custom.css">
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    bg:'#EEF1F6', surface:'#FFFFFF', ink:'#12172B', inksoft:'#4A5068',
+    navy:'#1B2340', gold:'#E8A33D', goldink:'#7A4E0E', teal:'#1F9C8B', line:'#C9CEDB', danger:'#D64545'
+  } } } };
+</script>
+</head>
+<body class="bg-bg text-ink font-sans">
+<div id="toast-wrap" class="fixed top-4 right-4 z-50 flex flex-col gap-2 items-end"></div>
+
+<header class="sticky top-0 z-40 bg-bg/90 backdrop-blur border-b border-line">
+  <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2 font-display font-bold text-xl">
+      <span class="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center text-sm">SP</span>
+      SubPass
+    </a>
+    <div id="nav-auth-area" class="flex items-center gap-4"></div>
+  </nav>
+</header>
+
+<main class="max-w-4xl mx-auto px-6 py-12">
+  <h1 class="font-display text-3xl font-bold mb-8">Checkout</h1>
+
+  <div id="payment-banner" class="hidden mb-6 rounded-xl p-4 text-sm font-medium"></div>
+
+  <div class="grid md:grid-cols-3 gap-8">
+    <form id="checkout-form" class="md:col-span-2 pass-card p-6 space-y-4">
+      <h2 class="font-display font-semibold text-lg">Contact & delivery details</h2>
+      <p class="text-inksoft text-sm">Your digital pass codes will be issued to your account instantly after payment.</p>
+      <div>
+        <label class="text-sm font-medium">Full name</label>
+        <input id="customer_name" required class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+      </div>
+      <div>
+        <label class="text-sm font-medium">Email</label>
+        <input id="customer_email" type="email" required class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+      </div>
+      <div>
+        <label class="text-sm font-medium">Phone number</label>
+        <input id="customer_phone" required placeholder="01XXXXXXXXX" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+      </div>
+      <button id="pay-btn" type="submit" class="w-full bg-navy text-white font-semibold py-3 rounded-full hover:bg-ink transition mt-4">Pay with SSLCommerz</button>
+    </form>
+
+    <div class="pass-card p-6 h-fit">
+      <h2 class="font-display font-semibold text-lg">Order summary</h2>
+      <div class="pass-perforation my-4"></div>
+      <div id="checkout-items" class="space-y-3 text-sm"></div>
+      <div class="pass-perforation my-4"></div>
+      <div class="flex justify-between font-display font-bold text-lg">
+        <span>Total</span>
+        <span id="checkout-total">Tk 0</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/checkout.js"></script>
+</body>
+</html>
