@@ -186,3 +186,21 @@ INSERT INTO plans (name, slug, description, price, duration_days, features, badg
 -- ---------------------------------------------------------
 INSERT INTO users (name, email, password_hash, role) VALUES
 ('Site Admin', 'admin@subpass.test', '$2b$10$0plTRhzCTLn9MbyhaVW1PuKzla/Ka8iQ1BWXs6PtiOSGUky2mVcZ6', 'admin');
+
+-- ---------------------------------------------------------
+-- Manual Payments — customer submits payment proof; admin approves
+-- ---------------------------------------------------------
+CREATE TABLE manual_payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    payment_method ENUM('bkash','nagad','rocket','bank') NOT NULL DEFAULT 'bkash',
+    sender_number VARCHAR(30) DEFAULT NULL,
+    transaction_id VARCHAR(120) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    note TEXT DEFAULT NULL,
+    status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+    admin_note TEXT DEFAULT NULL,
+    reviewed_at TIMESTAMP NULL DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+) ENGINE=InnoDB;

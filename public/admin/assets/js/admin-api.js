@@ -48,6 +48,15 @@ const AdminApi = {
     list: () => apiFetch('/users.php'),
     update: (id, payload) => apiFetch(`/users.php?id=${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
   },
+
+  manualPayments: {
+    list: (status = '') => apiFetch(`/admin_manual_payments.php${status ? '?status=' + status : ''}`),
+    review: (id, action, adminNote = '') =>
+      apiFetch(`/admin_manual_payments.php?id=${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ action, admin_note: adminNote }),
+      }),
+  },
 };
 
 /** Guards every admin page: redirects non-admins to the admin login screen. */

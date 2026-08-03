@@ -9,6 +9,7 @@ function orderRow(o) {
     <td class="p-4 font-mono">${o.order_number}</td>
     <td class="p-4">${o.user_name}<br><span class="text-xs text-inksoft">${o.user_email}</span></td>
     <td class="p-4 font-mono">${money(o.total_amount)}</td>
+    <td class="p-4 capitalize">${o.payment_method || "sslcommerz"}</td>
     <td class="p-4">${statusStamp(o.status)}</td>
     <td class="p-4 text-inksoft">${fmtDate(o.created_at)}</td>
     <td class="p-4 text-right"><button class="view-btn text-navy font-semibold hover:underline" data-id="${o.id}">View</button></td>
@@ -39,6 +40,7 @@ async function openOrder(id) {
     body.innerHTML = `
       <div class="flex justify-between"><span class="text-inksoft">Customer</span><span class="font-medium">${order.user_name} (${order.user_email})</span></div>
       <div class="flex justify-between"><span class="text-inksoft">Phone</span><span class="font-medium">${order.customer_phone || '—'}</span></div>
+      <div class="flex justify-between"><span class="text-inksoft">Payment Method</span><span class="font-semibold capitalize">${order.payment_method || 'sslcommerz'}</span></div>
       <div class="flex justify-between"><span class="text-inksoft">Placed</span><span class="font-medium">${fmtDate(order.created_at)}</span></div>
       <div class="pass-perforation my-3"></div>
       ${order.items.map(i => `

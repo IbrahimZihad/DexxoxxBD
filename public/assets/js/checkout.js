@@ -3,7 +3,7 @@
   const paymentStatus = new URLSearchParams(location.search).get('payment');
   if (paymentStatus === 'fail') {
     banner.className = 'mb-6 rounded-xl p-4 text-sm font-medium bg-danger/10 text-danger';
-    banner.textContent = 'Payment failed. Please try again or use a different method.';
+    banner.textContent = 'Payment failed. Please try again or contact support.';
     banner.classList.remove('hidden');
   } else if (paymentStatus === 'cancel') {
     banner.className = 'mb-6 rounded-xl p-4 text-sm font-medium bg-gold/20 text-goldink';
@@ -40,6 +40,7 @@
     toast(e.message, 'error');
   }
 
+  // ── Form submit ──────────────────────────────────────────────
   document.getElementById('checkout-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('pay-btn');
@@ -48,17 +49,45 @@
 
     try {
       const payload = {
-        customer_name: document.getElementById('customer_name').value.trim(),
+        customer_name:  document.getElementById('customer_name').value.trim(),
         customer_email: document.getElementById('customer_email').value.trim(),
         customer_phone: document.getElementById('customer_phone').value.trim(),
       };
+
+      // Create order first
       const order = await Api.orders.create(payload);
-      const { gateway_url } = await Api.payment.init(order.order_id);
-      window.location.href = gateway_url; // redirect to SSLCommerz hosted payment page
+
+      // Manual payment flow
+      const txid   = document.getElementById('manual_txid').value.trim();
+      const sender = document.getElementById('manual_sender').value.trim();
+      const method = document.getElementById('manual_method').value;
+      const note   = document.getElementById('manual_note').value.trim();
+
+      if (!txid) {
+        toast('Please enter your Transaction ID.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Submit Payment Details';
+        return;
+      }
+
+      await Api.payment.manual({
+        order_id:       order.order_id,
+        payment_method: method,
+        sender_number:  sender,
+        transaction_id: txid,
+        note:           note,
+      });
+
+      // Success — redirect to dashboard with pending notice
+      toast('Payment submitted! Awaiting admin approval.', 'success');
+      setTimeout(() => {
+        location.href = 'dashboard.html?payment=pending';
+      }, 1500);
+
     } catch (e) {
       toast(e.message, 'error');
       btn.disabled = false;
-      btn.textContent = 'Pay with SSLCommerz';
+      btn.textContent = 'Submit Payment Details';
     }
   });
 })();

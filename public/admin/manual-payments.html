@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orders — DexxoxxBD Admin</title>
+<title>Manual Payments — DexxoxxBD Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -21,20 +21,16 @@
 <div class="flex min-h-screen">
   <aside class="w-64 bg-navy text-white shrink-0 hidden md:flex flex-col">
     <div class="p-6 flex items-center gap-2 font-display font-bold text-lg">
-      <img
-        src="../assets/img/dexxoxxbd.jpeg"
-        alt="DexxoxxBD Logo"
-        class="w-10 h-10 rounded-full object-cover"
-      >
+      <img src="../assets/img/dexxoxxbd.jpeg" alt="DexxoxxBD Logo" class="w-10 h-10 rounded-full object-cover">
       DexxoxxBD Admin
     </div>
     <nav class="flex-1 px-4 space-y-1 text-sm font-medium">
-      <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Dashboard</a>
-      <a href="products.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Products</a>
-      <a href="plans.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Passes / Plans</a>
-      <a href="orders.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/10">Orders</a>
-      <a href="manual-payments.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Manual Payments <span id="nav-pending-badge" class="ml-auto bg-gold text-goldink text-xs font-bold px-1.5 rounded-full hidden"></span></a>
-      <a href="users.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Users</a>
+      <a href="dashboard.html"        class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Dashboard</a>
+      <a href="products.html"         class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Products</a>
+      <a href="plans.html"            class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Passes / Plans</a>
+      <a href="orders.html"           class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Orders</a>
+      <a href="manual-payments.html"  class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/10">Manual Payments</a>
+      <a href="users.html"            class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition">Users</a>
     </nav>
     <div class="p-4 border-t border-white/10 text-sm">
       <p class="admin-user-name font-semibold"></p>
@@ -44,13 +40,12 @@
 
   <main class="flex-1 p-8">
     <div class="flex items-center justify-between mb-8">
-      <h1 class="font-display text-2xl font-bold">Orders</h1>
+      <h1 class="font-display text-2xl font-bold">Manual Payments</h1>
       <select id="status-filter" class="border border-line rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold">
         <option value="">All statuses</option>
-        <option value="pending">Pending</option>
-        <option value="paid">Paid</option>
-        <option value="failed">Failed</option>
-        <option value="cancelled">Cancelled</option>
+        <option value="pending" selected>Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
       </select>
     </div>
 
@@ -60,32 +55,35 @@
           <tr class="text-left text-inksoft border-b border-line">
             <th class="p-4">Order</th>
             <th class="p-4">Customer</th>
-            <th class="p-4">Total</th>
             <th class="p-4">Method</th>
+            <th class="p-4">Sender No.</th>
+            <th class="p-4">Txn ID</th>
+            <th class="p-4">Amount</th>
             <th class="p-4">Status</th>
             <th class="p-4">Date</th>
             <th class="p-4"></th>
           </tr>
         </thead>
-        <tbody id="orders-tbody">
-          <tr><td class="p-4 text-inksoft" colspan="6">Loading…</td></tr>
+        <tbody id="payments-tbody">
+          <tr><td class="p-4 text-inksoft" colspan="9">Loading…</td></tr>
         </tbody>
       </table>
     </div>
   </main>
 </div>
 
-<div id="order-modal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-6">
-  <div class="bg-surface rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+<!-- Review Modal -->
+<div id="review-modal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-6">
+  <div class="bg-surface rounded-2xl p-6 w-full max-w-lg">
     <div class="flex items-center justify-between mb-4">
-      <h2 id="order-modal-title" class="font-display text-xl font-bold"></h2>
-      <button id="close-order-modal" class="text-inksoft hover:text-ink">✕</button>
+      <h2 class="font-display text-xl font-bold">Review Payment</h2>
+      <button id="close-review-modal" class="text-inksoft hover:text-ink">✕</button>
     </div>
-    <div id="order-modal-body" class="space-y-4 text-sm"></div>
+    <div id="review-modal-body" class="space-y-4 text-sm"></div>
   </div>
 </div>
 
 <script src="assets/js/admin-api.js"></script>
-<script src="assets/js/orders.js"></script>
+<script src="assets/js/manual-payments.js"></script>
 </body>
 </html>

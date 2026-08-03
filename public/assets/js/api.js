@@ -48,7 +48,11 @@ const Api = {
 
   payment: {
     init: (orderId) => apiFetch('/payment/init.php', { method: 'POST', body: JSON.stringify({ order_id: orderId }) }),
+    manual: (payload) => apiFetch('/payment/manual.php', { method: 'POST', body: JSON.stringify(payload) }),
   },
+
+  // Generic helpers
+  post: (path, payload) => apiFetch(path.replace(/^\/api/, ''), { method: 'POST', body: JSON.stringify(payload) }),
 
   passes: () => apiFetch('/passes.php'),
 };

@@ -53,7 +53,51 @@
         <label class="text-sm font-medium">Phone number</label>
         <input id="customer_phone" required placeholder="01XXXXXXXXX" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
       </div>
-      <button id="pay-btn" type="submit" class="w-full bg-navy text-white font-semibold py-3 rounded-full hover:bg-ink transition mt-4">Pay with SSLCommerz</button>
+
+      <!-- Payment method selector -->
+      <div class="border-t border-line pt-4">
+        <label class="text-sm font-medium block mb-2">Payment Method</label>
+        <div class="flex gap-3 flex-wrap" id="payment-method-tabs">
+          <button type="button" data-method="manual" class="pay-tab active px-4 py-2 rounded-full text-sm font-semibold border-2 border-navy bg-navy text-white transition">Manual Transfer</button>
+        </div>
+      </div>
+
+      <!-- Manual payment panel -->
+      <div id="manual-payment-panel" class="space-y-3 bg-gold/10 rounded-xl p-4 border border-gold/40">
+        <p class="text-sm font-semibold text-goldink">Send payment to any of the following accounts, then fill in your details below:</p>
+        <div class="text-sm space-y-1 text-ink">
+          <div class="flex gap-2 items-center"><span class="font-bold w-16">bKash:</span> <span class="font-mono">01XXXXXXXXX</span> <span class="text-inksoft">(Personal)</span></div>
+          <div class="flex gap-2 items-center"><span class="font-bold w-16">Nagad:</span> <span class="font-mono">01XXXXXXXXX</span> <span class="text-inksoft">(Personal)</span></div>
+          <div class="flex gap-2 items-center"><span class="font-bold w-16">Rocket:</span> <span class="font-mono">01XXXXXXXXX</span></div>
+          <div class="flex gap-2 items-center"><span class="font-bold w-16">Bank:</span> <span class="font-mono">Account: 123-456-789, Dutch-Bangla Bank</span></div>
+        </div>
+        <div class="border-t border-gold/30 pt-3 space-y-3">
+          <div>
+            <label class="text-sm font-medium">Payment Channel</label>
+            <select id="manual_method" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold bg-white">
+              <option value="bkash">bKash</option>
+              <option value="nagad">Nagad</option>
+              <option value="rocket">Rocket</option>
+              <option value="bank">Bank Transfer</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-medium">Your Sender Number <span class="text-inksoft">(optional for bank)</span></label>
+            <input id="manual_sender" placeholder="01XXXXXXXXX" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Transaction ID <span class="text-danger">*</span></label>
+            <input id="manual_txid" placeholder="e.g. 8FG2KX9A" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Additional Note <span class="text-inksoft">(optional)</span></label>
+            <input id="manual_note" placeholder="Any extra info for the admin" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
+          </div>
+        </div>
+      </div>
+
+      <button id="pay-btn" type="submit" class="w-full bg-navy text-white font-semibold py-3 rounded-full hover:bg-ink transition mt-2">Submit Payment Details</button>
+      <p class="text-xs text-inksoft text-center">Your order will be activated once our team verifies your payment (usually within a few hours).</p>
     </form>
 
     <div class="pass-card p-6 h-fit">

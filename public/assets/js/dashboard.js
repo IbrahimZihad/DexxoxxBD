@@ -32,8 +32,12 @@ function orderRow(o) {
 }
 
 (async function loadDashboard() {
-  if (new URLSearchParams(location.search).get('payment') === 'success') {
+  const payParam = new URLSearchParams(location.search).get('payment');
+  if (payParam === 'success') {
     document.getElementById('payment-success-banner').classList.remove('hidden');
+  } else if (payParam === 'pending') {
+    const banner = document.getElementById('payment-pending-banner');
+    if (banner) banner.classList.remove('hidden');
   }
 
   try {
