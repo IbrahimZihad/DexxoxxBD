@@ -157,14 +157,18 @@ final class OrderService
         return $created;
     }
 
-    /** Gives reserved stock back to the shop when an order can never be paid. */
-    public function release(int $orderId, string $finalStatus): void
+    /**
+     * Gives reserved stock back to the shop when an order can never be paid.
+     * Returns false when there was nothing to release, so callers can report
+     * honestly instead of claiming a change that did not happen.
+     */
+    public function release(int $orderId, string $finalStatus): bool
     {
-        Database::transaction(function ($pdo) use ($orderId, $finalStatus) {
+        return (bool) Database::transaction(function ($pdo) use ($orderId, $finalStatus) {
             $order = OrderRepository::lock($pdo, $orderId);
 
             if ($order === null || in_array($order['status'], ['paid', 'cancelled'], true)) {
-                return;
+                return false;
             }
 
             $items = OrderRepository::items($orderId);
@@ -177,6 +181,8 @@ final class OrderService
             }
 
             $pdo->prepare('UPDATE orders SET status = ? WHERE id = ?')->execute([$finalStatus, $orderId]);
+
+            return true;
         });
     }
 }

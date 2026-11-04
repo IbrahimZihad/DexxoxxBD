@@ -94,7 +94,15 @@ final class OrderController extends Controller
             ]);
         }
 
-        (new OrderService())->release($id, $status);
+        $closed = (new OrderService())->release($id, $status);
+
+        if (!$closed) {
+            return $this->json([
+                'ok' => true,
+                'changed' => false,
+                'message' => 'This order is already settled or closed, so nothing was changed. Revoke its passes from the Passes screen.',
+            ]);
+        }
 
         Logger::info('Admin closed order', ['order_id' => $id, 'status' => $status, 'admin_id' => (int) $admin['id']]);
 
