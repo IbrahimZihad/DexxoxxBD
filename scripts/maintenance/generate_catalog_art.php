@@ -6,8 +6,9 @@
  * Draws flat, original inline-SVG artwork for the catalogue and writes it at the
  * paths the database already stores, relative to public/assets/img:
  * products/{slug}.svg for published products, brands/{slug}.svg for active
- * brands, categories/{slug}.svg for root categories, plus a neutral
- * placeholder.svg for anything that has no artwork yet.
+ * brands, categories/{slug}.svg for root categories, banners/{file}.svg for the
+ * campaign banners the CMS points at, plus a neutral placeholder.svg for
+ * anything that has no artwork yet.
  *
  * Every shape comes from a Park-Miller LCG seeded with sha256(slug) - never from
  * mt_rand(), random_int(), time() or uniqid() - because these files are build
@@ -457,8 +458,63 @@ $placeholderSvg = static function () use ($palette, $svgDocument): string {
     ]);
 };
 
+/**
+ * One 1600x500 campaign banner: the stripe-and-rail language of the tiles
+ * stretched wide, two seeded clusters on the right. The headline, subtitle and
+ * button come from the banners table and render as HTML over this artwork, so
+ * the SVG deliberately carries no lettering - a translated banner would otherwise
+ * need its own image file.
+ */
+$bannerSvg = static function (string $name, string $title) use ($palette, $rng, $svgDocument, $motifGroup): string {
+    $roll = $rng($name . '|banner');
+    $dark = $roll(2) === 0;
+    $base = $dark ? $palette['ink'] : $palette['panel'];
+    $rail = $dark ? $palette['deep'] : $palette['line'];
+    $motifColors = $dark
+        ? [$palette['mid'], $palette['light'], $palette['mango']]
+        : [$palette['deep'], $palette['mid'], $palette['ember']];
+
+    $body = [
+        sprintf('<rect x="0" y="0" width="1600" height="500" rx="34" fill="%s"/>', $base),
+        sprintf('<rect x="54" y="104" width="14" height="292" rx="7" fill="%s"/>', $palette['mango']),
+    ];
+
+    for ($i = 0; $i < 3; $i++) {
+        $body[] = sprintf(
+            '<rect x="96" y="%d" width="%d" height="18" rx="9" fill="%s"/>',
+            148 + $i * 76,
+            240 + $roll(200),
+            $i === 0 ? $motifColors[0] : $rail
+        );
+    }
+
+    $body[] = sprintf(
+        '<rect x="742" y="70" width="768" height="360" rx="28" fill="none" stroke="%s" stroke-width="4"%s/>',
+        $rail,
+        $roll(2) === 0 ? ' stroke-dasharray="20 14"' : ''
+    );
+    $body[] = sprintf('<g transform="translate(948,%d)">', 196 + $roll(56));
+    $body[] = $motifGroup($roll, $motifColors, 132 + $roll(36));
+    $body[] = '</g>';
+    $body[] = sprintf('<g transform="translate(1318,%d)">', 214 + $roll(56));
+    $body[] = $motifGroup($roll, $motifColors, 84 + $roll(28));
+    $body[] = '</g>';
+    $body[] = sprintf(
+        '<rect x="96" y="424" width="%d" height="10" rx="5" fill="%s"/>',
+        120 + $roll(72),
+        $dark ? $palette['light'] : $palette['ember']
+    );
+    $body[] = sprintf(
+        '<circle cx="1452" cy="98" r="%d" fill="%s"/>',
+        8 + $roll(10),
+        $palette['light']
+    );
+
+    return $svgDocument(1600, 500, 'banner-' . $name, $title . ' campaign banner', $body);
+};
+
 $targets = [];
-foreach (['products', 'brands', 'categories'] as $subdir) {
+foreach (['products', 'brands', 'categories', 'banners'] as $subdir) {
     $directory = $imgRoot . '/' . $subdir;
     if (!is_dir($directory) && !mkdir($directory, 0775, true) && !is_dir($directory)) {
         fwrite(STDERR, "Could not create {$directory}.\n");
@@ -494,10 +550,12 @@ $generate = static function (
         $name = trim((string) ($row['name'] ?? ''));
         $relative = $subdir . '/' . $slug . '.svg';
 
-        // The slug *is* the filename, so anything that could climb out of the
+        // The stem *is* the filename, so anything that could climb out of the
         // image root - a slash, a dot, an uppercase byte - is refused, not
         // sanitised: a silent rewrite would break the stored path it must match.
-        if (preg_match('/^[a-z0-9-]+$/', $slug) !== 1) {
+        // Underscores are allowed because banners are named by placement
+        // (home_hero) in the database, not by slug.
+        if (preg_match('/^[a-z0-9_-]+$/', $slug) !== 1) {
             $skipped[] = $relative;
             fwrite(STDERR, sprintf("Warning: skipped '%s' - unsafe slug '%s'.\n", $name, $slug));
             continue;
@@ -588,16 +646,37 @@ $categoryRows = $db->select(
     'SELECT slug, name, image AS stored_path FROM categories WHERE parent_id IS NULL AND status = 1 ORDER BY id'
 );
 
+// Banners are keyed by the filename already stored in banners.image, because the
+// placement plus locale - not a slug - decides the artwork, and several rows can
+// share one file.
+$bannerFiles = $db->select(
+    'SELECT image, MIN(title) AS name FROM banners
+     WHERE status = 1 AND image IS NOT NULL GROUP BY image ORDER BY image'
+);
+
+$bannerRows = [];
+foreach ($bannerFiles as $row) {
+    $stored = trim((string) $row['image']);
+    $safe = preg_match('/^banners\/([a-z0-9_-]+)\.svg$/', $stored, $m) === 1;
+    if (!$safe) {
+        fwrite(STDERR, sprintf("Warning: skipped banner path '%s' - not a banners/<name>.svg file.\n", $stored));
+        continue;
+    }
+    $bannerRows[] = ['slug' => $m[1], 'name' => (string) $row['name'], 'stored_path' => $stored];
+}
+
 // Named so each job below stays a single line; arrow functions capture the
 // builders without a use clause.
 $productBuild = static fn (string $slug, string $name): string => $tileSvg($slug, $name, 'plan', 800, 600);
 $brandBuild = static fn (string $slug, string $name): string => $badgeSvg($slug, $name);
 $categoryBuild = static fn (string $slug, string $name): string => $tileSvg($slug, $name, 'category', 800, 600);
+$bannerBuild = static fn (string $slug, string $name): string => $bannerSvg($slug, $name);
 
 $reports = [
     'products' => $generate('products', $productRows, $productBuild),
     'brands' => $generate('brands', $brandRows, $brandBuild),
     'categories' => $generate('categories', $categoryRows, $categoryBuild),
+    'banners' => $generate('banners', $bannerRows, $bannerBuild),
 ];
 
 $placeholderRelative = 'placeholder.svg';

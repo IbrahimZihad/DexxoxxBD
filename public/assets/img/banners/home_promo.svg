@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="500" viewBox="0 0 1600 500" role="img" aria-labelledby="banner-home_promo">
+<title id="banner-home_promo">Annual AI &amp; productivity plans campaign banner</title>
+<rect x="0" y="0" width="1600" height="500" rx="34" fill="#08201d"/>
+<rect x="54" y="104" width="14" height="292" rx="7" fill="#f4a11a"/>
+<rect x="96" y="148" width="262" height="18" rx="9" fill="#12897a"/>
+<rect x="96" y="224" width="408" height="18" rx="9" fill="#0b5d50"/>
+<rect x="96" y="300" width="394" height="18" rx="9" fill="#0b5d50"/>
+<rect x="742" y="70" width="768" height="360" rx="28" fill="none" stroke="#0b5d50" stroke-width="4" stroke-dasharray="20 14"/>
+<g transform="translate(948,214)">
+<path d="M -65 0 A 65 65 0 0 1 65 0" transform="rotate(77)" fill="none" stroke="#6fd3c2" stroke-width="12" stroke-linecap="round"/>
+<path d="M -88 0 A 88 88 0 0 1 88 0" transform="rotate(327)" fill="none" stroke="#6fd3c2" stroke-width="12" stroke-linecap="round"/>
+<path d="M -111 0 A 111 111 0 0 1 111 0" transform="rotate(93)" fill="none" stroke="#6fd3c2" stroke-width="7" stroke-linecap="round"/>
+<path d="M -134 0 A 134 134 0 0 1 134 0" transform="rotate(1)" fill="none" stroke="#6fd3c2" stroke-width="11" stroke-linecap="round"/>
+</g>
+<g transform="translate(1318,260)">
+<circle cx="-92" cy="-46" r="16" fill="#12897a"/>
+<circle cx="-31" cy="-46" r="10" fill="#f4a11a"/>
+<circle cx="31" cy="-46" r="10" fill="#6fd3c2"/>
+<circle cx="92" cy="-46" r="17" fill="#12897a"/>
+<circle cx="-92" cy="0" r="9" fill="#12897a"/>
+<circle cx="-31" cy="0" r="21" fill="#6fd3c2"/>
+<circle cx="31" cy="0" r="14" fill="none" stroke="#12897a" stroke-width="5"/>
+<circle cx="92" cy="0" r="11" fill="#6fd3c2"/>
+<circle cx="-92" cy="46" r="12" fill="none" stroke="#6fd3c2" stroke-width="4"/>
+<circle cx="-31" cy="46" r="13" fill="#12897a"/>
+<circle cx="31" cy="46" r="19" fill="#12897a"/>
+<circle cx="92" cy="46" r="14" fill="none" stroke="#12897a" stroke-width="4"/>
+</g>
+<rect x="96" y="424" width="182" height="10" rx="5" fill="#6fd3c2"/>
+<circle cx="1452" cy="98" r="15" fill="#6fd3c2"/>
+</svg>

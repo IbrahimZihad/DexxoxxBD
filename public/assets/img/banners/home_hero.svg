@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="500" viewBox="0 0 1600 500" role="img" aria-labelledby="banner-home_hero">
+<title id="banner-home_hero">Every subscription your work and weekend need campaign banner</title>
+<rect x="0" y="0" width="1600" height="500" rx="34" fill="#08201d"/>
+<rect x="54" y="104" width="14" height="292" rx="7" fill="#f4a11a"/>
+<rect x="96" y="148" width="375" height="18" rx="9" fill="#12897a"/>
+<rect x="96" y="224" width="258" height="18" rx="9" fill="#0b5d50"/>
+<rect x="96" y="300" width="404" height="18" rx="9" fill="#0b5d50"/>
+<rect x="742" y="70" width="768" height="360" rx="28" fill="none" stroke="#0b5d50" stroke-width="4"/>
+<g transform="translate(948,198)">
+<circle cx="0" cy="0" r="154" fill="none" stroke="#6fd3c2" stroke-width="12"/>
+<circle cx="0" cy="0" r="102" fill="none" stroke="#12897a" stroke-width="4"/>
+<circle cx="0" cy="0" r="50" fill="none" stroke="#12897a" stroke-width="8"/>
+<circle cx="0" cy="0" r="16" fill="#6fd3c2"/>
+</g>
+<g transform="translate(1318,221)">
+<path d="M -50 0 A 50 50 0 0 1 50 0" transform="rotate(217)" fill="none" stroke="#f4a11a" stroke-width="5" stroke-linecap="round"/>
+<path d="M -68 0 A 68 68 0 0 1 68 0" transform="rotate(327)" fill="none" stroke="#6fd3c2" stroke-width="8" stroke-linecap="round"/>
+<path d="M -85 0 A 85 85 0 0 1 85 0" transform="rotate(261)" fill="none" stroke="#12897a" stroke-width="6" stroke-linecap="round"/>
+</g>
+<rect x="96" y="424" width="187" height="10" rx="5" fill="#6fd3c2"/>
+<circle cx="1452" cy="98" r="13" fill="#6fd3c2"/>
+</svg>
