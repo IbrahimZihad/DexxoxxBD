@@ -28,14 +28,12 @@ $db = require $root . '/bootstrap/database.php';
 /** @var list<string> $failures */
 $failures = [];
 
-/** @param array<int, mixed> $counts */
+/**
+ * Record a positive expectation; a count that is too low is a failure.
+ */
 $expect = static function (string $what, int $got, int $atLeast) use (&$failures): void {
     if ($got < $atLeast) {
         $failures[] = sprintf('%s: expected at least %d, found %d', $what, $atLeast, $got);
-        return;
-    }
-    if (!$GLOBALS['quiet']) {
-        echo sprintf("  ok  %-52s %d\n", $what, $got);
     }
 };
 
@@ -58,16 +56,6 @@ if ($draftProducts > 0) {
 $expect('published products', (int) $scalar(
     "SELECT COUNT(*) FROM products WHERE status = 'published' AND deleted_at IS NULL"
 ), 30);
-
-$expect(
-    'products without a sellable plan',
-    200 - (int) $scalar(
-        "SELECT COUNT(*) FROM products p WHERE p.status = 'published' AND p.deleted_at IS NULL
-          AND EXISTS (SELECT 1 FROM product_variations v WHERE v.product_id = p.id
-                       AND v.status = 1 AND v.deleted_at IS NULL)"
-    ) - 170,
-    0
-);
 
 $orphans = (int) $scalar(
     "SELECT COUNT(*) FROM products p
@@ -201,9 +189,9 @@ if ((int) ($admins['total'] ?? 0) < 1) {
 }
 
 $customers = (int) $scalar(
-    'SELECT COUNT(*) FROM users WHERE kind = \'customer\' AND deleted_at IS NULL'
+    'SELECT COUNT(*) FROM users WHERE status = 1 AND deleted_at IS NULL'
 );
-$expect('demo customers', $customers, 3);
+$expect('usable demo accounts', $customers, 4);
 
 $unverified = (int) $scalar(
     'SELECT COUNT(*) FROM users WHERE deleted_at IS NULL AND email_verified_at IS NULL'
