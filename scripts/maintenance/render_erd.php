@@ -48,11 +48,13 @@ foreach (glob($root . '/database/schema/*.php') ?: [] as $specFile) {
 }
 
 $tables = [];
-foreach ($db->select(
+// Hoisting the query result keeps each foreach a single-line control structure.
+$tableRows = $db->select(
     'SELECT TABLE_NAME AS name, TABLE_COMMENT AS comment FROM information_schema.TABLES
      WHERE TABLE_SCHEMA = ? AND TABLE_NAME <> ? ORDER BY TABLE_NAME',
     [$schema, 'phinxlog']
-) as $row) {
+);
+foreach ($tableRows as $row) {
     $tables[(string) $row['name']] = (string) ($row['comment'] ?? '');
 }
 
@@ -63,25 +65,27 @@ if ($tables === []) {
 
 $columns = [];
 $nullableColumns = [];
-foreach ($db->select(
+$columnRows = $db->select(
     'SELECT TABLE_NAME AS tbl, COLUMN_NAME AS name, COLUMN_TYPE AS type, IS_NULLABLE AS nullable,
         COLUMN_DEFAULT AS default_value, COLUMN_KEY AS tab_key, EXTRA AS extra
      FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME <> ?
      ORDER BY TABLE_NAME, ORDINAL_POSITION',
     [$schema, 'phinxlog']
-) as $row) {
+);
+foreach ($columnRows as $row) {
     $columns[(string) $row['tbl']][] = $row;
     $nullableColumns[(string) $row['tbl']][(string) $row['name']] = (string) $row['nullable'] === 'YES';
 }
 
 $indexes = [];
-foreach ($db->select(
+$indexRows = $db->select(
     'SELECT TABLE_NAME AS tbl, INDEX_NAME AS name, COLUMN_NAME AS column_name, NON_UNIQUE AS non_unique,
         INDEX_TYPE AS index_type
      FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = ? AND TABLE_NAME <> ?
      ORDER BY TABLE_NAME, INDEX_NAME, SEQ_IN_INDEX',
     [$schema, 'phinxlog']
-) as $row) {
+);
+foreach ($indexRows as $row) {
     // Keyed by table and name: PRIMARY is PRIMARY in every table, and two tables
     // can carry the same auto-generated name, so the bare name is not an identity.
     $key = $row['tbl'] . '.' . $row['name'];
@@ -176,11 +180,11 @@ foreach ($tables as $name => $unused) {
  *
  * @param list<array<string, mixed>> $rows
  */
-$entityBlock = static function (string $table, array $rows, int $indent) use (
-    $typeToken,
-    $foreignKeyColumns,
-    $uniqueColumns
-): array {
+$entityBlock = static function (
+    string $table,
+    array $rows,
+    int $indent
+) use ($typeToken, $foreignKeyColumns, $uniqueColumns): array {
     $pad = str_repeat(' ', $indent);
     $lines = [$pad . strtoupper($table) . ' {'];
     foreach ($rows as $column) {
