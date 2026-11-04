@@ -8,18 +8,21 @@ use App\Exceptions\HttpException;
 use Closure;
 
 /**
- * Small regex-compiled router with groups, middleware and named routes.
+ * Small router: path templates with {param} captures, groups, middleware
+ * pipeline and named-route URL generation.
  */
 final class Router
 {
-    /** @var list<array{method: string, regex: string, keys: list<string>, handler: mixed, name: ?string, middleware: list<string>}> */
+    /**
+     * @var list<array{
+     *     method: string, path: string, regex: string, keys: list<string>,
+     *     handler: mixed, name: ?string, middleware: list<string>, namespace: string
+     *   }>
+     */
     private array $routes = [];
 
-    /** @var array<string, array{path: string, method: string}> */
+    /** @var array<string, array{path: string, keys: list<string>, method: string}> */
     private array $names = [];
-
-    /** @var list<string> */
-    private array $groupStack = [];
 
     /** @var list<array{prefix: string, middleware: list<string>, namespace: string}> */
     private array $groups = [];
@@ -27,19 +30,19 @@ final class Router
     /** @var array<string, Closure> */
     private array $middlewareAliases = [];
 
+    /** @var array{path: string, method: string}|null */
+    private ?array $matchedRoute = null;
+
     public function aliasMiddleware(string $alias, Closure $middleware): void
     {
         $this->middlewareAliases[$alias] = $middleware;
     }
 
-    /** @param array{path: string, method: string} $matched */
+    /** @return array{path: string, method: string}|null */
     public function matched(): ?array
     {
         return $this->matchedRoute;
     }
-
-    /** @var array{path: string, method: string}|null */
-    private ?array $matchedRoute = null;
 
     public function get(string $path, mixed $handler): RouteRegistrar
     {
@@ -82,24 +85,23 @@ final class Router
      */
     public function group(array $attributes, Closure $routes): void
     {
-        $parent = $this->groups === [] ? [] : end($this->groups);
+        $parent = $this->groups === [] ? ['prefix' => '', 'middleware' => [], 'namespace' => ''] : end($this->groups);
 
-        $prefix = trim((string) ($parent['prefix'] ?? ''), '/');
         $newPrefix = trim((string) ($attributes['prefix'] ?? ''), '/');
-        if ($prefix !== '' && $newPrefix !== '') {
-            $prefix .= '/' . $newPrefix;
-        } else {
-            $prefix .= $newPrefix;
-        }
+        $prefix = trim((string) $parent['prefix'], '/');
+        $prefix = match (true) {
+            $prefix !== '' && $newPrefix !== '' => $prefix . '/' . $newPrefix,
+            $newPrefix !== '' => $newPrefix,
+            default => $prefix,
+        };
 
-        $parentMiddleware = (array) ($parent['middleware'] ?? []);
         $own = $attributes['middleware'] ?? [];
         $own = is_string($own) ? [$own] : (array) $own;
 
         $this->groups[] = [
             'prefix' => $prefix,
-            'middleware' => array_values(array_unique(array_merge($parentMiddleware, $own))),
-            'namespace' => (string) ($attributes['namespace'] ?? $parent['namespace'] ?? ''),
+            'middleware' => array_values(array_unique(array_merge((array) $parent['middleware'], $own))),
+            'namespace' => (string) ($attributes['namespace'] ?? $parent['namespace']),
         ];
 
         $routes($this);
@@ -108,51 +110,42 @@ final class Router
     }
 
     /**
-     * Standard CRUD set for a resource, excluding `create`/`show` naming surprises.
+     * CRUD routes for a controller.
+     *
+     * @param array{only?: list<string>, parameter?: string, names?: string} $options
      */
     public function resource(string $path, string $controller, array $options = []): void
     {
-        $only = $options['only'] ?? ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'];
-        $singular = $options['parameter'] ?? rtrim($path, 's');
+        $parameter = (string) ($options['parameter'] ?? 'id');
+        $namePrefix = (string) ($options['names'] ?? trim(str_replace('/', '.', $path), '.'));
+        $only = (array) ($options['only'] ?? ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
-        $map = [
-            'index' => [['GET', $path], $controller . '@index'],
-            'create' => [['GET', $path . '/create'], $controller . '@create'],
-            'store' => [['POST', $path], $controller . '@store'],
-            'show' => [['GET', $path . '/{' . $singular . '}'], $controller . '@show'],
-            'edit' => [['GET', $path . '/{' . $singular . '}/edit'], $controller . '@edit'],
-            'update' => [['PUT', 'PATCH', $path . '/{' . $singular . '}'], $controller . '@update'],
-            'destroy' => [['DELETE', $path . '/{' . $singular . '}'], $controller . '@destroy'],
+        $definitions = [
+            'index' => [['GET'], $path, $controller . '@index'],
+            'create' => [['GET'], $path . '/create', $controller . '@create'],
+            'store' => [['POST'], $path, $controller . '@store'],
+            'show' => [['GET'], $path . '/{' . $parameter . '}', $controller . '@show'],
+            'edit' => [['GET'], $path . '/{' . $parameter . '}/edit', $controller . '@edit'],
+            'update' => [['PUT', 'PATCH'], $path . '/{' . $parameter . '}', $controller . '@update'],
+            'destroy' => [['DELETE'], $path . '/{' . $parameter . '}', $controller . '@destroy'],
         ];
 
         foreach ($only as $action) {
-            if (!isset($map[$action])) {
+            if (!isset($definitions[$action])) {
                 continue;
             }
-            [$methods, $handler] = $map[$action];
-            $route = $this->add($methods, $handler[0] === '[' ? $handler : $methods[2] ?? '', $handler);
-            unset($route);
-        }
-
-        // Re-register properly (the loop above is a guard against typos only).
-        foreach ($only as $action) {
-            if (!isset($map[$action])) {
-                continue;
-            }
-            [$methods, $handler] = $map[$action];
-            $routeMethods = array_slice($methods, 0, count($methods) - 1);
-            $routePath = end($methods);
-            $this->add($routeMethods, $routePath, $handler)->name(str_replace('/', '.', $path) . '.' . $action);
+            [$methods, $routePath, $handler] = $definitions[$action];
+            $this->add($methods, $routePath, $handler)->name($namePrefix . '.' . $action);
         }
     }
 
     private function add(array $methods, string $path, mixed $handler): RouteRegistrar
     {
         $path = trim($path, '/');
-        $currentGroup = $this->groups === [] ? null : end($this->groups);
+        $group = $this->groups === [] ? null : end($this->groups);
 
-        if ($currentGroup !== null) {
-            $prefix = trim((string) $currentGroup['prefix'], '/');
+        if ($group !== null) {
+            $prefix = trim((string) $group['prefix'], '/');
             if ($prefix !== '') {
                 $path = $prefix . ($path === '' ? '' : '/' . $path);
             }
@@ -160,8 +153,7 @@ final class Router
 
         [$regex, $keys] = $this->compile($path);
 
-        $registrar = new RouteRegistrar($this, $methods, $regex, $keys, $handler, $currentGroup);
-        return $registrar;
+        return new RouteRegistrar($this, $methods, $path, $regex, $keys, $handler, (array) $group);
     }
 
     /**
@@ -170,26 +162,28 @@ final class Router
     private function compile(string $path): array
     {
         $keys = [];
-        // {name} captures; {name:[0-9]+} adds a constraint.
+
         $regex = preg_replace_callback(
             '/\{([a-zA-Z_][a-zA-Z0-9_]*)(?::([^}]+))?\}/',
-            function (array $m) use (&$keys): string {
+            static function (array $m) use (&$keys): string {
                 $keys[] = $m[1];
-                $pattern = $m[2] ?? '[^/]+';
-                return '(' . $pattern . ')';
+                return '(' . ($m[2] ?? '[^/]+') . ')';
             },
             $path
         ) ?? $path;
 
-        $regex = '#^' . str_replace('#', '\#', $regex) . '$#';
-        return [$regex, $keys];
+        return ['#^' . str_replace('#', '\#', $regex) . '$#', $keys];
     }
 
     /**
-     * @internal called by RouteRegistrar when a route finishes configuring
+     * Finalises a route once the registrar has collected name/middleware.
+     *
+     * @param list<string> $methods
+     * @param list<string> $middleware
      */
     public function register(
         array $methods,
+        string $path,
         string $regex,
         array $keys,
         mixed $handler,
@@ -200,6 +194,7 @@ final class Router
         foreach ($methods as $method) {
             $this->routes[] = [
                 'method' => strtoupper($method),
+                'path' => $path,
                 'regex' => $regex,
                 'keys' => $keys,
                 'handler' => $handler,
@@ -210,7 +205,7 @@ final class Router
         }
 
         if ($name !== null) {
-            $this->names[$name] = ['regex' => $regex, 'keys' => $keys, 'method' => $methods[0]];
+            $this->names[$name] = ['path' => $path, 'keys' => $keys, 'method' => strtoupper($methods[0])];
         }
     }
 
@@ -222,25 +217,29 @@ final class Router
         }
 
         $definition = $this->names[$name];
-        $path = $definition['regex'];
-        $path = preg_replace('/^\#\^|\$#$/', '', $path) ?? $path;
-        $path = str_replace('\#', '#', $path);
+        $path = $definition['path'];
 
-        foreach ($definition['keys'] as $index => $key) {
+        foreach ($definition['keys'] as $key) {
             $value = $parameters[$key] ?? '';
-            $replacement = rawurlencode((string) $value);
-            // Replace the first capture group in order.
-            $path = preg_replace('/\((?:[^()]|\([^()]*\))*\)/', $replacement, $path, 1) ?? $path;
+            $path = preg_replace('/\{' . preg_quote($key, '/') . '(?::[^}]+)?\}/', rawurlencode((string) $value), $path, 1) ?? $path;
         }
+
+        // Drop any captures left unfilled so the URL stays usable.
+        $path = preg_replace('/\{[a-zA-Z0-9_]+(?::[^}]+)?\}/', '', $path) ?? $path;
 
         return url(trim($path, '/'));
     }
 
-    /** @return list<array{method: string, regex: string, name: ?string}> */
+    public function hasRoute(string $name): bool
+    {
+        return isset($this->names[$name]);
+    }
+
+    /** @return list<array{method: string, path: string, name: ?string}> */
     public function all(): array
     {
         return array_map(
-            static fn (array $r): array => ['method' => $r['method'], 'regex' => $r['regex'], 'name' => $r['name']],
+            static fn (array $r): array => ['method' => $r['method'], 'path' => $r['path'], 'name' => $r['name']],
             $this->routes
         );
     }
@@ -249,7 +248,6 @@ final class Router
     {
         $path = $request->path();
         $method = $request->method();
-
         $allowed = [];
 
         foreach ($this->routes as $route) {
@@ -275,7 +273,7 @@ final class Router
         }
 
         if ($allowed !== []) {
-            throw new HttpException(405, 'Method not allowed for this path.', array_values(array_unique($allowed)));
+            throw new HttpException(405, 'That HTTP method is not allowed here.', array_values(array_unique($allowed)));
         }
 
         throw new HttpException(404, 'The page you requested could not be found.');
@@ -286,11 +284,8 @@ final class Router
         $handler = $route['handler'];
         $namespace = (string) ($route['namespace'] ?? '');
 
-        $core = static function (Request $request) use ($handler, $namespace): Response {
-            return self::invokeHandler($handler, $request, $namespace);
-        };
+        $pipeline = static fn (Request $r): Response => self::invokeHandler($handler, $r, $namespace);
 
-        $pipeline = $core;
         foreach (array_reverse($route['middleware']) as $alias) {
             $middleware = $this->middlewareAliases[$alias] ?? null;
             if ($middleware === null) {
@@ -306,8 +301,7 @@ final class Router
     private static function invokeHandler(mixed $handler, Request $request, string $namespace): Response
     {
         if ($handler instanceof Closure) {
-            $result = $handler($request, ...array_values($request->routeParams()));
-            return self::toResponse($result);
+            return self::toResponse($handler($request, ...array_values($request->routeParams())));
         }
 
         if (is_string($handler) && str_contains($handler, '@')) {
@@ -319,6 +313,7 @@ final class Router
             }
 
             $controller = new $fqcn();
+
             if (!method_exists($controller, $method)) {
                 throw new HttpException(500, 'Controller action not found: ' . $fqcn . '::' . $method);
             }
@@ -331,18 +326,12 @@ final class Router
 
     private static function toResponse(mixed $result): Response
     {
-        if ($result instanceof Response) {
-            return $result;
-        }
-        if (is_array($result)) {
-            return Response::json($result);
-        }
-        if (is_string($result)) {
-            return Response::html($result);
-        }
-        if ($result === null) {
-            return Response::make('', 204);
-        }
-        return Response::html((string) $result);
+        return match (true) {
+            $result instanceof Response => $result,
+            is_array($result) => Response::json($result),
+            is_string($result) => Response::html($result),
+            $result === null => Response::make('', 204),
+            default => Response::html((string) $result),
+        };
     }
 }
