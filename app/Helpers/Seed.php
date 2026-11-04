@@ -6,9 +6,11 @@ namespace App\Helpers;
 
 use App\Core\Config;
 use App\Core\Env;
+use App\Services\LoginRateLimiter;
 use DateTimeInterface;
 use PDO;
 use Phinx\Db\Adapter\PdoAdapter;
+use Phinx\Db\Adapter\WrapperInterface;
 use Phinx\Seed\AbstractSeed;
 use RuntimeException;
 
@@ -301,7 +303,13 @@ final class Seed
 
     public static function pdo(AbstractSeed $seed): PDO
     {
+        // Phinx wraps the real adapter (timing, verbosity) before handing it to
+        // a seeder, so the PDO connection has to be unwrapped first.
         $adapter = $seed->getAdapter();
+        while ($adapter instanceof WrapperInterface) {
+            $adapter = $adapter->getAdapter();
+        }
+
         if (!$adapter instanceof PdoAdapter) {
             throw new RuntimeException('Seed helpers expect a PDO-backed Phinx adapter.');
         }

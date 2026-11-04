@@ -96,7 +96,8 @@ final class ProductSeeder extends AbstractSeed
     }
 
     /**
-     * Four neighbours from the same shelf, which is what the product page and the
+     * Four neighbours from the same shelf - same sub-category first, then the rest
+     * of the parent shelf - which is what the product page and the
      * "you may also like" rails need.
      *
      * @param array<string, int>         $idsBySlug
@@ -105,28 +106,64 @@ final class ProductSeeder extends AbstractSeed
      */
     private function relate(array $idsBySlug, array $categoryOf, array $products): void
     {
-        foreach ($products as $product) {
-            $ownId = $idsBySlug[$product['slug']];
-            $rows = [];
+        $rootOf = $this->rootShelves($categoryOf);
 
+        foreach ($products as $product) {
+            $ownSlug = (string) $product['slug'];
+            $ownShelf = $rootOf[$categoryOf[$ownSlug]];
+
+            $candidates = [];
             foreach ($products as $other) {
-                if ($other['slug'] === $product['slug'] || $categoryOf[$other['slug']] !== $categoryOf[$product['slug']]) {
+                if ($other['slug'] === $ownSlug || $rootOf[$categoryOf[$other['slug']]] !== $ownShelf) {
                     continue;
                 }
 
-                $rows[] = [
-                    'product_id' => $ownId,
-                    'related_product_id' => $idsBySlug[$other['slug']],
-                    'sort_order' => (count($rows) + 1) * 10,
+                // Closer relatives first, then keep the factory order.
+                $candidates[] = [
+                    'distance' => $categoryOf[$other['slug']] === $categoryOf[$ownSlug] ? 0 : 1,
+                    'slug' => (string) $other['slug'],
                 ];
-
-                if (count($rows) === 4) {
-                    break;
-                }
             }
 
-            Seed::sync($this, 'product_related_items', 'product_id', $ownId, $rows);
+            usort($candidates, static fn (array $a, array $b): int => $a['distance'] <=> $b['distance']);
+
+            $rows = [];
+            foreach (array_slice($candidates, 0, 4) as $offset => $candidate) {
+                $rows[] = [
+                    'product_id' => $idsBySlug[$ownSlug],
+                    'related_product_id' => $idsBySlug[$candidate['slug']],
+                    'sort_order' => ($offset + 1) * 10,
+                ];
+            }
+
+            Seed::sync($this, 'product_related_items', 'product_id', $idsBySlug[$ownSlug], $rows);
         }
+    }
+
+    /**
+     * leaf slug => the slug of the shelf it hangs under.
+     *
+     * @param array<string, string> $categoryOf
+     * @return array<string, string>
+     */
+    private function rootShelves(array $categoryOf): array
+    {
+        $roots = [];
+
+        foreach (array_unique(array_values($categoryOf)) as $leaf) {
+            $row = Seed::first(
+                $this,
+                'SELECT parent.slug AS root
+                 FROM `categories` AS child
+                 LEFT JOIN `categories` AS parent ON parent.id = child.parent_id
+                 WHERE child.slug = ? LIMIT 1',
+                [$leaf]
+            );
+
+            $roots[$leaf] = $row === null || $row['root'] === null ? $leaf : (string) $row['root'];
+        }
+
+        return $roots;
     }
 
     private function iconFor(string $label): string

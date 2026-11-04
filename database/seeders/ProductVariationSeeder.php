@@ -6,14 +6,14 @@ use App\Helpers\Seed;
 use Phinx\Seed\AbstractSeed;
 
 /**
- * Plan (variation) rows for every product: own SKU, own price, own duration and
- * own delivery method, which is what the product page tier selector reads.
+ * Plan (variation) rows for every product: own SKU, own price, own duration, own
+ * stock and own delivery method - exactly what the product page tier selector
+ * reads, and what an order line is priced from at checkout.
  *
- * 30/90/180/365-day tiers are priced 499 / 1,299 / 2,399 / 4,299 for the lead
- * product and follow the same short-term-cheap, long-term-value shape for the
- * rest. Manual and account-transfer plans are "not stock limited" (-1); key and
- * code plans carry a stock counter that DigitalInventorySeeder tops up with real
- * encrypted credentials in the fulfilment phase.
+ * Manual and account-transfer plans are "not stock limited" (stock = -1). Key
+ * and code plans carry a counter that DigitalInventorySeeder tops up with real
+ * encrypted credentials later, because the cart will only sell what the vault
+ * can actually deliver.
  */
 final class ProductVariationSeeder extends AbstractSeed
 {
@@ -24,21 +24,23 @@ final class ProductVariationSeeder extends AbstractSeed
         foreach (Seed::list('catalog', 'products') as $productNumber => $product) {
             $productId = $this->productId((string) $product['slug']);
             $prefix = $this->brandPrefix((string) $product['brand']);
-            $sales = 0;
+            $sold = 0;
 
-            foreach ($product['plans'] as $planIndex => $plan) {
-                $days = (int) $plan['days'];
-                $sku = $this->uniqueSku(sprintf('%s-P%02d-%dD', $prefix, $productNumber + 1, $days), $productId);
-                $sold = $this->demoSales($productNumber, $planIndex, $days);
-                $sales += $sold;
+            foreach ($this->plans((array) $product['plans']) as $planIndex => $plan) {
+                $sku = $this->uniqueSku(
+                    sprintf('%s-P%02d-%dD', $prefix, $productNumber + 1, $plan['days']),
+                    $productId
+                );
+                $quantity = $this->demoSales($productNumber, $planIndex, $plan['days']);
+                $sold += $quantity;
 
                 Seed::upsert($this, 'product_variations', ['sku' => $sku], [
                     'product_id' => $productId,
                     'label' => $plan['label'],
-                    'price' => (float) $plan['price'],
-                    'compare_price' => (float) $plan['compare'],
-                    'duration_days' => $days,
-                    'duration_label' => $this->durationLabel($days),
+                    'price' => $plan['price'],
+                    'compare_price' => $plan['compare'],
+                    'duration_days' => $plan['days'],
+                    'duration_label' => $this->durationLabel($plan['days']),
                     'device_limit' => $this->deviceLimit((string) $product['account_type']),
                     'account_type' => $product['account_type'],
                     'delivery_method' => $product['delivery_method'],
@@ -48,19 +50,40 @@ final class ProductVariationSeeder extends AbstractSeed
                     'warranty_days' => 7,
                     'notes' => $this->note((string) $product['delivery_method']),
                     'sort_order' => ($planIndex + 1) * 10,
-                    'sales_count' => $sold,
+                    'sales_count' => $quantity,
                     'status' => 1,
                 ]);
             }
 
-            // The catalog sorts and badges by the product aggregate, so keep it
-            // equal to the sum of its plans.
-            Seed::statement(
-                $this,
-                'UPDATE `products` SET `sales_count` = ? WHERE `id` = ?',
-                [$sales, $productId]
-            );
+            // Catalog sorting and the "sold" badge read the product aggregate, so
+            // keep it equal to the sum of its plans.
+            Seed::statement($this, 'UPDATE `products` SET `sales_count` = ? WHERE `id` = ?', [$sold, $productId]);
         }
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $plans
+     * @return list<array{label: string, days: int, price: float, compare: float|null}>
+     */
+    private function plans(array $plans): array
+    {
+        $tiers = [];
+
+        foreach ($plans as $plan) {
+            $price = (float) $plan['price'];
+            $compare = isset($plan['compare']) ? (float) $plan['compare'] : null;
+
+            $tiers[] = [
+                'label' => (string) $plan['label'],
+                'days' => max(1, (int) $plan['days']),
+                'price' => $price,
+                // A compare price only earns a place when it is above the price,
+                // otherwise the storefront would show a negative discount.
+                'compare' => $compare !== null && $compare > $price ? $compare : null,
+            ];
+        }
+
+        return $tiers;
     }
 
     private function productId(string $slug): int
@@ -74,8 +97,8 @@ final class ProductVariationSeeder extends AbstractSeed
     }
 
     /**
-     * Three letters of the supplier, so a SKU reads like something a warehouse
-     * person would actually write down.
+     * Three letters of the supplier, so a SKU reads like something a person would
+     * actually write on a packing note.
      */
     private function brandPrefix(string $brandSlug): string
     {
@@ -88,8 +111,8 @@ final class ProductVariationSeeder extends AbstractSeed
     }
 
     /**
-     * SKUs are unique in the table, so the second plan with the same length gets
-     * a suffix instead of a duplicate key error.
+     * SKUs are unique in the table, so a second plan of the same length on the
+     * same product gets a suffix instead of a duplicate-key error.
      */
     private function uniqueSku(string $sku, int $productId): string
     {
@@ -125,15 +148,15 @@ final class ProductVariationSeeder extends AbstractSeed
             return max(1, (int) $matches[1]);
         }
 
-        if (stripos($accountType, 'duo') !== false) {
-            return 2;
-        }
-
-        return 1;
+        return str_contains(mb_strtolower($accountType), 'duo') ? 2 : 1;
     }
 
     private function durationLabel(int $days): string
     {
+        if ($days >= 3650) {
+            return 'Lifetime';
+        }
+
         if ($days % 365 === 0) {
             $years = intdiv($days, 365);
 
@@ -150,8 +173,8 @@ final class ProductVariationSeeder extends AbstractSeed
     }
 
     /**
-     * Key and code plans are limited by the credential vault, so they get a small
-     * counter; staff-delivered plans are not stock limited at all.
+     * Staff-delivered plans are not stock limited; vault plans start with a small
+     * counter until the credential import fills the vault.
      */
     private function stock(int $productNumber, int $planIndex, string $deliveryMethod): int
     {
@@ -178,7 +201,7 @@ final class ProductVariationSeeder extends AbstractSeed
         return match ($deliveryMethod) {
             'auto_key' => 'Licence key is released automatically once the payment is verified.',
             'auto_code' => 'Activation code is released automatically once the payment is verified.',
-            'account_transfer' => 'Our staff completes the handover with you after payment verification.',
+            'account_transfer' => 'Our staff completes the account handover with you after payment verification.',
             default => 'Our staff activates this plan with you after payment verification.',
         };
     }
