@@ -53,7 +53,7 @@ final class ManualPaymentService
         return ['id' => $id, 'order_number' => $order['order_number']];
     }
 
-    /** @return array{status:string, order_id:int} */
+    /** @return array{status:string, order_id:int, order_was_settled:bool} */
     public function review(int $paymentId, string $action, ?string $adminNote, int $adminId): array
     {
         return Database::transaction(function ($pdo) use ($paymentId, $action, $adminNote, $adminId) {
@@ -69,7 +69,10 @@ final class ManualPaymentService
                 throw new HttpException(409, 'This payment was already reviewed.');
             }
 
-            if ($payment['order_status'] === 'paid') {
+            // Approving would double-settle an order the gateway (or an admin) already
+            // closed as paid. Rejecting is still allowed — it is the only way to take the
+            // claim off the review queue, and release() no-ops on a settled order.
+            if ($payment['order_status'] === 'paid' && $action === 'approve') {
                 throw new HttpException(409, 'The order is already paid through another method.');
             }
 
@@ -92,7 +95,11 @@ final class ManualPaymentService
                 'order_id' => (int) $payment['order_id'],
             ]);
 
-            return ['status' => $approved ? 'approved' : 'rejected', 'order_id' => (int) $payment['order_id']];
+            return [
+                'status' => $approved ? 'approved' : 'rejected',
+                'order_id' => (int) $payment['order_id'],
+                'order_was_settled' => in_array($payment['order_status'], ['paid', 'cancelled'], true),
+            ];
         });
     }
 }

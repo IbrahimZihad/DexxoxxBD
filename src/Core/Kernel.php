@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Auth\Auth;
+use App\Exceptions\CsrfException;
 use App\Exceptions\HttpException;
 use App\Exceptions\ThrottleException;
 use App\Http\Request;

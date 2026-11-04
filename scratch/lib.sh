@@ -4,7 +4,7 @@ BASE="http://127.0.0.1:8123"
 PHP="F:/Xamp/php/php.exe"
 SCRATCH="F:/Xamp/htdocs/DexxoxxBD/scratch"
 MYSQL="F:/Xamp/mysql/bin/mysql.exe"
-export TMP="$SCRATCH/tmp"
+TMP="$SCRATCH/tmp"
 mkdir -p "$TMP"
 declare -A CSRF_CACHE
 
@@ -25,24 +25,31 @@ login() { # login <jar> <email> <password>
 
 csrf() { printf '%s' "${CSRF_CACHE[$1]:-}"; }
 
-req() { # req <jar> <METHOD> <path> <json> -> prints "HTTP/x 200" body
+req() { # req <jar> <METHOD> <path> <json>
   local jar="$TMP/$1.jar" m="$2" path="$3" body="${4:-}"
   local out="$TMP/resp.txt"
   local args=(-s -o "$out" -w '%{http_code}' -b "$jar" -c "$jar" -X "$m" "$BASE$path")
+  case "$m" in
+    GET|HEAD) ;;
+    *) args+=(-H "X-CSRF-Token: $(csrf "$1")");;
+  esac
   if [ -n "$body" ]; then
-    args+=(-H 'Content-Type: application/json' -H "X-CSRF-Token: $(csrf "$1")" -d "$body")
+    args+=(-H 'Content-Type: application/json' --data-binary "$body")
   fi
   local code
   code=$(curl "${args[@]}" 2>&1)
   echo "[$m $path] -> $code"
-  cat "$out"; echo
+  cat "$out"
+  echo
 }
 
 get() { # get <jar-or-'-'> <path>
-  local jar opt
-  if [ "$1" = "-" ]; then opt=""; jar=""; else opt="-b $TMP/$1.jar -c $TMP/$1.jar"; fi
+  local jar="$1" path="$2"
+  local opts=()
+  if [ "$jar" != "-" ]; then opts=(-b "$TMP/$jar.jar" -c "$TMP/$jar.jar"); fi
   local code
-  code=$(curl -s -o "$TMP/resp.txt" -w '%{http_code}' $opt "$BASE$2")
-  echo "[GET $2] -> $code"
-  cat "$TMP/resp.txt"; echo
+  code=$(curl -s -o "$TMP/resp.txt" -w '%{http_code}' "${opts[@]}" "$BASE$path")
+  echo "[GET $path] -> $code"
+  cat "$TMP/resp.txt"
+  echo
 }

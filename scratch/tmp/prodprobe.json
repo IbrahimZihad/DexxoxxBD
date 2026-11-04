@@ -1,0 +1,2 @@
+[POST /api/products.php] -> 201
+{"id":22,"slug":"null-semantics-probe"}

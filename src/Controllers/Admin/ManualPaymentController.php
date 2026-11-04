@@ -52,9 +52,11 @@ final class ManualPaymentController extends Controller
             'ok' => true,
             'status' => $result['status'],
             'order_id' => $result['order_id'],
-            'message' => $result['status'] === 'approved'
-                ? 'Payment approved — passes issued to the customer.'
-                : 'Payment rejected and the order closed.',
+            'message' => match (true) {
+                $result['status'] === 'approved' => 'Payment approved — passes issued to the customer.',
+                $result['order_was_settled'] => 'Payment marked rejected. That order was already settled, so its status was left alone.',
+                default => 'Payment rejected and the order closed.',
+            },
         ]);
     }
 

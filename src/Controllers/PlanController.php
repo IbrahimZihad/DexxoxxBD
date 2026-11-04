@@ -120,7 +120,8 @@ final class PlanController extends Controller
 
         $clean = [];
 
-        if (array_key_exists('name', $validated)) {
+        // name, price and duration have no empty state, so an explicit null leaves them alone.
+        if (isset($validated['name'])) {
             $clean['name'] = Sanitizer::text($validated['name'], 120);
         }
 
@@ -128,11 +129,11 @@ final class PlanController extends Controller
             $clean['description'] = Sanitizer::multiline($validated['description'], 2000);
         }
 
-        if (array_key_exists('price', $validated)) {
+        if (isset($validated['price'])) {
             $clean['price'] = round((float) $validated['price'], 2);
         }
 
-        if (array_key_exists('duration_days', $validated)) {
+        if (isset($validated['duration_days'])) {
             $clean['duration_days'] = (int) $validated['duration_days'];
         }
 

@@ -99,8 +99,11 @@ final class Request
 
     public function header(string $name): ?string
     {
-        $key = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
-        $value = $_SERVER[$key] ?? null;
+        $key = strtoupper(str_replace('-', '_', $name));
+
+        // mod_php / apache2handler expose the two entity headers without the HTTP_
+        // prefix the built-in server uses, so Content-Type must be read from both.
+        $value = $_SERVER['HTTP_' . $key] ?? (in_array($key, ['CONTENT_TYPE', 'CONTENT_LENGTH'], true) ? $_SERVER[$key] ?? null : null);
 
         return is_scalar($value) ? (string) $value : null;
     }

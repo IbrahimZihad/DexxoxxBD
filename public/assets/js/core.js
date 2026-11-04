@@ -317,8 +317,15 @@
 
   /* ---------------- Modal ---------------- */
   function openModal(id) {
-    const modal = document.getElementById(id);
+    // A modal that was closed by a backdrop click, or left open after a failed
+    // submit, stays in the DOM. Reusing its id would give the document two nodes
+    // with the same id, and every getElementById after that would target the stale
+    // one — so the newest node is the only one we keep.
+    const sameId = document.querySelectorAll('#' + id);
+    const modal = sameId[sameId.length - 1];
     if (!modal) return null;
+    for (let i = 0; i < sameId.length - 1; i++) sameId[i].remove();
+
     modal.classList.remove('hide');
     document.body.classList.add('is-locked');
     const focusable = modal.querySelector('input, select, textarea, button');

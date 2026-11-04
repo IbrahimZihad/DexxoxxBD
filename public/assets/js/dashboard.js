@@ -42,7 +42,7 @@
       Dx.h('div', { class: 'pass-head' },
         Dx.h('div', { class: 'stack-tight' },
           Dx.h('h3', { class: 'pass-title', text: pass.item_name }),
-          Dx.h('span', { class: 'tile-meta mono', text: (pass.item_type === 'plan' ? 'Bundle pass' : 'Single pass') + ' · ' + pass.id })
+          Dx.h('span', { class: 'tile-meta mono', text: (pass.item_type === 'plan' ? 'Bundle pass' : 'Single pass') + ' · quote Pass #' + pass.id })
         ),
         stamp
       ),

@@ -29,7 +29,9 @@
       Dx.endpoints.categories(),
     ]);
 
-    Dx.mount('featured-grid', featured.products.map(Dx.productCard.bind(null, add)));
+    Dx.mount('featured-grid', featured.products.map(function (product) {
+      return Dx.productCard(product, add);
+    }));
     Dx.reveal(document.getElementById('featured-grid'));
 
     Dx.mount('category-chips', categories.categories.map(function (category) {
@@ -39,19 +41,22 @@
       );
     }));
 
-    Dx.countUp(document.getElementById('stat-products'), featured.meta.total);
     Dx.countUp(document.getElementById('stat-categories'), categories.categories.length);
 
-    // "units sold" is the sum of the per-product counters the admin keeps.
+    // "products live" is the whole catalogue; "units sold" sums the per-product
+    // counters the admin keeps, so both come from the same paging walk.
     let page = 1;
     let sold = 0;
+    let live = 0;
     let last = 1;
     do {
       const chunk = await Dx.endpoints.products.list('?per_page=60&page=' + page);
+      live = Number(chunk.meta.total || 0);
       sold += chunk.products.reduce(function (sum, product) { return sum + Number(product.sold_count || 0); }, 0);
       last = chunk.meta.last_page;
       page++;
     } while (page <= last);
+    Dx.countUp(document.getElementById('stat-products'), live);
     Dx.countUp(document.getElementById('stat-sold'), sold);
   } catch (error) {
     Dx.mount('featured-grid', Dx.h('p', { class: 'muted', text: error.message }));

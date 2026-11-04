@@ -149,7 +149,8 @@ final class ProductController extends Controller
 
         $clean = [];
 
-        if (array_key_exists('name', $validated)) {
+        // name and price have no empty state, so an explicit null leaves them alone.
+        if (isset($validated['name'])) {
             $clean['name'] = Sanitizer::text($validated['name'], 160);
         }
 
@@ -161,7 +162,7 @@ final class ProductController extends Controller
             $clean['image_url'] = Sanitizer::url($validated['image_url']);
         }
 
-        if (array_key_exists('price', $validated)) {
+        if (isset($validated['price'])) {
             $clean['price'] = round((float) $validated['price'], 2);
         }
 

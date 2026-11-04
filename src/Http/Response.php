@@ -22,9 +22,13 @@ final class Response
         return new self($payload, $status, $headers, true);
     }
 
-    public static function error(string $message, int $status, array $errors = [], array $headers = []): self
+    public static function error(string $message, int $status, array $errors = [], array $headers = [], ?string $code = null): self
     {
         $payload = ['error' => $message];
+
+        if ($code !== null) {
+            $payload['code'] = $code;
+        }
 
         if ($errors !== []) {
             $payload['errors'] = $errors;

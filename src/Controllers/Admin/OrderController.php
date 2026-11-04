@@ -22,6 +22,13 @@ final class OrderController extends Controller
     public function index(): Response
     {
         Auth::requireAdmin();
+
+        // Same convention as the buyer endpoint: ?id= asks for one order, with items,
+        // payments and the passes that were issued for it.
+        if ($this->request->int('id') > 0) {
+            return $this->show();
+        }
+
         $status = (string) ($this->request->query('status') ?? '');
         $search = (string) ($this->request->query('q') ?? '');
 

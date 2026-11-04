@@ -7,8 +7,9 @@ use App\Exceptions\ValidationException;
 
 /**
  * Rule-string validator: 'name' => 'required|string|max:120'.
- * Empty values only pass when the field is not required; validated() returns
- * type-cast values so controllers never touch the raw request again.
+ * A missing field is ignored; a field sent as null or empty against a `nullable`
+ * rule is kept as an explicit null so callers can clear a value. validated()
+ * returns type-cast values so controllers never touch the raw request again.
  */
 final class Validator
 {
@@ -49,6 +50,8 @@ final class Validator
             if (!$present || $isEmpty) {
                 if ($required) {
                     $this->fail($field, 'is required.');
+                } elseif ($present && in_array('nullable', $rules, true)) {
+                    $this->validated[$field] = null;
                 }
                 continue;
             }

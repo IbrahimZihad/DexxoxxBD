@@ -90,6 +90,7 @@
     Admin.confirmAction(warn, function () {
       return Dx.endpoints.admin.setOrderStatus(order.id, status).then(function (result) {
         Dx.toast(result.message || 'Order is now ' + status + '.', 'success');
+        Dx.closeModal('order-modal');
         load();
         Admin.refreshReviewBadge();
       });
