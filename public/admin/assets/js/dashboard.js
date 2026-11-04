@@ -1,67 +1,137 @@
-function statCard(label, value, accent, link) {
-  const inner = `
-    <p class="text-xs uppercase tracking-widest text-inksoft font-mono">${label}</p>
-    <p class="font-display text-3xl font-bold mt-2" style="color:${accent || '#12172B'}">${value}</p>
-  `;
-  if (link) {
-    return `<a href="${link}" class="pass-card p-5 block hover:shadow-md transition">${inner}</a>`;
-  }
-  return `<div class="pass-card p-5">${inner}</div>`;
-}
+/* Admin overview: real numbers from /admin_stats.php, no decorative figures. */
+(async function initAdminDashboard() {
+  await Admin.start('Overview', 'Everything the shop has actually recorded.', 'dashboard.html');
 
-function statusStamp(status) {
-  const color = { paid: '#1F9C8B', pending: '#7A4E0E', failed: '#D64545', cancelled: '#4A5068' }[status] || '#4A5068';
-  return `<span class="stamp" style="color:${color}">${status}</span>`;
-}
+  Admin.actions([
+    Dx.h('button', { class: 'btn btn-quiet btn-sm', type: 'button', id: 'refresh-stats' }, 'Refresh'),
+    Dx.h('button', { class: 'btn btn-ghost btn-sm', type: 'button', id: 'run-sweep' }, 'Run housekeeping'),
+  ]);
 
-(async function loadAdminDashboard() {
-  try { await requireAdminAuth(); } catch { return; }
-
-  document.getElementById('admin-logout-btn').addEventListener('click', async () => {
-    await AdminApi.logout();
-    location.href = 'index.html';
+  document.getElementById('run-sweep').addEventListener('click', function () {
+    const button = this;
+    Admin.confirmAction(
+      'Expire unpaid orders, mark overdue passes expired and clear stale rate-limit rows?',
+      function () {
+        return Dx.endpoints.admin.sweep().then(function (result) {
+          Dx.toast('Housekeeping done: ' + result.orders_expired + ' orders expired, ' + result.passes_lapsed + ' passes lapsed.', 'success');
+          return load();
+        });
+      },
+      button,
+      'Running…'
+    );
   });
 
-  try {
-    const s = await AdminApi.stats();
+  document.getElementById('refresh-stats').addEventListener('click', load);
 
-    // Show pending badge on nav if there are awaiting manual payments
-    if (s.pending_manual_payments > 0) {
-      const badge = document.getElementById('nav-pending-badge');
-      if (badge) {
-        badge.textContent = s.pending_manual_payments;
-        badge.classList.remove('hidden');
-      }
-    }
-
-    document.getElementById('stats-grid').innerHTML = [
-      statCard('Total revenue',            money(s.total_revenue),              '#1F9C8B'),
-      statCard('Total orders',             s.total_orders,                      null,     'orders.html'),
-      statCard('Pending orders',           s.pending_orders,                    '#7A4E0E','orders.html?status=pending'),
-      statCard('Active passes',            s.active_passes,                     '#1F9C8B'),
-      statCard('Customers',                s.total_customers,                   null,     'users.html'),
-      statCard('Products',                 s.total_products,                    null,     'products.html'),
-      statCard('Plans',                    s.total_plans,                       null,     'plans.html'),
-      statCard(
-        'Pending Manual Payments',
-        s.pending_manual_payments,
-        s.pending_manual_payments > 0 ? '#D64545' : '#12172B',
-        'manual-payments.html'
-      ),
-    ].join('');
-
-    document.getElementById('recent-orders').innerHTML = s.recent_orders.length
-      ? s.recent_orders.map(o => `
-        <div class="flex items-center justify-between text-sm border-b border-line/60 pb-3 last:border-0">
-          <div>
-            <p class="font-mono font-semibold">${o.order_number}</p>
-            <p class="text-inksoft text-xs">${o.user_name} · ${fmtDate(o.created_at)}</p>
-          </div>
-          ${statusStamp(o.status)}
-          <p class="font-display font-semibold">${money(o.total_amount)}</p>
-        </div>`).join('')
-      : `<p class="text-inksoft text-sm">No orders yet.</p>`;
-  } catch (e) {
-    adminToast(e.message, 'error');
+  function statRow(stats) {
+    return [
+      Admin.stat('Revenue collected', Dx.money(stats.total_revenue), stats.paid_orders + ' paid orders'),
+      Admin.stat('Average order', Dx.money(stats.average_order_value), stats.total_orders + ' orders all-time', true),
+      Admin.stat('Awaiting payment', String(stats.pending_orders), stats.manual_pending + ' of them need a manual review'),
+      Admin.stat('Active passes', String(stats.active_passes), stats.expired_passes + ' expired'),
+      Admin.stat('Customers', String(stats.total_customers), stats.suspended_users + ' suspended · ' + stats.total_admins + ' admins'),
+      Admin.stat('Catalogue gaps', String(stats.out_of_stock), stats.active_products + ' live, ' + stats.inactive_products + ' hidden', true),
+    ];
   }
+
+  function topProducts(rows) {
+    if (!rows.length) return Dx.h('p', { class: 'muted', text: 'No paid orders yet, so nothing to rank.' });
+
+    const max = Math.max.apply(null, rows.map(function (row) { return Number(row.units); }));
+
+    return Dx.h('div', { class: 'stack-tight' }, rows.map(function (row) {
+      const bar = Dx.h('div', { class: 'progress-bar' });
+      bar.style.setProperty('--w', Math.max(6, Math.round((Number(row.units) / max) * 100)) + '%');
+
+      return Dx.h('div', { class: 'stack-tight' },
+        Dx.h('div', { class: 'summary-line' },
+          Dx.h('span', { text: row.item_name }),
+          Dx.h('span', { class: 'mono', text: row.units + ' units · ' + Dx.money(row.revenue) })
+        ),
+        Dx.h('div', { class: 'progress' }, bar)
+      );
+    }));
+  }
+
+  function recentOrders(rows) {
+    if (!rows.length) return Dx.h('p', { class: 'muted', text: 'No orders placed yet.' });
+
+    return Dx.h('div', { class: 'table-wrap' }, Dx.h('table', { class: 'table' },
+      Dx.h('thead', null, Dx.h('tr', null,
+        ['Order', 'Customer', 'Total', 'Status', 'Placed', ''].map(function (label) {
+          return Dx.h('th', { scope: 'col', text: label });
+        })
+      )),
+      Dx.h('tbody', null, rows.map(function (row) {
+        return Dx.h('tr', null,
+          Dx.h('td', { class: 'mono', text: row.order_number }),
+          Dx.h('td', null, Dx.h('div', { class: 'cell-title', text: row.user_name }), Dx.h('span', { class: 'sub', text: row.user_email })),
+          Dx.h('td', { class: 'num', text: Dx.money(row.total_amount) }),
+          Dx.h('td', null, Admin.stamp(row.status)),
+          Dx.h('td', { text: Dx.formatDateTime(row.created_at) }),
+          Dx.h('td', null, Dx.h('a', { class: 'btn btn-ghost btn-sm', href: 'orders.html?focus=' + row.id }, 'Open'))
+        );
+      }))
+    ));
+  }
+
+  async function load() {
+    Admin.outlet(Dx.h('div', { class: 'panel' }, Dx.h('div', { class: 'skeleton skeleton-cell' })));
+
+    try {
+      const stats = await Dx.endpoints.admin.stats();
+
+      Admin.outlet([
+        Dx.h('div', { class: 'stat-grid' }, statRow(stats)),
+
+        Dx.h('div', { class: 'grid-split' },
+          Dx.h('div', { class: 'panel stack' },
+            Dx.h('div', { class: 'panel-head' },
+              Dx.h('h2', { text: 'Revenue, last 14 days' }),
+              Dx.h('span', { class: 'stamp stamp-navy', text: 'paid orders only' })
+            ),
+            Admin.sparkline(stats.revenue_series, 'revenue'),
+            Dx.h('div', { class: 'cluster-between hint' },
+              Dx.h('span', { text: stats.revenue_series.length ? stats.revenue_series[0].day : '—' }),
+              Dx.h('span', { text: stats.revenue_series.length ? stats.revenue_series[stats.revenue_series.length - 1].day : '—' })
+            ),
+            Dx.h('div', { class: 'divider' }),
+            Dx.h('h3', { text: 'Best sellers' }),
+            topProducts(stats.top_products)
+          ),
+
+          Dx.h('div', { class: 'panel stack' },
+            Dx.h('div', { class: 'panel-head' },
+              Dx.h('h2', { text: 'Latest orders' }),
+              Dx.h('a', { class: 'btn btn-quiet btn-sm', href: 'orders.html' }, 'All orders')
+            ),
+            recentOrders(stats.recent_orders)
+          )
+        ),
+
+        stats.manual_pending > 0
+          ? Dx.h('div', { class: 'banner banner-warn' },
+            Dx.h('strong', { text: stats.manual_pending + ' manual payment' + (stats.manual_pending === 1 ? '' : 's') + ' waiting for review' }),
+            Dx.h('span', { class: 'spacer' }),
+            Dx.h('a', { class: 'btn btn-gold btn-sm', href: 'manual-payments.html' }, 'Open the queue')
+          )
+          : null,
+
+        stats.out_of_stock > 0
+          ? Dx.h('div', { class: 'banner banner-danger' },
+            Dx.h('strong', { text: stats.out_of_stock + ' live product' + (stats.out_of_stock === 1 ? ' is' : 's are') + ' out of stock' }),
+            Dx.h('span', { class: 'spacer' }),
+            Dx.h('a', { class: 'btn btn-quiet btn-sm', href: 'products.html?stock=empty' }, 'Restock')
+          )
+          : null
+      ]);
+
+      Admin.refreshReviewBadge();
+    } catch (error) {
+      Admin.outlet(Dx.h('div', { class: 'banner banner-danger', text: error.message }));
+    }
+  }
+
+  load();
 })();

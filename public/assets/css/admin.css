@@ -75,7 +75,7 @@
 .stat-accent::after { background: var(--teal-soft); }
 
 .spark { display: flex; align-items: flex-end; gap: 4px; height: 46px; margin-top: var(--sp-3); position: relative; }
-.spark i { flex: 1 1 0; background: linear-gradient(180deg, var(--navy), var(--navy-soft)); border-radius: 3px 3px 0 0; min-height: 3px; transform-origin: bottom; animation: grow-bar var(--dur-slow) var(--ease-out) both; }
+.spark i { flex: 1 1 0; height: var(--h, 10%); background: linear-gradient(180deg, var(--navy), var(--navy-soft)); border-radius: 3px 3px 0 0; min-height: 3px; transform-origin: bottom; animation: grow-bar var(--dur-slow) var(--ease-out) both; }
 .spark i:last-child { background: linear-gradient(180deg, var(--gold), color-mix(in srgb, var(--gold) 70%, #fff)); }
 
 @keyframes grow-bar { from { transform: scaleY(0); } to { transform: scaleY(1); } }

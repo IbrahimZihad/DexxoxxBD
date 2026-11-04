@@ -3,6 +3,10 @@
   const loginForm = document.getElementById('login-form');
   const registerForm = document.getElementById('register-form');
 
+  // On the admin panel, relative links hang off admin/.
+  const inAdmin = /\/admin\/[^/]*$/.test(location.pathname);
+  const prefixes = { customer: inAdmin ? '../' : '', admin: inAdmin ? '' : 'admin/' };
+
   // Already signed in? Do not make the buyer type a password again.
   Dx.currentUser().then(function (user) {
     if (!user) return;
@@ -10,8 +14,16 @@
   });
 
   function landing(user) {
-    const next = Dx.safeRedirect(Dx.queryParam('next'), user.role === 'admin' ? 'admin/dashboard.html' : 'dashboard.html');
-    return next;
+    const target = inAdmin ? 'dashboard.html' : (user.role === 'admin' ? 'admin/dashboard.html' : 'dashboard.html');
+    const next = Dx.queryParam('next');
+
+    if (next) {
+      const safe = Dx.safeRedirect(next, '');
+      // Reject anything that would bounce the user straight back to a login page.
+      if (safe && !/login|register/.test(safe)) return safe;
+    }
+
+    return prefixes[user.role === 'admin' ? 'admin' : 'customer'] + target;
   }
 
   function fail(panelId, message) {
