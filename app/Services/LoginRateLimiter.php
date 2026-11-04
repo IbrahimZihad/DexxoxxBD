@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\Core\Config;
 use App\Core\Database;
-use App\Core\Request;
 
 /**
  * Sliding-window login throttle backed by the login_attempts table, so limits
