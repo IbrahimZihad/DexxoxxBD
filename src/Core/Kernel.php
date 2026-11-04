@@ -115,7 +115,7 @@ final class Kernel
                 ? ['Retry-After' => (string) $e->retryAfter]
                 : [];
 
-            return Response::error($e->getMessage(), $e->status(), array_filter($e->errors), $headers);
+            return Response::error($e->getMessage(), $e->status(), $e->errors, $headers, $e instanceof CsrfException ? CsrfException::CODE : null);
         }
 
         Logger::error(

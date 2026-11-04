@@ -1,1 +1,1 @@
-{"error":"Your session expired or the page is stale. Reload and try again."}
+{"error":"Your session expired or the page is stale. Reload and try again.","code":"csrf_stale"}

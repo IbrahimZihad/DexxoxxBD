@@ -172,7 +172,8 @@ sessions are destroyed server-side.
 
 **CSRF.** Double-submit comparison of the `X-CSRF-Token` header against the session
 value for every mutating route, enforced by the router rather than by individual
-controllers. A stale token returns `419`, and `core.js` re-mints and retries once.
+controllers. A stale token returns `403` with `code: "csrf_stale"` (419 is rewritten to 500 by
+Apache), and `core.js` re-mints and retries once.
 
 **Rate limiting.** Fixed-window counters in the `rate_limits` table, keyed by
 bucket + client IP: login 8/15 min, register 5/h, order creation 30/h, payment
@@ -293,7 +294,7 @@ curl -sI http://localhost/DexxoxxBD/public/ | grep -i content-security-policy
 Then in a browser: sign in as the demo customer, add a bundle, check out with a manual
 channel, sign in as the admin, approve the payment in **Payment reviews**, and confirm the
 pass appears in the customer's dashboard with a working copy button and progress bar.
-Open the network panel on each page — a `419` means the token mint is not reachable, and a
+Open the network panel on each page — a `403` with `code: "csrf_stale"` means the token mint is not reachable, and a
 CSP violation console error means an inline style or script crept in.
 
 ---

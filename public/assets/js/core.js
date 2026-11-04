@@ -30,6 +30,7 @@
       const error = new Error(data.error || 'Something went wrong. Please try again.');
       error.status = response.status;
       error.fields = data.errors || {};
+      error.code = data.code || null;
       throw error;
     }
 
@@ -60,8 +61,8 @@
       if (data && data.csrf_token) csrfToken = data.csrf_token;
       return data;
     } catch (error) {
-      // A rotated or expired session answers 419 once: mint a new token and retry.
-      if (error.status === 419 && unsafe && !settings._retried) {
+      // A stale CSRF token answers 403 + code=csrf_stale once: mint a new token and retry.
+      if (error.code === 'csrf_stale' && unsafe && !settings._retried) {
         csrfToken = null;
         const retry = Object.assign({}, options, { _retried: true });
         const fresh = await rawRequest('/auth.php?action=token');
