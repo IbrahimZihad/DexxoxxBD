@@ -93,8 +93,11 @@ final class App
     private function registerServices(): void
     {
         $this->singleton('database', static fn (): Database => Database::connection());
+        $this->singleton('cache', static fn (): CacheService => new CacheService());
+        $this->singleton('rbac', static fn (): RbacService => new RbacService());
         $this->singleton('settings', static fn (): SettingService => new SettingService());
         $this->singleton('cart', static fn (): CartService => new CartService());
+        $this->singleton('mailer', static fn (): MailService => new MailService());
     }
 
     private function registerMiddleware(): void
