@@ -221,7 +221,8 @@ final class Router
 
         foreach ($definition['keys'] as $key) {
             $value = $parameters[$key] ?? '';
-            $path = preg_replace('/\{' . preg_quote($key, '/') . '(?::[^}]+)?\}/', rawurlencode((string) $value), $path, 1) ?? $path;
+            $pattern = '/\{' . preg_quote($key, '/') . '(?::[^}]+)?\}/';
+            $path = preg_replace($pattern, rawurlencode((string) $value), $path, 1) ?? $path;
         }
 
         // Drop any captures left unfilled so the URL stays usable.
@@ -292,7 +293,10 @@ final class Router
             $arguments = [];
             if (str_contains($definition, ':')) {
                 [$alias, $inline] = explode(':', $definition, 2);
-                $arguments = array_values(array_filter(explode(',', $inline), static fn (string $v): bool => $v !== ''));
+                $arguments = array_values(array_filter(
+                    explode(',', $inline),
+                    static fn (string $v): bool => $v !== ''
+                ));
             }
 
             $middleware = $this->middlewareAliases[$alias] ?? null;

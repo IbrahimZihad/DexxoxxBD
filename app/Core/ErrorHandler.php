@@ -23,7 +23,8 @@ final class ErrorHandler
     {
         $status = 500;
         $title = 'Something went wrong';
-        $message = 'We hit an unexpected problem while handling that request. Please try again, or contact support if it persists.';
+        $message = 'We hit an unexpected problem while handling that request. '
+            . 'Please try again, or contact support if it persists.';
         $errors = [];
         $allowed = [];
 

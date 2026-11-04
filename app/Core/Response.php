@@ -50,7 +50,11 @@ final class Response
         return (new self($encoded, $status))->withHeader('Content-Type', 'application/json; charset=UTF-8');
     }
 
-    public static function text(string $content, int $status = 200, string $contentType = 'text/plain; charset=UTF-8'): self
+    public static function text(
+        string $content,
+        int $status = 200,
+        string $contentType = 'text/plain; charset=UTF-8'
+    ): self
     {
         return (new self($content, $status))->withHeader('Content-Type', $contentType);
     }
