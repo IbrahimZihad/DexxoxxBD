@@ -306,14 +306,14 @@ $view->setSection('og_type', 'website');
         <ol class="dx-steps">
             <?php foreach ($steps as $step): ?>
                 <li class="dx-step">
-                    <h3><?= e(t('home.how_it_works.step_' . $step . '_title')) ?></h3>
+                    <b><?= e(t('home.how_it_works.step_' . $step . '_title')) ?></b>
                     <p><?= e(t('home.how_it_works.step_' . $step . '_text')) ?></p>
                 </li>
             <?php endforeach; ?>
         </ol>
         <?php if (filter_var(setting('homepage.show_how_it_works', 1), FILTER_VALIDATE_BOOLEAN)): ?>
             <p class="dx-section__foot">
-                <a class="btn btn-dx-ghost" href="<?= e(url('page/how-it-works')) ?>">
+                <a class="btn btn-dx-ghost" href="<?= e(url('how-it-works')) ?>">
                     <?= e(t('nav.how_it_works')) ?>
                     <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </a>

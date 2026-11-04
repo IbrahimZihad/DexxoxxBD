@@ -1,13 +1,25 @@
 <?php
 
 /**
- * Contact page: direct details plus a ticket form. The form opens a real
- * support_tickets row; nothing is faked as "sent".
+ * Contact page: direct details plus a ticket form.
+ *
+ * support_tickets requires a real account, so only a signed-in, verified
+ * customer sees the form. Everyone else gets the same support details and one
+ * clear next step - there is no "message sent" state that cannot be stored.
  */
 
 use App\Core\Auth;
 
 $user = Auth::instance()->user();
+$canSubmit = (bool) ($canSubmit ?? false);
+$needsVerification = (bool) ($needsVerification ?? false);
+$departmentLabels = [
+    'general' => t('page.contact.dep.general'),
+    'order' => t('page.contact.dep.order'),
+    'payment' => t('page.contact.dep.payment'),
+    'delivery' => t('page.contact.dep.delivery'),
+    'technical' => t('page.contact.dep.technical'),
+];
 
 $view->extend('layouts.app');
 $view->setSection('title', t('page.contact.title') . ' | ' . (string) setting('brand.name', config('app.name')));
@@ -28,35 +40,64 @@ $view->setSection('canonical', url('contact'));
     <div class="dx-layout dx-layout--contact">
         <section class="dx-cardpanel">
             <h2 class="dx-h4"><?= e(t('page.contact.form_title')) ?></h2>
-            <form method="post" action="<?= e(url('contact')) ?>" class="dx-form" data-throttled>
-                <?= csrf_field() ?>
-                <div class="row g-3">
-                    <div class="col-12<?= $user === null ? ' col-sm-6' : '' ?>">
-                        <label class="form-label" for="dx-c-name"><?= e(t('page.contact.name')) ?></label>
-                        <input class="form-control" id="dx-c-name" name="name" type="text" required
-                               maxlength="120" value="<?= e($user['name'] ?? old('name')) ?>">
+
+            <?php if ($canSubmit): ?>
+                <form method="post" action="<?= e(url('contact')) ?>" class="dx-form">
+                    <?= csrf_field() ?>
+                    <div class="row g-3">
+                        <div class="visually-hidden" aria-hidden="true">
+                            <label for="dx-c-website">Leave this empty</label>
+                            <input id="dx-c-website" class="form-control" name="website" type="text"
+                                   tabindex="-1" autocomplete="off">
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" for="dx-c-name"><?= e(t('page.contact.name')) ?></label>
+                            <input class="form-control" id="dx-c-name" type="text" readonly
+                                   value="<?= e((string) ($user['name'] ?? '')) ?>">
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label" for="dx-c-email"><?= e(t('auth.email')) ?></label>
+                            <input class="form-control" id="dx-c-email" type="email" readonly
+                                   value="<?= e((string) ($user['email'] ?? '')) ?>">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="dx-c-department"><?= e(t('page.contact.department')) ?></label>
+                            <select class="form-select" id="dx-c-department" name="department" required>
+                                <?php foreach ($departmentLabels as $value => $label): ?>
+                                    <option value="<?= e($value) ?>" <?= old('department') === $value ? 'selected' : '' ?>>
+                                        <?= e($label) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="dx-c-subject"><?= e(t('page.contact.subject')) ?></label>
+                            <input class="form-control" id="dx-c-subject" name="subject" type="text" required
+                                   minlength="5" maxlength="180" value="<?= e(old('subject')) ?>">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="dx-c-message"><?= e(t('page.contact.message')) ?></label>
+                            <textarea class="form-control" id="dx-c-message" name="message" rows="6" required
+                                      minlength="20" maxlength="4000"><?= e(old('message')) ?></textarea>
+                            <p class="dx-hint"><?= e(t('page.contact.reply_time')) ?></p>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-dx btn-lg" type="submit"><?= e(t('page.contact.send')) ?></button>
+                        </div>
                     </div>
-                    <div class="col-12 col-sm-6">
-                        <label class="form-label" for="dx-c-email"><?= e(t('auth.email')) ?></label>
-                        <input class="form-control" id="dx-c-email" name="email" type="email" required
-                               maxlength="190" value="<?= e($user['email'] ?? old('email')) ?>">
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label" for="dx-c-subject"><?= e(t('page.contact.subject')) ?></label>
-                        <input class="form-control" id="dx-c-subject" name="subject" type="text" required
-                               maxlength="180" value="<?= e(old('subject')) ?>">
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label" for="dx-c-body"><?= e(t('page.contact.message')) ?></label>
-                        <textarea class="form-control" id="dx-c-body" name="body" rows="6" required
-                                  minlength="20" maxlength="4000"><?= e(old('body')) ?></textarea>
-                        <p class="dx-hint"><?= e(t('page.contact.reply_time')) ?></p>
-                    </div>
-                    <div class="col-12">
-                        <button class="btn btn-dx btn-lg" type="submit"><?= e(t('page.contact.send')) ?></button>
-                    </div>
+                </form>
+            <?php elseif ($needsVerification): ?>
+                <p class="dx-lead"><?= e(t('page.contact.verify_first')) ?></p>
+                <a class="btn btn-dx" href="<?= e(url('account/verify-email')) ?>">
+                    <?= e(t('auth.resend_verification')) ?>
+                </a>
+            <?php else: ?>
+                <p class="dx-lead"><?= e(t('page.contact.signin_first')) ?></p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-dx" href="<?= e(url('login')) ?>"><?= e(t('auth.log_in')) ?></a>
+                    <a class="btn btn-dx-ghost" href="<?= e(url('register')) ?>"><?= e(t('auth.register')) ?></a>
                 </div>
-            </form>
+            <?php endif; ?>
         </section>
 
         <aside class="dx-cardpanel dx-cardpanel--ink">

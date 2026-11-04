@@ -96,4 +96,9 @@ return [
         'featured' => 'Featured',
         'sale' => 'On offer',
     ],
+    'email_tagline' => 'Digital subscriptions, delivered properly',
+    'email_in_browser' => 'View in your browser',
+    'email_if_unexpected' => 'Did not ask for this email? You can ignore or delete it - nothing else happens.',
+    'email_paste_link' => 'Button not working? Copy this link into your browser:',
+    'open_button' => 'Open the page',
 ];
