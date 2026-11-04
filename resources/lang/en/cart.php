@@ -25,6 +25,7 @@ return [
     'apply' => 'Apply',
     'applied' => 'Coupon :code applied.',
     'remove_coupon' => 'Remove coupon',
+    'coupon_removed' => 'Coupon removed from your cart.',
     'coupon_rejected' => 'That coupon cannot be used on this cart.',
     'subtotal' => 'Subtotal',
     'discount' => 'Discount',
