@@ -50,11 +50,14 @@ final class CsrfMiddleware
                 Session::rotateCsrfOnFailure();
 
                 if ($request->wantsJson()) {
+                    // 403, not the sometimes-suggested 419: 419 is not a registered
+                    // status, and Apache rewrites it to 500 on the way out, which
+                    // would tell the client nothing about what actually failed.
                     return Response::json([
                         'ok' => false,
                         'message' => 'Your session expired. Please refresh and try again.',
                         'code' => 'csrf_mismatch',
-                    ], 419);
+                    ], 403);
                 }
 
                 flash('danger', 'Your session expired for security reasons. Please try again.');
