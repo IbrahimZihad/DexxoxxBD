@@ -542,4 +542,102 @@ final class ProductRepository
              ORDER BY id ASC LIMIT 5000"
         );
     }
+
+    /** @return list<array<string, mixed>> */
+    public function imagesFor(int $productId): array
+    {
+        return $this->db->select(
+            'SELECT path, alt, is_primary FROM product_images
+             WHERE product_id = :id ORDER BY is_primary DESC, sort_order ASC, id ASC',
+            ['id' => $productId]
+        );
+    }
+
+    /** @return list<array<string, mixed>> */
+    public function featuresFor(int $productId): array
+    {
+        return $this->db->select(
+            'SELECT label, icon FROM product_features
+             WHERE product_id = :id ORDER BY sort_order ASC, id ASC',
+            ['id' => $productId]
+        );
+    }
+
+    /** @return list<array<string, mixed>> */
+    public function faqsFor(int $productId): array
+    {
+        return $this->db->select(
+            'SELECT question, answer FROM product_faqs
+             WHERE product_id = :id AND status = 1 ORDER BY sort_order ASC, id ASC',
+            ['id' => $productId]
+        );
+    }
+
+    /**
+     * Approved reviews only; pending and rejected must never reach a buyer.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function reviewsFor(int $productId, int $limit = 6): array
+    {
+        return $this->db->select(
+            "SELECT author_name, rating, title, body, is_verified_purchase, helpful_count, created_at
+             FROM reviews
+             WHERE product_id = :id AND status = 'approved' AND deleted_at IS NULL
+             ORDER BY helpful_count DESC, created_at DESC
+             LIMIT " . max(1, $limit),
+            ['id' => $productId]
+        );
+    }
+
+    /**
+     * Rating histogram for the product page summary.
+     *
+     * @return array<int, int> star count => number of reviews
+     */
+    public function ratingBreakdown(int $productId): array
+    {
+        $rows = $this->db->select(
+            "SELECT rating, COUNT(*) AS total FROM reviews
+             WHERE product_id = :id AND status = 'approved' AND deleted_at IS NULL
+             GROUP BY rating",
+            ['id' => $productId]
+        );
+
+        $breakdown = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
+        foreach ($rows as $row) {
+            $star = (int) $row['rating'];
+            if ($star >= 1 && $star <= 5) {
+                $breakdown[$star] = (int) $row['total'];
+            }
+        }
+
+        return $breakdown;
+    }
+
+    /**
+     * Public trust figures for the homepage.
+     *
+     * @return array<string, int>
+     */
+    public function marketplaceStats(): array
+    {
+        return [
+            'products' => $this->publishedCount(),
+            'plans' => (int) $this->db->scalar(
+                'SELECT COUNT(*) FROM product_variations v
+                 INNER JOIN products p ON p.id = v.product_id
+                 WHERE v.status = 1 AND v.deleted_at IS NULL
+                   AND p.status = \'published\' AND p.deleted_at IS NULL'
+            ),
+            'brands' => (int) $this->db->scalar('SELECT COUNT(*) FROM brands WHERE status = 1 AND deleted_at IS NULL'),
+            'categories' => (int) $this->db->scalar(
+                'SELECT COUNT(*) FROM categories WHERE status = 1 AND deleted_at IS NULL'
+            ),
+            'delivered' => (int) $this->db->scalar(
+                "SELECT COUNT(*) FROM orders WHERE status IN ('completed','delivered')"
+            ),
+            'reviews' => (int) $this->db->scalar("SELECT COUNT(*) FROM reviews WHERE status = 'approved'"),
+        ];
+    }
 }

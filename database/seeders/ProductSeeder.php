@@ -51,7 +51,9 @@ final class ProductSeeder extends AbstractSeed
                 'is_featured' => $badge !== '',
                 'is_bestseller' => stripos($badge, 'best') !== false,
                 'is_new_arrival' => stripos($badge, 'new') !== false,
-                'status' => 1,
+                // products.status is an enum; writing 1 stores 'draft' and hides the
+                // whole catalogue from the storefront.
+                'status' => 'published',
                 'sort_order' => ($index + 1) * 10,
                 'meta_title' => $product['name'] . ' plans and prices - DexxoxxBD',
                 'meta_description' => mb_substr((string) $product['short'], 0, 155),
