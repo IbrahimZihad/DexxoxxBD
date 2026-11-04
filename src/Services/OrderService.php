@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Core\Config;
 use App\Core\Database;
+use App\Core\Logger;
 use App\Exceptions\HttpException;
 use App\Repositories\CartRepository;
 use App\Repositories\OrderRepository;
@@ -48,7 +49,7 @@ final class OrderService
             }
         }
 
-        return Database::transaction(function ($pdo) use ($items, $userId, $contact, $ipAddress) {
+        $created = Database::transaction(function ($pdo) use ($items, $userId, $contact, $ipAddress) {
             $productIds = array_column(array_filter($items, static fn ($i) => $i['type'] === 'product'), 'id');
             $planIds = array_column(array_filter($items, static fn ($i) => $i['type'] === 'plan'), 'id');
 
@@ -145,6 +146,15 @@ final class OrderService
                 'expires_at' => $order['expires_at'] ?? null,
             ];
         });
+
+        Logger::info('Order created', [
+            'order_id' => $created['order_id'],
+            'user_id' => $userId,
+            'total' => $created['total_amount'],
+            'ip' => $ipAddress,
+        ]);
+
+        return $created;
     }
 
     /** Gives reserved stock back to the shop when an order can never be paid. */

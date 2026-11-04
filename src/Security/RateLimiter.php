@@ -5,6 +5,7 @@ namespace App\Security;
 
 use App\Core\Config;
 use App\Core\Database;
+use App\Core\Logger;
 use App\Exceptions\ThrottleException;
 
 /**
@@ -36,6 +37,9 @@ final class RateLimiter
         $current = $row->fetch();
 
         if ($current && (int) $current['hits'] > $max) {
+            // A visible burst here is how credential stuffing and checkout spam get
+            // noticed; the IP is hashed above but kept in the log for correlation.
+            Logger::warning('Rate limited', ['bucket' => $bucket, 'ip' => $this->ip, 'hits' => (int) $current['hits'], 'max' => $max]);
             throw new ThrottleException(max(1, (int) $current['retry']));
         }
     }

@@ -6,6 +6,7 @@ namespace App\Controllers;
 use App\Auth\Auth;
 use App\Auth\Session;
 use App\Core\Config;
+use App\Core\Logger;
 use App\Exceptions\AuthenticationException;
 use App\Exceptions\HttpException;
 use App\Http\Controller;
@@ -78,6 +79,9 @@ final class AuthController extends Controller
         $ok = Hash::verify($password, $hash);
 
         if ($user === null || !$ok) {
+            // The email and IP are kept so repeated guessing is visible in the log;
+            // the submitted password never is.
+            Logger::warning('Sign-in rejected', ['email' => (string) $data['email'], 'ip' => $this->request->ip()]);
             throw new AuthenticationException('Incorrect email or password.');
         }
 
@@ -91,6 +95,7 @@ final class AuthController extends Controller
 
         Session::login((int) $user['id']);
         UserRepository::touchLogin((int) $user['id']);
+        Logger::info('Signed in', ['user_id' => (int) $user['id'], 'ip' => $this->request->ip()]);
 
         $profile = UserRepository::find((int) $user['id']);
 

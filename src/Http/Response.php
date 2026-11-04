@@ -22,7 +22,7 @@ final class Response
         return new self($payload, $status, $headers, true);
     }
 
-    public static function error(string $message, int $status, array $errors = []): self
+    public static function error(string $message, int $status, array $errors = [], array $headers = []): self
     {
         $payload = ['error' => $message];
 
@@ -30,7 +30,7 @@ final class Response
             $payload['errors'] = $errors;
         }
 
-        return self::json($payload, $status);
+        return self::json($payload, $status, $headers);
     }
 
     public static function redirect(string $url, int $status = 302): self

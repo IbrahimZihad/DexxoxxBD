@@ -5,6 +5,7 @@ namespace App\Core;
 
 use App\Auth\Auth;
 use App\Exceptions\HttpException;
+use App\Exceptions\ThrottleException;
 use App\Http\Request;
 use App\Http\Response;
 use App\Security\Csrf;
@@ -109,7 +110,11 @@ final class Kernel
     private function renderThrowable(Throwable $e): Response
     {
         if ($e instanceof HttpException) {
-            return Response::error($e->getMessage(), $e->status(), array_filter($e->errors));
+            $headers = $e instanceof ThrottleException
+                ? ['Retry-After' => (string) $e->retryAfter]
+                : [];
+
+            return Response::error($e->getMessage(), $e->status(), array_filter($e->errors), $headers);
         }
 
         Logger::error(
