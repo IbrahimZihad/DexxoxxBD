@@ -39,7 +39,7 @@ final class ManualPaymentRepository
     }
 
     /** Re-using one transaction id across orders is the classic double-claim trick. */
-    public static function transactionIdTaken(string $transactionId, int $method): bool
+    public static function transactionIdTaken(string $transactionId, string $method): bool
     {
         return Database::selectOne(
             'SELECT id FROM manual_payments WHERE transaction_id = ? AND payment_method = ? LIMIT 1',

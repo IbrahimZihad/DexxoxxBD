@@ -41,14 +41,14 @@ final class CallbackController extends Controller
 
     public function fail(): Response
     {
-        $this->service()->markFailed($this->field('tran_id'), 'buyer_failed');
+        $this->service()->markNotified($this->field('tran_id'), $this->field('val_id'), 'return_fail');
 
         return $this->redirect('/checkout.html?payment=failed');
     }
 
     public function cancel(): Response
     {
-        $this->service()->markCancelled($this->field('tran_id'));
+        $this->service()->markNotified($this->field('tran_id'), $this->field('val_id'), 'return_cancel');
 
         return $this->redirect('/checkout.html?payment=cancelled');
     }
@@ -69,10 +69,8 @@ final class CallbackController extends Controller
         if ($status === 'VALID' && $valId !== '') {
             $result = $service->settle($tranId, $valId, 'ipn');
             Logger::info('IPN processed', ['tran_id' => $tranId, 'reason' => $result['reason']]);
-        } elseif ($status === 'CANCELLED') {
-            $service->markCancelled($tranId);
-        } elseif (in_array($status, ['FAILED', 'INVALID'], true)) {
-            $service->markFailed($tranId, strtolower($status) . '_via_ipn');
+        } elseif (in_array($status, ['CANCELLED', 'FAILED', 'INVALID'], true)) {
+            $service->markNotified($tranId, $valId, strtolower($status) . '_ipn');
         }
 
         return $this->json(['ack' => true]);

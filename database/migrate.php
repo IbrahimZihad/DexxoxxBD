@@ -97,7 +97,12 @@ function runFile(PDO $pdo, string $file, int $batch): void
         } catch (PDOException $e) {
             $errno = (int) ($e->errorInfo[1] ?? 0);
 
-            if (!in_array($errno, ALREADY_DONE, true)) {
+            // MariaDB wraps "this index or constraint already exists" as 1005/1006 with
+            // errno 121 in the message, so the driver code alone never looks familiar.
+            $alreadyDone = in_array($errno, ALREADY_DONE, true)
+                || preg_match('/errno: (?:121|1050|1061|1091|1826)\b|Duplicate key on write or update|already exists/i', $e->getMessage());
+
+            if (!$alreadyDone) {
                 throw new RuntimeException($file . ": " . $e->getMessage() . "\n  --> " . shorten($statement), 0, $e);
             }
 
@@ -120,9 +125,9 @@ function shorten(string $statement): string
 
 function dropEverything(PDO $pdo, string $database): void
 {
-    $tables = $pdo
-        ->query('SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_type = \'BASE TABLE\'', [$database])
-        ->fetchAll(PDO::FETCH_COLUMN);
+    $statement = $pdo->prepare("SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_type = 'BASE TABLE'");
+    $statement->execute([$database]);
+    $tables = $statement->fetchAll(PDO::FETCH_COLUMN);
 
     if ($tables === []) {
         return;
@@ -178,7 +183,7 @@ try {
             }
 
             echo "Rebuilding {$database} from scratch:\n";
-            dropEverything($pdo);
+            dropEverything($pdo, $database);
             $ensureBookkeeping($pdo);
 
             foreach (migrationFiles() as $file) {

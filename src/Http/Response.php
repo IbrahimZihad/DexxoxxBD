@@ -46,15 +46,13 @@ final class Response
 
         http_response_code($this->status);
 
+        foreach ($this->headers as $name => $value) {
+            header($name . ': ' . $value);
+        }
+
         if ($this->isJson) {
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode($this->payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-
-            return;
-        }
-
-        foreach ($this->headers as $name => $value) {
-            header($name . ': ' . $value);
         }
     }
 }

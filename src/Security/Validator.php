@@ -18,6 +18,9 @@ final class Validator
     /** @var array<string,mixed> */
     private array $validated = [];
 
+    /** @var list<string> rules for the field currently being checked */
+    private array $activeRules = [];
+
     public function __construct(
         private readonly array $data,
         private readonly array $rules,
@@ -49,6 +52,8 @@ final class Validator
                 }
                 continue;
             }
+
+            $this->activeRules = $rules;
 
             foreach ($rules as $rule) {
                 if ($rule === 'required' || $rule === 'nullable') {
@@ -158,14 +163,24 @@ final class Validator
             case 'min':
                 $size = $this->size($value);
                 if ($size < (float) $param) {
-                    return $this->fail($field, sprintf('is too short — at least %s required.', $param));
+                    return $this->fail(
+                        $field,
+                        $this->measuresValue($value)
+                            ? sprintf('must be at least %s.', $param)
+                            : sprintf('is too short — at least %s required.', $param)
+                    );
                 }
                 return true;
 
             case 'max':
                 $size = $this->size($value);
                 if ($size > (float) $param) {
-                    return $this->fail($field, sprintf('is too long — at most %s allowed.', $param));
+                    return $this->fail(
+                        $field,
+                        $this->measuresValue($value)
+                            ? sprintf('must be at most %s.', $param)
+                            : sprintf('is too long — at most %s allowed.', $param)
+                    );
                 }
                 return true;
 
@@ -201,11 +216,25 @@ final class Validator
             return (float) count($value);
         }
 
-        if (is_numeric($value)) {
+        if ($this->measuresValue($value)) {
             return (float) $value;
         }
 
         return (float) (function_exists('mb_strlen') ? mb_strlen((string) $value) : strlen((string) $value));
+    }
+
+    /**
+     * "Size" is the field's number only when its own rules say it is a number.
+     * A phone number arriving as "01811000000" is eleven characters, not eleven
+     * billion, so max:20 has to measure length.
+     */
+    private function measuresValue(mixed $value): bool
+    {
+        if (in_array('integer', $this->activeRules, true) || in_array('numeric', $this->activeRules, true)) {
+            return is_numeric($value);
+        }
+
+        return !is_string($value) && is_numeric($value);
     }
 
     private function label(string $field): string

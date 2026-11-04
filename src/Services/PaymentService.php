@@ -74,7 +74,13 @@ final class PaymentService
         ];
     }
 
-    public function markFailed(string $tranId, string $reason): void
+    /**
+     * Handles a "the buyer failed or walked away" notice. Those arrive on
+     * unauthenticated endpoints, so nothing moves until the gateway itself
+     * confirms the val_id — an order left pending simply reaches its expiry
+     * sweep and the stock comes back there.
+     */
+    public function markNotified(string $tranId, string $valId, string $via): void
     {
         $payment = PaymentRepository::findByTranId($tranId);
 
@@ -82,20 +88,38 @@ final class PaymentService
             return;
         }
 
-        PaymentRepository::markFailed((int) $payment['id'], $reason);
+        $response = $this->gateway->validate($valId);
+
+        if ($response === null) {
+            Logger::warning('Ignored unconfirmed failure notice', ['tran_id' => $tranId, 'via' => $via]);
+
+            return;
+        }
+
+        $status = strtoupper((string) ($response['status'] ?? ''));
+
+        if (in_array($status, ['VALID', 'VALIDATED'], true)) {
+            // The notice claimed failure but the gateway says the money moved.
+            $this->settle($tranId, $valId, $via);
+
+            return;
+        }
+
+        if ((string) ($response['tran_id'] ?? '') !== $tranId) {
+            Logger::warning('Failure notice does not match its transaction', ['tran_id' => $tranId, 'via' => $via]);
+
+            return;
+        }
+
+        if ($status === 'CANCELLED') {
+            PaymentRepository::markCancelled((int) $payment['id']);
+            (new OrderService())->release((int) $payment['order_id'], 'cancelled');
+
+            return;
+        }
+
+        PaymentRepository::markFailed((int) $payment['id'], 'gateway_' . strtolower($status ?: 'unknown') . '_via_' . $via);
         (new OrderService())->release((int) $payment['order_id'], 'failed');
-    }
-
-    public function markCancelled(string $tranId): void
-    {
-        $payment = PaymentRepository::findByTranId($tranId);
-
-        if ($payment === null || $payment['status'] === 'valid') {
-            return;
-        }
-
-        PaymentRepository::markCancelled((int) $payment['id']);
-        (new OrderService())->release((int) $payment['order_id'], 'cancelled');
     }
 
     public function orderForUser(int $orderId, int $userId): ?array

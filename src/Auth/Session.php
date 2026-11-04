@@ -24,8 +24,8 @@ final class Session
         // Session ids must be unguessable and unused ids must not be accepted.
         ini_set('session.use_strict_mode', '1');
         ini_set('session.use_only_cookies', '1');
-        ini_set('session.sid_length', '48');
-        ini_set('session.sid_bits_per_character', '6');
+        // sid_length and sid_bits_per_character are deprecated as of PHP 8.5, which
+        // generates a 256-bit id on its own — setting them raises a warning.
 
         session_name(Config::get('session.name'));
         session_set_cookie_params([

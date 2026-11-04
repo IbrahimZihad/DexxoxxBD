@@ -9,6 +9,7 @@ use PDOException;
 final class Database
 {
     private static ?PDO $pdo = null;
+    private static int $depth = 0;
 
     /** Used by the CLI tools so migrate/seed share one connection with the repositories. */
     public static function adopt(PDO $pdo): void
@@ -54,25 +55,50 @@ final class Database
     }
 
     /**
-     * Runs $callback inside a transaction. Re-throws after rollback so callers
-     * decide how to respond.
+     * Runs $callback inside a transaction. Nested calls join the ambient
+     * transaction through a savepoint, because PDO cannot begin a second one.
+     * Re-throws after rollback so callers decide how to respond.
      */
     public static function transaction(callable $callback): mixed
     {
         $pdo = self::pdo();
-        $pdo->beginTransaction();
+        $depth = self::$depth;
+        $outermost = $depth === 0;
+        $savepoint = 'dx_trans_' . $depth;
+
+        if ($outermost) {
+            $pdo->beginTransaction();
+        } else {
+            $pdo->exec('SAVEPOINT ' . $savepoint);
+        }
+
+        self::$depth = $depth + 1;
 
         try {
             $result = $callback($pdo);
-            $pdo->commit();
-
-            return $result;
         } catch (\Throwable $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
+            self::$depth = $depth;
+
+            if ($outermost) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+            } else {
+                $pdo->exec('ROLLBACK TO SAVEPOINT ' . $savepoint);
             }
+
             throw $e;
         }
+
+        self::$depth = $depth;
+
+        if ($outermost) {
+            $pdo->commit();
+        } else {
+            $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
+        }
+
+        return $result;
     }
 
     public static function select(string $sql, array $bindings = []): array
