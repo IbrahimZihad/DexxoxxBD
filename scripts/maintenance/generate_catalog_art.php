@@ -542,13 +542,18 @@ $inspect = static function (string $path): array {
 
     $attributes = $xml->attributes();
     $labelled = $attributes === null ? '' : (string) $attributes['aria-labelledby'];
-    $titleId = (string) $xml->title->attributes()['id'];
+    $titleElement = $xml->title;
+    $titleText = trim((string) $titleElement);
+    // attributes() is null when the element is absent, so the id is only read
+    // for a title that actually has text.
+    $titleAttributes = $titleText === '' ? null : $titleElement->attributes();
+    $titleId = $titleAttributes === null ? '' : (string) $titleAttributes['id'];
     $problems = [];
 
     if ($attributes === null || (string) $attributes['role'] !== 'img') {
         $problems[] = 'has no role="img"';
     }
-    if (trim((string) $xml->title) === '') {
+    if ($titleText === '') {
         $problems[] = 'has an empty <title>';
     }
     if ($labelled === '' || $labelled !== $titleId) {
@@ -565,13 +570,14 @@ $productRows = $db->select(
 $productScope = 'published';
 
 if ($productRows === []) {
-    // The seeded demo catalogue is still drafted, but every row already points
-    // at products/{slug}.svg, so an empty folder would 404 whatever its status.
-    // Draw all live rows and say so instead of pretending the run found nothing.
+    // Nothing is published yet - the seeded demo catalogue ships as draft. Each
+    // row already points at products/{slug}.svg, so leaving the folder empty
+    // would 404 regardless of status: draw every live row and name the scope in
+    // the summary instead of pretending the run found nothing.
     $productRows = $db->select(
         'SELECT slug, name, image AS stored_path FROM products WHERE deleted_at IS NULL ORDER BY id'
     );
-    $productScope = 'draft';
+    $productScope = 'non-deleted (nothing published)';
     fwrite(STDERR, "Warning: no published products; drawing every non-deleted row instead.\n");
 }
 
@@ -611,7 +617,7 @@ foreach ($reports as $report) {
 $invalid = [];
 foreach ($paths as $path) {
     foreach ($inspect($path) as $problem) {
-        $invalid[] = $path . ' ' . $problem;
+        $invalid[] = $path . ': ' . $problem;
     }
 }
 
@@ -632,7 +638,7 @@ if ($invalid !== []) {
 }
 
 if (!$quiet) {
-    foreach ($reports as $subdir => $report) {
+    foreach ($reports as $report) {
         foreach ($report['written'] as $relative) {
             echo '  wrote ' . $relative . "\n";
         }
@@ -649,7 +655,7 @@ foreach ($reports as $subdir => $report) {
         $subdir
     );
 }
-printf("%-11s %2d file(s) -> public/assets/img\n", 'placeholder', 1);
+printf("%-11s %2d file(s) -> public/assets/img/%s\n", 'placeholder', 1, $placeholderRelative);
 printf(
     "Validated %d SVG file(s) with simplexml_load_file | skipped %d | stored-path mismatches %d\n",
     count($paths),
