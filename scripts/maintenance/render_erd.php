@@ -102,7 +102,7 @@ foreach ($indexRows as $row) {
 }
 
 $foreignKeys = [];
-foreach ($db->select(
+$foreignKeyRows = $db->select(
     'SELECT k.TABLE_NAME AS tbl, k.CONSTRAINT_NAME AS name, k.COLUMN_NAME AS column_name,
         k.REFERENCED_TABLE_NAME AS ref_table, k.REFERENCED_COLUMN_NAME AS ref_column, r.DELETE_RULE AS on_delete
      FROM information_schema.KEY_COLUMN_USAGE k
@@ -111,7 +111,8 @@ foreach ($db->select(
      WHERE k.CONSTRAINT_SCHEMA = ? AND k.REFERENCED_TABLE_NAME IS NOT NULL
      ORDER BY k.TABLE_NAME, k.CONSTRAINT_NAME, k.ORDINAL_POSITION',
     [$schema]
-) as $row) {
+);
+foreach ($foreignKeyRows as $row) {
     $name = (string) $row['name'];
     if (!isset($foreignKeys[$name])) {
         $foreignKeys[$name] = [
@@ -184,7 +185,11 @@ $entityBlock = static function (
     string $table,
     array $rows,
     int $indent
-) use ($typeToken, $foreignKeyColumns, $uniqueColumns): array {
+) use (
+    $typeToken,
+    $foreignKeyColumns,
+    $uniqueColumns
+): array {
     $pad = str_repeat(' ', $indent);
     $lines = [$pad . strtoupper($table) . ' {'];
     foreach ($rows as $column) {
