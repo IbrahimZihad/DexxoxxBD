@@ -33,6 +33,8 @@ final class Request
     /** @var array<string, mixed>|null */
     private ?array $jsonCache = null;
 
+    private ?string $rawBodyCache = null;
+
     private string $method;
 
     public function __construct(
