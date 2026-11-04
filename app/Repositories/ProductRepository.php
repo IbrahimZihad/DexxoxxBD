@@ -327,10 +327,10 @@ final class ProductRepository
                     p.is_featured, p.is_bestseller, p.is_new_arrival, p.delivery_method, p.warranty_info,
                     c.name AS category_name, c.slug AS category_slug, b.name AS brand_name, b.slug AS brand_slug,
                     (SELECT MIN(v.price) FROM product_variations v
-                      WHERE v.product_id = p.id AND v.status = 1 AND v.deleted_at IS NULL) FROM_price,
+                      WHERE v.product_id = p.id AND v.status = 1 AND v.deleted_at IS NULL) AS from_price,
                     (SELECT v2.compare_price FROM product_variations v2
                       WHERE v2.product_id = p.id AND v2.status = 1 AND v2.deleted_at IS NULL
-                      ORDER BY v2.price ASC LIMIT 1) FROM_compare_price,
+                      ORDER BY v2.price ASC LIMIT 1) AS from_compare_price,
                     (SELECT SUM(GREATEST(v3.stock, 0)) FROM product_variations v3
                       WHERE v3.product_id = p.id AND v3.status = 1 AND v3.deleted_at IS NULL) total_stock,
                     (SELECT MAX(v4.stock = -1) FROM product_variations v4
@@ -356,41 +356,89 @@ final class ProductRepository
     }
 
     /**
-     * Related products: same category first, then the same brand, excluding the
-     * product itself.
+     * Columns every product card needs, so the catalogue, the homepage strips and
+     * the related block cannot drift apart.
+     */
+    private const CARD_COLUMNS = 'p.id, p.name, p.slug, p.image, p.badge, p.rating_avg, p.rating_count,
+        p.short_description, p.is_featured, p.is_bestseller, p.is_new_arrival,
+        c.name AS category_name, c.slug AS category_slug, b.name AS brand_name, b.slug AS brand_slug,
+        (SELECT MIN(v.price) FROM product_variations v
+          WHERE v.product_id = p.id AND v.status = 1 AND v.deleted_at IS NULL) AS from_price,
+        (SELECT v2.compare_price FROM product_variations v2
+          WHERE v2.product_id = p.id AND v2.status = 1 AND v2.deleted_at IS NULL
+          ORDER BY v2.price ASC LIMIT 1) AS from_compare_price,
+        (SELECT SUM(GREATEST(v3.stock, 0)) FROM product_variations v3
+          WHERE v3.product_id = p.id AND v3.status = 1 AND v3.deleted_at IS NULL) AS total_stock,
+        (SELECT MAX(v4.stock = -1) FROM product_variations v4
+          WHERE v4.product_id = p.id AND v4.status = 1 AND v4.deleted_at IS NULL) AS has_unlimited';
+
+    /**
+     * Related products.
+     *
+     * Staff-curated pairs from product_related_items come first; the remaining
+     * slots are filled from the same category, then the same brand.
      *
      * @return list<array<string, mixed>>
      */
     public function related(int $productId, int $categoryId, ?int $brandId, int $limit = 4): array
     {
-        $sql = "SELECT p.id, p.name, p.slug, p.image, p.rating_avg, p.rating_count, p.badge,
-                       c.name AS category_name, c.slug AS category_slug,
-                       (SELECT MIN(v.price) FROM product_variations v
-                         WHERE v.product_id = p.id AND v.status = 1 AND v.deleted_at IS NULL) FROM_price,
-                       (SELECT v2.compare_price FROM product_variations v2
-                         WHERE v2.product_id = p.id AND v2.status = 1 AND v2.deleted_at IS NULL
-                         ORDER BY v2.price ASC LIMIT 1) FROM_compare_price
-                FROM products p
-                INNER JOIN categories c ON c.id = p.category_id
-                WHERE p.status = 'published' AND p.deleted_at IS NULL AND p.id <> :pid
-                  AND (p.category_id = :cid";
+        $limit = max(1, min(12, $limit));
 
-        $bindings = ['pid' => $productId, 'cid' => $categoryId];
+        $rows = $this->db->select(
+            'SELECT ' . self::CARD_COLUMNS . '
+             FROM product_related_items ri
+             INNER JOIN products p ON p.id = ri.related_product_id
+             INNER JOIN categories c ON c.id = p.category_id
+             LEFT JOIN brands b ON b.id = p.brand_id
+             WHERE ri.product_id = :pid AND p.status = \'published\' AND p.deleted_at IS NULL
+               AND c.status = 1 AND c.deleted_at IS NULL
+             ORDER BY ri.sort_order ASC, ri.id ASC
+             LIMIT ' . $limit,
+            ['pid' => $productId]
+        );
 
-        if ($brandId !== null) {
-            $sql .= ' OR p.brand_id = :bid';
-            $bindings['bid'] = $brandId;
+        $taken = array_map(static fn (array $row): int => (int) $row['id'], $rows);
+
+        if (count($rows) < $limit) {
+            $exclude = array_merge([$productId], $taken);
+            $placeholders = [];
+            foreach ($exclude as $index => $id) {
+                $placeholders[] = ':ex' . $index;
+            }
+
+            $sql = 'SELECT ' . self::CARD_COLUMNS . '
+                 FROM products p
+                 INNER JOIN categories c ON c.id = p.category_id
+                 LEFT JOIN brands b ON b.id = p.brand_id
+                 WHERE p.status = \'published\' AND p.deleted_at IS NULL
+                   AND c.status = 1 AND c.deleted_at IS NULL
+                   AND p.id NOT IN (' . implode(',', $placeholders) . ')
+                   AND (p.category_id = :cid';
+
+            $bindings = ['cid' => $categoryId];
+            foreach ($exclude as $index => $id) {
+                $bindings['ex' . $index] = $id;
+            }
+
+            if ($brandId !== null) {
+                $sql .= ' OR p.brand_id = :bid';
+                $bindings['bid'] = $brandId;
+            }
+
+            $sql .= ') GROUP BY p.id ORDER BY (p.category_id = :cid2) DESC, p.sales_count DESC LIMIT '
+                . ($limit - count($rows));
+            $bindings['cid2'] = $categoryId;
+
+            foreach ($this->db->select($sql, $bindings) as $row) {
+                $rows[] = $row;
+            }
         }
 
-        $sql .= ') GROUP BY p.id ORDER BY (p.category_id = :cid2) DESC, p.sales_count DESC LIMIT '
-            . max(1, min(12, $limit));
-        $bindings['cid2'] = $categoryId;
-
-        $rows = $this->db->select($sql, $bindings);
         foreach ($rows as &$row) {
             $row['from_price'] = (float) ($row['from_price'] ?? 0);
             $row['on_sale'] = $this->rowOnSale($row);
             $row['percent_off'] = $this->rowPercentOff($row);
+            $row['available'] = $this->rowAvailable($row);
         }
         unset($row);
 
