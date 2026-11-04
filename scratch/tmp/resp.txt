@@ -1,1 +1,1 @@
-{"error":"Please check the highlighted fields.","errors":{"image_url":"Image URL must be a valid URL."}}
+{"error":"Please check the highlighted fields.","errors":{"image_url":"Image URL must be an https URL or a path on this site, e.g. /assets/img/logo.svg."}}
