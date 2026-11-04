@@ -219,7 +219,8 @@ $out[] = '';
 $out[] = 'Conventions that hold for all ' . count($tables) . ' tables:';
 $out[] = '';
 $out[] = '- InnoDB, `utf8mb4`, `utf8mb4_unicode_ci`, `BIGINT UNSIGNED` surrogate keys with `AUTO_INCREMENT`.';
-$out[] = '- Money in `DECIMAL(12,2)`; never floats, never a currency column per line - one BDT shop, currency stored on the order.';
+$out[] = '- Money in `DECIMAL(12,2)`; never floats, never a currency column per line'
+    . ' - one BDT shop, currency stored on the order.';
 $out[] = '- `created_at` / `updated_at` everywhere; `deleted_at` on catalogue, CMS and account records (soft delete).';
 $out[] = '- Every foreign key is declared with an index on the child column, so joins and cascades stay fast.';
 $out[] = '- A foreign key column is `NOT NULL` unless the row may genuinely be unassigned: guest carts, webhook '
@@ -235,7 +236,10 @@ $out[] = '| Indexes | ' . count($indexes) . ' |';
 $out[] = '| Foreign keys | ' . count($foreignKeys) . ' |';
 $out[] = '| Foreign key columns | ' . $fkColumnCount . ' (' . ($fkColumnCount - $fkOptionalCount)
     . ' mandatory, ' . $fkOptionalCount . ' optional) |';
-$out[] = '| Full-text indexes | ' . count(array_filter($indexes, static fn (array $i): bool => $i['type'] === 'FULLTEXT')) . ' |';
+$out[] = '| Full-text indexes | ' . count(array_filter(
+    $indexes,
+    static fn (array $i): bool => $i['type'] === 'FULLTEXT'
+)) . ' |';
 $out[] = '';
 $out[] = '## Domains';
 $out[] = '';
@@ -309,6 +313,14 @@ foreach ($domains as $prefix => $label) {
 
 $out[] = '## Column reference';
 $out[] = '';
+
+// Named so the appendix rows below stay inside the line-length limit.
+$describeIndex = static fn (array $i): string => ($i['unique'] ? 'UNIQUE ' : '')
+    . $i['name'] . ' (' . implode(', ', $i['columns']) . ')'
+    . ($i['type'] === 'FULLTEXT' ? ' FULLTEXT' : '');
+$describeForeignKey = static fn (array $fk): string => '(' . implode(', ', $fk['columns'])
+    . ') -> ' . $fk['ref_table'] . '(' . implode(', ', $fk['ref_columns'])
+    . ') ON DELETE ' . strtolower((string) $fk['on_delete']);
 foreach ($domains as $prefix => $label) {
     $domainTables = $tablesByDomain[$prefix] ?? [];
     if ($domainTables === []) {
@@ -346,9 +358,7 @@ foreach ($domains as $prefix => $label) {
             static fn (array $i): bool => $i['table'] === $name && $i['name'] !== 'PRIMARY'
         ));
         if ($tableIndexes !== []) {
-            $out[] = 'Indexes: ' . implode('; ', array_map(static fn (array $i): string => ($i['unique'] ? 'UNIQUE ' : '')
-                . $i['name'] . ' (' . implode(', ', $i['columns']) . ')'
-                . ($i['type'] === 'FULLTEXT' ? ' FULLTEXT' : ''), $tableIndexes)) . '.';
+            $out[] = 'Indexes: ' . implode('; ', array_map($describeIndex, $tableIndexes)) . '.';
             $out[] = '';
         }
 
@@ -357,9 +367,7 @@ foreach ($domains as $prefix => $label) {
             static fn (array $fk): bool => $fk['table'] === $name
         ));
         if ($tableForeignKeys !== []) {
-            $out[] = 'Foreign keys: ' . implode('; ', array_map(static fn (array $fk): string => '('
-                . implode(', ', $fk['columns']) . ') -> ' . $fk['ref_table'] . '('
-                . implode(', ', $fk['ref_columns']) . ') ON DELETE ' . strtolower($fk['on_delete']), $tableForeignKeys)) . '.';
+            $out[] = 'Foreign keys: ' . implode('; ', array_map($describeForeignKey, $tableForeignKeys)) . '.';
             $out[] = '';
         }
     }
