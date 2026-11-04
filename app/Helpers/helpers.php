@@ -128,6 +128,47 @@ if (!function_exists('link_url')) {
     }
 }
 
+if (!function_exists('query_url')) {
+    /**
+     * Current request URL with query parameters merged or removed.
+     *
+     * Listing controls (sort, page, filters) must keep the other query values,
+     * so every link is built from the live request instead of a hand-written
+     * string that silently drops a filter the shopper already applied.
+     *
+     * @param array<string, mixed> $overrides null value removes the parameter
+     */
+    function query_url(array $overrides, ?string $path = null): string
+    {
+        $query = App::instance()->request()->query();
+        foreach ($overrides as $key => $value) {
+            if ($value === null || $value === '' || $value === []) {
+                unset($query[$key]);
+                continue;
+            }
+            $query[$key] = $value;
+        }
+
+        $target = $path === null ? rtrim(App::instance()->request()->url(), '?') : url($path);
+
+        if ($query === []) {
+            return preg_replace('/\?.*$/', '', $target) ?? $target;
+        }
+
+        return $target . '?' . http_build_query($query, '', '&');
+    }
+}
+
+if (!function_exists('is_current_path')) {
+    /** True when the current request path matches (used for nav active state). */
+    function is_current_path(string $path): bool
+    {
+        $current = trim(App::instance()->request()->path(), '/');
+        $path = trim($path, '/');
+        return $path === '' ? $current === '' : $current === $path || str_starts_with($current, $path . '/');
+    }
+}
+
 if (!function_exists('route')) {
     /** Absolute URL for a named route. */
     function route(string $name, array $parameters = []): string

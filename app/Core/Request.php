@@ -226,6 +226,12 @@ final class Request
         return $value === null ? $default : $value;
     }
 
+    /** @return array<string, mixed> */
+    public function query(): array
+    {
+        return $this->query;
+    }
+
     public function queryValue(string $key, mixed $default = null): mixed
     {
         $value = $this->query[$key] ?? null;
