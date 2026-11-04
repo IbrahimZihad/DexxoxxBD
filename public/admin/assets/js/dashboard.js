@@ -10,10 +10,10 @@
   document.getElementById('run-sweep').addEventListener('click', function () {
     const button = this;
     Admin.confirmAction(
-      'Expire unpaid orders, mark overdue passes expired and clear stale rate-limit rows?',
+      'Expire unpaid orders past their hold time and mark overdue passes as expired?',
       function () {
         return Dx.endpoints.admin.sweep().then(function (result) {
-          Dx.toast('Housekeeping done: ' + result.orders_expired + ' orders expired, ' + result.passes_lapsed + ' passes lapsed.', 'success');
+          Dx.toast('Housekeeping done: ' + result.orders_expired + ' orders expired, ' + result.passes_expired + ' passes lapsed.', 'success');
           return load();
         });
       },
