@@ -138,6 +138,8 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .grid-split { display: grid; gap: var(--sp-6); grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 900px) { .grid-split { grid-template-columns: 1.6fr 1fr; align-items: start; } }
 
+.sticky-top { position: sticky; top: calc(var(--header-h) + var(--sp-4)); }
+
 .muted { color: var(--ink-soft); }
 .faint { color: var(--ink-faint); }
 .display { font-family: var(--font-display); }
@@ -398,6 +400,15 @@ body.is-locked { overflow: hidden; }
 
 /* tilt driven by CSS custom properties written from the CSSOM (CSP-safe) */
 .tilt { transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateZ(0); transition: transform var(--dur) var(--ease); }
+
+/* Product detail page */
+.detail-media { aspect-ratio: 16 / 11; }
+.detail-media img { object-fit: contain; padding: var(--sp-4); background: var(--surface); }
+.detail-grid { display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.detail { background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: var(--radius-s); padding: var(--sp-3); }
+.detail dt { font-size: .72rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .07em; font-family: var(--font-mono); }
+.detail dd { margin: .2rem 0 0; font-weight: 600; font-size: .92rem; }
+.icon-check { width: 16px; height: 16px; flex: none; margin-top: 3px; color: var(--teal); }
 
 /* ---------- 9. Forms ---------- */
 .field { display: block; margin-bottom: var(--sp-4); }

@@ -1,41 +1,62 @@
-function planCard(p, featured) {
-  return `
-  <div class="pass-card p-8 flex flex-col ${featured ? 'ring-2 ring-gold shadow-xl md:-translate-y-3' : ''}">
-    ${p.badge ? `<span class="stamp text-gold w-fit" style="color:#7A4E0E">${p.badge}</span>` : ''}
-    <h3 class="font-display text-2xl font-bold mt-4">${p.name}</h3>
-    <p class="text-inksoft text-sm mt-2">${p.description || ''}</p>
-    <div class="pass-perforation my-6"></div>
-    <p class="font-display text-4xl font-bold">${money(p.price)}</p>
-    <p class="text-inksoft text-sm mb-6">per ${p.duration_days >= 300 ? 'year' : p.duration_days + ' days'}</p>
-    <ul class="space-y-3 text-sm flex-1">
-      ${(p.features || []).map(f => `
-        <li class="flex items-start gap-2">
-          <span class="text-teal mt-0.5" style="color:#1F9C8B">✓</span><span>${f}</span>
-        </li>`).join('')}
-    </ul>
-    <button data-id="${p.id}" class="add-plan-btn mt-8 w-full ${featured ? 'bg-gold text-goldink' : 'bg-navy text-white'} font-semibold py-3 rounded-full hover:brightness-95 transition">Choose ${p.name}</button>
-  </div>`;
-}
+/* Passes: bundle plans first, then the cheapest single-seat products. */
+(function initPlans() {
+  async function loadPlans() {
+    Dx.skeletonCards('plan-grid', 3, 'plan-card');
 
-(async function loadPlans() {
-  const grid = document.getElementById('plans-grid');
-  try {
-    const { plans } = await Api.plans();
-    grid.innerHTML = plans.map(p => planCard(p, p.badge === 'Most Popular')).join('') || `<p class="text-inksoft col-span-3 text-center">No passes available right now.</p>`;
+    try {
+      const { plans } = await Dx.endpoints.plans.list();
+      const grid = document.getElementById('plan-grid');
+      Dx.clear(grid);
 
-    grid.querySelectorAll('.add-plan-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        try {
-          await Api.cart.add('plan', Number(btn.dataset.id), 1);
-          toast('Pass added to cart.', 'success');
-          initNav();
-        } catch (e) {
-          if (e.status === 401) { toast('Please sign in first.', 'error'); setTimeout(() => location.href = 'login.html', 800); }
-          else toast(e.message, 'error');
-        }
+      if (!plans.length) {
+        Dx.mount(grid, Dx.h('div', { class: 'empty', text: 'No bundles on offer right now — individual products are still available below.' }));
+        return;
+      }
+
+      plans.forEach(function (plan) {
+        const card = Dx.planCard(plan, function (item, button) { Dx.addToCart('plan', item.id, button); });
+        card.classList.add('tilt');
+        grid.appendChild(card);
       });
-    });
-  } catch (e) {
-    grid.innerHTML = `<p class="text-danger col-span-3 text-center">${e.message}</p>`;
+
+      Dx.reveal(grid);
+      Dx.tilt('#plan-grid .tilt');
+    } catch (error) {
+      Dx.mount('plan-grid', Dx.h('div', { class: 'banner banner-danger', text: error.message }));
+    }
   }
+
+  async function loadSingles() {
+    try {
+      const response = await Dx.endpoints.products.list('?in_stock=1&sort=popular&per_page=8');
+      const products = response.products.slice(0, 8);
+
+      if (!products.length) {
+        document.getElementById('single-seat-section').classList.add('hide');
+        return;
+      }
+
+      Dx.mount('single-grid', products.map(function (product) {
+        return Dx.productCard(product, function (item, button) { Dx.addToCart('product', item.id, button); });
+      }));
+      Dx.reveal(document.getElementById('single-grid'));
+    } catch (error) {
+      /* the bundle grid already carries the page */
+    }
+  }
+
+  (async function boot() {
+    const user = await Dx.currentUser();
+    Dx.renderAuthArea(user);
+    if (user) Dx.refreshCartBadge();
+    document.getElementById('footer-year').textContent = String(new Date().getFullYear());
+
+    try {
+      const { settings } = await Dx.endpoints.settings.public();
+      if (settings.site_tagline) Dx.mount('plans-intro', settings.site_tagline);
+    } catch (error) { /* intro copy is decorative */ }
+
+    await loadPlans();
+    loadSingles();
+  })();
 })();
