@@ -82,8 +82,7 @@ abstract class Model
         array $orderBy = [],
         ?int $limit = null,
         int $offset = 0
-    ): array
-    {
+    ): array {
         $query = 'SELECT * FROM `' . $this->table() . '` WHERE ' . $sql . $this->aliveAnd($sql)
             . $this->orderBySql($orderBy);
 

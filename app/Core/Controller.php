@@ -90,8 +90,7 @@ abstract class Controller
     protected function authorizeOwnership(
         int $ownerId,
         string $message = 'This record belongs to another account.'
-    ): void
-    {
+    ): void {
         $currentUserId = Auth::instance()->id();
         if ($currentUserId === null || $currentUserId !== $ownerId) {
             throw new \App\Exceptions\AuthorizationException($message);

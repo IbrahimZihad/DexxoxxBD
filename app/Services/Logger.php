@@ -142,6 +142,9 @@ final class Logger
                 $context[$key] = '***REDACTED***';
             } elseif (is_array($value)) {
                 $context[$key] = self::redactArray($value);
+            } elseif (is_string($value)) {
+                // A secret can hide inside free text, a URL or a gateway payload.
+                $context[$key] = self::redact($value);
             }
         }
         return $context;

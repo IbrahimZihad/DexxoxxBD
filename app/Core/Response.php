@@ -54,8 +54,7 @@ final class Response
         string $content,
         int $status = 200,
         string $contentType = 'text/plain; charset=UTF-8'
-    ): self
-    {
+    ): self {
         return (new self($content, $status))->withHeader('Content-Type', $contentType);
     }
 
