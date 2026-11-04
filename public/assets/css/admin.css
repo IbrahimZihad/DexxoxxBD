@@ -4,6 +4,9 @@
 
 .admin-shell { display: flex; min-height: 100vh; }
 
+/* The storefront's ambient wash reads as a smudge behind the two-column shell. */
+.admin-page::before { display: none; }
+
 .admin-side {
   display: none;
   width: 258px; flex: none;
@@ -83,7 +86,7 @@
 
 .cell-title { display: flex; align-items: center; gap: var(--sp-3); }
 .cell-title img { width: 40px; height: 40px; border-radius: var(--radius-s); object-fit: cover; background: var(--bg-deep); }
-.cell-title .sub { font-size: .78rem; color: var(--ink-faint); }
+.sub, .cell-title .sub { font-size: .78rem; color: var(--ink-faint); }
 
 .detail-grid { display: grid; gap: var(--sp-4); grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
 .detail { background: var(--surface-2); border-radius: var(--radius-s); padding: var(--sp-3); }

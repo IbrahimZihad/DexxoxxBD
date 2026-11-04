@@ -142,6 +142,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 
 .muted { color: var(--ink-soft); }
 .faint { color: var(--ink-faint); }
+.text-gold { color: var(--gold-ink); font-weight: 600; }
 .display { font-family: var(--font-display); }
 .mono { font-family: var(--font-mono); letter-spacing: .02em; }
 .eyebrow {

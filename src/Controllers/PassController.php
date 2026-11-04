@@ -32,11 +32,7 @@ final class PassController extends Controller
     public function adminIndex(): Response
     {
         Auth::requireAdmin();
-        $status = (string) ($this->request->query('status') ?? '');
-
-        if ($status !== '' && !in_array($status, ['active', 'expired', 'revoked'], true)) {
-            throw new HttpException(422, 'Unknown pass status.');
-        }
+        $status = $this->oneOf(['active', 'expiring', 'expired', 'revoked'], 'status');
 
         PassRepository::expireDue();
         $page = PassRepository::paginateForAdmin($this->page(), $this->perPage(25, 100), $status);

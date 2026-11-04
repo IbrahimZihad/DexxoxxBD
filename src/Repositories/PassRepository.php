@@ -121,7 +121,10 @@ final class PassRepository
         $where = '1=1';
         $bindings = [];
 
-        if ($status !== '') {
+        if ($status === 'expiring') {
+            // A UI bucket, resolved in SQL so paging stays truthful.
+            $where .= " AND us.status = 'active' AND us.ends_at <= (CURDATE() + INTERVAL 7 DAY)";
+        } elseif ($status !== '') {
             $where .= ' AND us.status = ?';
             $bindings[] = $status;
         }
