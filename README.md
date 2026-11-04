@@ -74,7 +74,7 @@ be migrated in place; on a fresh database its statements fail only with
 
 * 5 categories, 12 products, 3 bundles (Netflix/Spotify/Canva-shaped demos)
 * 4 accounts — passwords below
-* 18 settings rows (payment numbers, support contacts, storefront copy)
+* 17 settings rows (payment numbers, support contacts, storefront copy)
 
 The payment numbers in the seeder are placeholders (`01700000000` and friends). They
 are what customers are told to send money to, so replace them from
@@ -164,10 +164,11 @@ digest when the account does not exist so that a missing user and a wrong passwo
 the same time. Roles are `customer` and `admin`; every admin handler calls
 `Auth::requireAdmin()` again on the server — hiding a link is never the check.
 
-**Sessions.** Cookie is `HttpOnly`, `SameSite=Lax`, `Secure` over HTTPS, scoped to the
-path, with the name from `.env`. The id regenerates on login and on privilege change;
-an idle timeout and an absolute lifetime both come from config. Expired sessions are
-destroyed server-side.
+**Sessions.** Cookie is `HttpOnly`, `Secure` over HTTPS, `SameSite=Lax` on plain HTTP and
+`None` over TLS (a split-origin deploy needs it), path-scoped, with the name from `.env`;
+strict mode and cookie-only session ids are on. The id regenerates on login and on
+privilege change; an idle timeout and an absolute lifetime both come from config. Expired
+sessions are destroyed server-side.
 
 **CSRF.** Double-submit comparison of the `X-CSRF-Token` header against the session
 value for every mutating route, enforced by the router rather than by individual
