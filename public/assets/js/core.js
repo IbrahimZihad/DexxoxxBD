@@ -7,9 +7,10 @@
 (function (window, document) {
   'use strict';
 
-  // Relative to the page: /public/*.html -> /public/api/, /public/admin/*.html
-  // sets DEXXOXX_API_BASE to "../api".
-  const API_BASE = window.DEXXOXX_API_BASE || 'api';
+  // Relative to the page: public/*.html calls api/, while the admin pages carry
+  // data-api-base="../api" on their body tag. Inline scripts are blocked by the
+  // CSP, so the base is an attribute rather than an assignment.
+  const API_BASE = document.body.getAttribute('data-api-base') || 'api';
   const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let csrfToken = null;

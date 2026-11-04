@@ -89,7 +89,7 @@
   }
 
   async function start(title, subtitle, activeHref) {
-    const user = await Dx.requireAdmin('../login.html?next=' + encodeURIComponent('admin/dashboard.html'));
+    const user = await Dx.requireAdmin('index.html?next=' + encodeURIComponent('dashboard.html'));
     buildShell(activeHref, title, subtitle);
     document.getElementById('admin-name').textContent = user.name + ' · ' + user.role;
 
@@ -97,7 +97,7 @@
       if (!button) return;
       button.addEventListener('click', async function () {
         try { await Dx.endpoints.auth.logout(); } catch (error) { /* already signed out */ }
-        location.href = '../login.html';
+        location.href = 'index.html';
       });
     });
 

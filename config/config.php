@@ -21,7 +21,6 @@ return [
         'debug' => Env::bool('APP_DEBUG', $isLocal),
         'name' => Env::get('APP_NAME', 'DexxoxxBD') ?? 'DexxoxxBD',
         'timezone' => Env::get('APP_TIMEZONE', 'Asia/Dhaka') ?? 'Asia/Dhaka',
-        'locale_currency' => Env::get('CURRENCY', 'BDT') ?? 'BDT',
     ],
 
     'db' => [

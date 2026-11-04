@@ -14,13 +14,13 @@
   });
 
   function landing(user) {
-    const target = inAdmin ? 'dashboard.html' : (user.role === 'admin' ? 'admin/dashboard.html' : 'dashboard.html');
+    const target = 'dashboard.html';
     const next = Dx.queryParam('next');
 
     if (next) {
       const safe = Dx.safeRedirect(next, '');
       // Reject anything that would bounce the user straight back to a login page.
-      if (safe && !/login|register/.test(safe)) return safe;
+      if (safe && !/login|register|index\.html/.test(safe)) return safe;
     }
 
     return prefixes[user.role === 'admin' ? 'admin' : 'customer'] + target;
