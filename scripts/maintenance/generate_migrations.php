@@ -248,6 +248,13 @@ function render_migration(array $spec): string
         $name = (string) $column[0];
         $type = (string) $column[1];
         $options = (array) ($column[2] ?? []);
+        // Phinx makes a column NULL-able unless told otherwise, which would turn
+        // every child foreign key into an optional one and let orphan rows in.
+        // The specs list the columns that are genuinely optional, so anything
+        // else is emitted as NOT NULL.
+        if (!array_key_exists('null', $options)) {
+            $options['null'] = false;
+        }
         $call = '->addColumn(' . php_scalar($name) . ', ' . php_scalar($type) . ', ' . php_array($options) . ')';
         $lines[] = '            ' . $call . ($index === $last ? ';' : '');
     }
