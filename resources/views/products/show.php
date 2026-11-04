@@ -10,7 +10,7 @@
  * @var list<array<string, mixed>> $features
  * @var list<array<string, mixed>> $faqs
  * @var list<array<string, mixed>> $reviews
- * @var array<int, array{count: int, percent: float}>|null $breakdown
+ * @var array<int, int> $breakdown       approved reviews per star, from ratingBreakdown()
  * @var list<array<string, mixed>> $related
  * @var list<array{label: string, url?: string}> $breadcrumbs
  */
@@ -335,18 +335,19 @@ $view->setSection('json_ld', $schema);
                             'avg' => $product['rating_avg'] ?? 0,
                             'count' => $product['rating_count'] ?? 0,
                         ]) ?>
-                        <?php if (!empty($breakdown)): ?>
+                        <?php if ($breakdown !== []): ?>
+                            <?php $reviewTotal = array_sum($breakdown); ?>
                             <ul class="dx-breakdown" aria-label="<?= e(t('product.rating_breakdown')) ?>">
                                 <?php for ($stars = 5; $stars >= 1; $stars--): ?>
-                                    <?php $bucket = $breakdown[$stars] ?? ['count' => 0, 'percent' => 0.0]; ?>
+                                    <?php $bucket = (int) ($breakdown[$stars] ?? 0); ?>
                                     <li>
                                         <span class="dx-breakdown__label"><?= e($stars) ?> <i class="bi bi-star-fill"
                                                aria-hidden="true"></i></span>
                                         <span class="dx-breakdown__bar">
                                             <span class="dx-breakdown__fill" style="width: <?= e(number_format(
-                                                (float) $bucket['percent'], 1)) ?>%"></span>
+                                                $reviewTotal > 0 ? $bucket * 100 / $reviewTotal : 0.0, 1)) ?>%"></span>
                                         </span>
-                                        <span class="dx-breakdown__count"><?= e((int) $bucket['count']) ?></span>
+                                        <span class="dx-breakdown__count"><?= e($bucket) ?></span>
                                     </li>
                                 <?php endfor; ?>
                             </ul>
@@ -354,7 +355,7 @@ $view->setSection('json_ld', $schema);
                         <?php foreach ($reviews as $review): ?>
                             <article class="dx-review">
                                 <header>
-                                    <strong><?= e((string) ($review['customer_name'] ?? 'Customer')) ?></strong>
+                                    <strong><?= e((string) ($review['author_name'] ?? 'Customer')) ?></strong>
                                     <?= $view->component('rating', [
                                         'avg' => $review['rating'] ?? 0,
                                         'count' => 0,

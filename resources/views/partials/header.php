@@ -65,7 +65,7 @@ $brandName = (string) setting('brand.name', config('app.name', 'DexxoxxBD'));
         <nav class="dx-nav" aria-label="<?= e(t('nav.home')) ?>">
             <ul class="dx-nav__list">
                 <?php foreach ($menu as $item): ?>
-                    <li class="dx-nav__item<?= $item['children'] !== [] ? ' dx-nav__item--parent' : '' ?>">
+                    <li class="dx-nav__item<?= $item['children'] !== [] ? ' dx-nav__item--parent dropdown' : '' ?>">
                         <?php if ($item['children'] !== []): ?>
                             <button class="dx-nav__link dx-nav__toggle" type="button" data-bs-toggle="dropdown"
                                     aria-expanded="false">
@@ -91,7 +91,7 @@ $brandName = (string) setting('brand.name', config('app.name', 'DexxoxxBD'));
                     </li>
                 <?php endforeach; ?>
 
-                <li class="dx-nav__item dx-nav__item--parent">
+                <li class="dx-nav__item dx-nav__item--parent dropdown">
                     <button class="dx-nav__link dx-nav__toggle" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                         <?= e(t('nav.categories')) ?>
@@ -104,7 +104,7 @@ $brandName = (string) setting('brand.name', config('app.name', 'DexxoxxBD'));
                                     <i class="bi <?= e((string) ($category['icon'] ?: 'bi-collection')) ?>"
                                        aria-hidden="true"></i>
                                     <?= e((string) $category['name']) ?>
-                                    <span class="dx-nav__badge"><?= e((int) $category['products_count']) ?></span>
+                                    <span class="dx-nav__badge"><?= e((int) $category['product_count']) ?></span>
                                 </a>
                             </li>
                         <?php endforeach; ?>

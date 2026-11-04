@@ -26,7 +26,7 @@ $shelves = (new CategoryRepository())->topLevel(12);
                        href="<?= e(url('categories/' . $shelf['slug'])) ?>">
                         <i class="bi <?= e((string) ($shelf['icon'] ?: 'bi-tag')) ?>" aria-hidden="true"></i>
                         <?= e((string) $shelf['name']) ?>
-                        <span class="dx-catstrip__count"><?= e((int) $shelf['products_count']) ?></span>
+                        <span class="dx-catstrip__count"><?= e((int) $shelf['product_count']) ?></span>
                     </a>
                 </li>
             <?php endforeach; ?>

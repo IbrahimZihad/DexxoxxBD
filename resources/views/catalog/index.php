@@ -67,7 +67,7 @@ $view->setSection('json_ld', $schema === false ? '' : $schema);
             <?php foreach ($children as $child): ?>
                 <a class="btn btn-pill btn-dx-soft" href="<?= e(url('categories/' . $child['slug'])) ?>">
                     <?= e((string) $child['name']) ?>
-                    <span class="dx-nav__badge"><?= e((int) $child['products_count']) ?></span>
+                    <span class="dx-nav__badge"><?= e((int) $child['product_count']) ?></span>
                 </a>
             <?php endforeach; ?>
         </nav>
@@ -103,7 +103,7 @@ $view->setSection('json_ld', $schema === false ? '' : $schema);
                                     <?= (string) ($filters['category'] ?? '') === (string) $category['slug']
                                         ? 'selected' : '' ?>>
                                     <?= e((string) $category['name']) ?>
-                                    (<?= e((int) $category['products_count']) ?>)
+                                    (<?= e((int) $category['product_count']) ?>)
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -118,7 +118,7 @@ $view->setSection('json_ld', $schema === false ? '' : $schema);
                                     <input type="checkbox" name="brand[]" value="<?= e($slug) ?>"
                                         <?= in_array($slug, $selectedBrands, true) ? 'checked' : '' ?>>
                                     <span><?= e((string) $brand['name']) ?></span>
-                                    <em><?= e((int) $brand['products_count']) ?></em>
+                                    <em><?= e((int) $brand['product_count']) ?></em>
                                 </label>
                             <?php endforeach; ?>
                         </div>

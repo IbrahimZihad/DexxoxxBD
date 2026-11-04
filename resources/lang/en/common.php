@@ -61,6 +61,8 @@ return [
     'delivery' => 'Delivery',
     'category' => 'Category',
     'brand' => 'Brand',
+    'phone' => 'Phone',
+    'address' => 'Address',
     'language' => 'Language',
     'english' => 'English',
     'bengali' => 'Bangla',

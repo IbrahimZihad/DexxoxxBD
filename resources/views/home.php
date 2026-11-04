@@ -152,7 +152,7 @@ $view->setSection('og_type', 'website');
                     <span class="dx-cat-tile__body">
                         <span class="dx-cat-tile__name"><?= e((string) $category['name']) ?></span>
                         <span class="dx-cat-tile__meta">
-                            <?= e(choice('common.results_count', (int) $category['products_count'])) ?>
+                            <?= e(choice('common.results_count', (int) $category['product_count'])) ?>
                         </span>
                     </span>
                 </a>
@@ -338,7 +338,7 @@ $view->setSection('og_type', 'website');
                     <img src="<?= e(image_url($brand['logo'] ?? null)) ?>" alt="" loading="lazy" width="400" height="400">
                     <span class="dx-brand-tile__name"><?= e((string) $brand['name']) ?></span>
                     <span class="dx-brand-tile__meta">
-                        <?= e(choice('common.results_count', (int) $brand['products_count'])) ?>
+                        <?= e(choice('common.results_count', (int) $brand['product_count'])) ?>
                     </span>
                 </a>
             <?php endforeach; ?>
