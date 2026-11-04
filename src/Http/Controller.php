@@ -42,4 +42,12 @@ abstract class Controller
     {
         return array_key_exists($key, $this->request->body());
     }
+
+    /** Whitelisted query filter: an unexpected value reads as "no filter". */
+    protected function oneOf(array $allowed, string $key): string
+    {
+        $value = (string) ($this->request->query($key) ?? '');
+
+        return in_array($value, $allowed, true) ? $value : '';
+    }
 }

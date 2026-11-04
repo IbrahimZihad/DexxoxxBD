@@ -52,6 +52,19 @@ final class ProductRepository
             $where[] = 'p.stock > 0';
         }
 
+        if (!empty($filters['status'])) {
+            $where[] = 'p.status = ?';
+            $bindings[] = (string) $filters['status'];
+        }
+
+        // Admin restocking buckets; anything unexpected is ignored rather than trusted.
+        $stock = (string) ($filters['stock'] ?? '');
+        if ($stock === 'empty') {
+            $where[] = 'p.stock = 0';
+        } elseif ($stock === 'low') {
+            $where[] = 'p.stock BETWEEN 1 AND 5';
+        }
+
         $clause = $where === [] ? '1=1' : implode(' AND ', $where);
         $order = self::orderBy((string) ($filters['sort'] ?? 'newest'));
         $perPage = max(1, min(60, (int) ($filters['per_page'] ?? 12)));

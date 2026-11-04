@@ -29,6 +29,8 @@ final class ProductController extends Controller
             'featured' => $this->request->query('featured'),
             'on_sale' => $this->request->query('on_sale'),
             'in_stock' => $this->request->query('in_stock'),
+            'status' => $this->oneOf(['active', 'inactive'], 'status'),
+            'stock' => $this->oneOf(['empty', 'low'], 'stock'),
             'sort' => (string) ($this->request->query('sort') ?? 'newest'),
             'page' => $this->page(),
             'per_page' => $this->perPage(12, 60),
@@ -231,6 +233,6 @@ final class ProductController extends Controller
             'category' => $product['category_name'] ?? null,
             'category_slug' => $product['category_slug'] ?? null,
             'created_at' => $product['created_at'] ?? null,
-        ];
+        ] + (Auth::isAdmin() ? ['category_id' => $product['category_id'] === null ? null : (int) $product['category_id']] : []);
     }
 }

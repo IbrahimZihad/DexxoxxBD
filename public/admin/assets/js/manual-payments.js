@@ -1,101 +1,131 @@
-const METHOD_LABELS = { bkash: 'bKash', nagad: 'Nagad', rocket: 'Rocket', bank: 'Bank' };
+/* Manual payment queue: check the reference against your own wallet statement
+   before approving. Approval is what issues the customer's passes. */
+(async function initManualPayments() {
+  await Admin.start('Payment reviews', 'bKash, Nagad, Rocket and bank transfers awaiting a decision.', 'manual-payments.html');
 
-function statusStamp(status) {
-  const color = { approved: '#1F9C8B', pending: '#7A4E0E', rejected: '#D64545' }[status] || '#4A5068';
-  return `<span class="stamp" style="color:${color}">${status}</span>`;
-}
+  let state = { status: Dx.queryParam('status') || 'pending', page: 1 };
 
-function paymentRow(p) {
-  return `
-  <tr class="border-b border-line/60 last:border-0">
-    <td class="p-4 font-mono">${p.order_number}</td>
-    <td class="p-4">${p.user_name}<br><span class="text-xs text-inksoft">${p.user_email}</span></td>
-    <td class="p-4 font-semibold">${METHOD_LABELS[p.payment_method] || p.payment_method}</td>
-    <td class="p-4 font-mono">${p.sender_number || '—'}</td>
-    <td class="p-4 font-mono">${p.transaction_id}</td>
-    <td class="p-4 font-mono">${money(p.amount)}</td>
-    <td class="p-4">${statusStamp(p.status)}</td>
-    <td class="p-4 text-inksoft">${fmtDate(p.created_at)}</td>
-    <td class="p-4 text-right">
-      ${p.status === 'pending'
-        ? `<button class="review-btn text-navy font-semibold hover:underline" data-id="${p.id}" data-order="${p.order_number}" data-amount="${p.amount}" data-method="${p.payment_method}" data-sender="${p.sender_number||''}" data-txid="${p.transaction_id}" data-note="${(p.note||'').replace(/"/g,'&quot;')}">Review</button>`
-        : `<span class="text-inksoft text-xs">${p.admin_note ? 'Note: ' + p.admin_note : '—'}</span>`}
-    </td>
-  </tr>`;
-}
+  Admin.outlet(Dx.h('div', { class: 'panel stack' },
+    Dx.h('div', { class: 'filters', id: 'review-tabs' }),
+    Dx.h('div', { class: 'table-wrap' }, Dx.h('table', { class: 'table' },
+      Dx.h('thead', null, Dx.h('tr', null,
+        ['Reference', 'Order', 'Channel', 'Amount', 'Sender', 'Buyer', 'Filed', 'Status', ''].map(function (label) {
+          return Dx.h('th', { scope: 'col', text: label });
+        })
+      )),
+      Dx.h('tbody', { id: 'review-body' })
+    )),
+    Dx.h('div', { class: 'pagination', id: 'review-pagination' })
+  ));
 
-async function loadPayments() {
-  const tbody = document.getElementById('payments-tbody');
-  const status = document.getElementById('status-filter').value;
-  try {
-    const { payments } = await AdminApi.manualPayments.list(status);
-    tbody.innerHTML = payments.length
-      ? payments.map(paymentRow).join('')
-      : `<tr><td class="p-4 text-inksoft" colspan="9">No payments found.</td></tr>`;
-    tbody.querySelectorAll('.review-btn').forEach(b => b.addEventListener('click', () => openReview(b.dataset)));
-  } catch (e) {
-    tbody.innerHTML = `<tr><td class="p-4 text-danger" colspan="9">${e.message}</td></tr>`;
+  function tabs(counts) {
+    const options = [['pending', 'Waiting'], ['approved', 'Approved'], ['rejected', 'Rejected'], ['', 'All']];
+
+    Dx.mount('review-tabs', options.map(function (option) {
+      const count = option[0] === '' ? (counts.pending + counts.approved + counts.rejected) : counts[option[0]];
+      const chip = Dx.h('button', { class: 'chip', type: 'button', text: option[1] + ' · ' + count });
+      if (state.status === option[0]) chip.classList.add('is-active');
+      chip.addEventListener('click', function () {
+        state.status = option[0];
+        state.page = 1;
+        load();
+      });
+      return chip;
+    }));
   }
-}
 
-function openReview(data) {
-  const modal = document.getElementById('review-modal');
-  const body  = document.getElementById('review-modal-body');
-  modal.classList.remove('hidden');
+  function decide(row, action, button) {
+    const modal = Dx.h('div', { class: 'modal hide', id: 'decision-modal', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Record decision' },
+      Dx.h('div', { class: 'modal-box' },
+        Dx.h('div', { class: 'modal-head' },
+          Dx.h('h2', { text: action === 'approve' ? 'Approve payment' : 'Reject payment' }),
+          Dx.h('button', { class: 'icon-btn', type: 'button', 'data-close-modal': 'decision-modal', 'aria-label': 'Close' },
+            Dx.h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'aria-hidden': 'true' },
+              Dx.h('path', { d: 'M6 6l12 12M18 6 6 18' })))
+        ),
+        Dx.h('p', { class: 'muted', text: action === 'approve'
+          ? 'Order ' + row.order_number + ' becomes paid and ' + Dx.money(row.total_amount) + ' worth of passes are issued to ' + row.user_name + '.'
+          : 'Order ' + row.order_number + ' is closed as failed, reserved stock returns, and ' + row.user_name + ' sees your note.' }),
+        Dx.h('form', { id: 'decision-form' },
+          Dx.h('label', { class: 'field' },
+            Dx.h('span', { class: 'label', text: 'Note for the customer' }),
+            Dx.h('textarea', { class: 'textarea', name: 'admin_note', maxlength: '500', placeholder: action === 'approve' ? 'Reference matched my statement.' : 'No such transaction reached my account.' })
+          ),
+          Dx.h('div', { class: 'modal-actions' },
+            Dx.h('button', { class: 'btn btn-quiet', type: 'button', 'data-close-modal': 'decision-modal' }, 'Cancel'),
+            Dx.h('button', { class: 'btn ' + (action === 'approve' ? 'btn-gold' : 'btn-danger'), type: 'submit' }, action === 'approve' ? 'Approve and issue' : 'Reject')
+          )
+        )
+      )
+    );
 
-  body.innerHTML = `
-    <div class="flex justify-between"><span class="text-inksoft">Order</span><span class="font-mono font-semibold">${data.order}</span></div>
-    <div class="flex justify-between"><span class="text-inksoft">Amount</span><span class="font-mono font-bold text-lg">${money(data.amount)}</span></div>
-    <div class="flex justify-between"><span class="text-inksoft">Method</span><span class="font-semibold">${METHOD_LABELS[data.method] || data.method}</span></div>
-    <div class="flex justify-between"><span class="text-inksoft">Sender No.</span><span class="font-mono">${data.sender || '—'}</span></div>
-    <div class="flex justify-between"><span class="text-inksoft">Transaction ID</span><span class="font-mono font-semibold">${data.txid}</span></div>
-    ${data.note ? `<div class="flex justify-between"><span class="text-inksoft">Customer Note</span><span>${data.note}</span></div>` : ''}
-    <div class="pass-perforation my-3"></div>
-    <div>
-      <label class="text-sm font-medium">Admin Note <span class="text-inksoft">(optional)</span></label>
-      <input id="admin-note-input" placeholder="Reason for rejection or confirmation note" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
-    </div>
-    <div class="flex gap-3 mt-2">
-      <button id="approve-btn" data-id="${data.id}" class="flex-1 bg-teal text-white font-semibold py-2.5 rounded-full hover:opacity-90 transition">✓ Approve &amp; Activate</button>
-      <button id="reject-btn"  data-id="${data.id}" class="flex-1 bg-danger text-white font-semibold py-2.5 rounded-full hover:opacity-90 transition">✕ Reject</button>
-    </div>
-    <p class="text-xs text-inksoft text-center">Approving will immediately mark the order as paid and issue subscription passes to the customer.</p>
-  `;
+    document.body.appendChild(modal);
+    Dx.openModal('decision-modal');
 
-  async function handleAction(action) {
-    const adminNote = document.getElementById('admin-note-input').value.trim();
-    if (action === 'reject' && !adminNote) {
-      adminToast('Please enter a reason for rejection.', 'error');
-      return;
-    }
-    const btn = document.getElementById(action + '-btn');
-    btn.disabled = true;
-    btn.textContent = 'Processing…';
+    document.getElementById('decision-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const submit = event.target.querySelector('button[type="submit"]');
+      Dx.setBusy(submit, true, 'Saving…');
+
+      Dx.endpoints.admin.reviewPayment(row.id, { action: action, admin_note: this.admin_note.value })
+        .then(function (result) {
+          Dx.closeModal('decision-modal');
+          modal.remove();
+          Dx.setBusy(button, false);
+          Dx.toast(result.message, 'success');
+          load();
+        })
+        .catch(function (error) {
+          Dx.setBusy(submit, false);
+          Dx.toast(error.message, 'error');
+        });
+    });
+  }
+
+  async function load() {
+    Dx.skeletonRows('review-body', 9, 4);
+
     try {
-      await AdminApi.manualPayments.review(Number(data.id), action, adminNote);
-      adminToast('Payment ' + (action === 'approve' ? 'approved and order activated!' : 'rejected.'),
-                 action === 'approve' ? 'success' : 'info');
-      modal.classList.add('hidden');
-      loadPayments();
-    } catch (e) {
-      adminToast(e.message, 'error');
-      btn.disabled = false;
-      btn.textContent = action === 'approve' ? '✓ Approve & Activate' : '✕ Reject';
+      const data = await Dx.endpoints.admin.manualPayments('?page=' + state.page + '&status=' + encodeURIComponent(state.status));
+      tabs(data.counts);
+
+      const body = document.getElementById('review-body');
+      Dx.clear(body);
+
+      if (!data.payments.length) {
+        body.appendChild(Dx.h('tr', null, Dx.h('td', { colspan: '9' },
+          Dx.h('div', { class: 'empty', text: state.status === 'pending' ? 'Queue is clear — nothing waiting for a decision.' : 'Nothing in this bucket.' }))));
+        Dx.clear('review-pagination');
+        return;
+      }
+
+      data.payments.forEach(function (row) {
+        const actions = row.status === 'pending'
+          ? Dx.h('div', { class: 'review-actions' },
+            Dx.h('button', { class: 'btn btn-gold btn-sm', type: 'button', text: 'Approve' , onclick: function () { decide(row, 'approve', this); } }),
+            Dx.h('button', { class: 'btn btn-danger btn-sm', type: 'button', text: 'Reject', onclick: function () { decide(row, 'reject', this); } })
+          )
+          : Dx.h('span', { class: 'faint', text: (row.reviewed_by_name ? 'by ' + row.reviewed_by_name : 'decided') + ' · ' + Dx.formatDateTime(row.reviewed_at) });
+
+        body.appendChild(Dx.h('tr', null,
+          Dx.h('td', null, Dx.h('code', { class: 'pass-code', text: row.transaction_id })),
+          Dx.h('td', { class: 'mono', text: row.order_number }),
+          Dx.h('td', { text: row.payment_method }),
+          Dx.h('td', { class: 'num', text: Dx.money(row.amount) }),
+          Dx.h('td', { class: 'mono', text: row.sender_number || '—' }),
+          Dx.h('td', null, Dx.h('div', { class: 'cell-title', text: row.user_name }), Dx.h('span', { class: 'sub', text: row.user_email })),
+          Dx.h('td', { text: Dx.formatDateTime(row.created_at) }),
+          Dx.h('td', null, Admin.stamp(row.status)),
+          Dx.h('td', null, actions)
+        ));
+      });
+
+      Admin.pager('review-pagination', data.meta, state.page, function (next) { state.page = next; load(); });
+      Admin.refreshReviewBadge();
+    } catch (error) {
+      Dx.mount('review-body', Dx.h('tr', null, Dx.h('td', { colspan: '9' }, Dx.h('div', { class: 'banner banner-danger', text: error.message }))));
     }
   }
 
-  document.getElementById('approve-btn').addEventListener('click', () => handleAction('approve'));
-  document.getElementById('reject-btn').addEventListener('click', () => handleAction('reject'));
-}
-
-(async function init() {
-  try { await requireAdminAuth(); } catch { return; }
-  document.getElementById('admin-logout-btn').addEventListener('click', async () => {
-    await AdminApi.logout(); location.href = 'index.html';
-  });
-  document.getElementById('status-filter').addEventListener('change', loadPayments);
-  document.getElementById('close-review-modal').addEventListener('click', () => {
-    document.getElementById('review-modal').classList.add('hidden');
-  });
-  loadPayments();
+  load();
 })();

@@ -1,83 +1,211 @@
-function statusStamp(status) {
-  const color = { paid: '#1F9C8B', pending: '#7A4E0E', failed: '#D64545', cancelled: '#4A5068' }[status] || '#4A5068';
-  return `<span class="stamp" style="color:${color}">${status}</span>`;
-}
+/* Admin orders: filter, page, settle or close an order. Passes are only ever issued
+   by the server, so the button here just reports what the API decided. */
+(async function initAdminOrders() {
+  await Admin.start('Orders', 'Settle, close and re-open orders.', 'orders.html');
 
-function orderRow(o) {
-  return `
-  <tr class="border-b border-line/60 last:border-0">
-    <td class="p-4 font-mono">${o.order_number}</td>
-    <td class="p-4">${o.user_name}<br><span class="text-xs text-inksoft">${o.user_email}</span></td>
-    <td class="p-4 font-mono">${money(o.total_amount)}</td>
-    <td class="p-4 capitalize">${o.payment_method || "sslcommerz"}</td>
-    <td class="p-4">${statusStamp(o.status)}</td>
-    <td class="p-4 text-inksoft">${fmtDate(o.created_at)}</td>
-    <td class="p-4 text-right"><button class="view-btn text-navy font-semibold hover:underline" data-id="${o.id}">View</button></td>
-  </tr>`;
-}
+  const STATUSES = ['pending', 'paid', 'failed', 'cancelled', 'expired'];
+  let state = { status: Dx.queryParam('status') || '', q: '', page: 1 };
 
-async function loadOrders() {
-  const tbody = document.getElementById('orders-tbody');
-  const status = document.getElementById('status-filter').value;
-  try {
-    const { orders } = await AdminApi.orders.list(status);
-    tbody.innerHTML = orders.length ? orders.map(orderRow).join('') : `<tr><td class="p-4 text-inksoft" colspan="6">No orders found.</td></tr>`;
-    tbody.querySelectorAll('.view-btn').forEach(b => b.addEventListener('click', () => openOrder(Number(b.dataset.id))));
-  } catch (e) {
-    tbody.innerHTML = `<tr><td class="p-4 text-danger" colspan="6">${e.message}</td></tr>`;
+  Admin.outlet(Dx.h('div', { class: 'panel stack' },
+    Dx.h('div', { class: 'filters' },
+      Dx.h('input', { class: 'input', id: 'order-search', type: 'search', placeholder: 'Order number, name or email…', autocomplete: 'off' }),
+      Dx.h('select', { class: 'select', id: 'order-status' },
+        Dx.h('option', { value: '', text: 'All statuses' }),
+        STATUSES.map(function (status) { return Dx.h('option', { value: status, text: status }); })
+      ),
+      Dx.h('button', { class: 'btn btn-ghost btn-sm', type: 'button', id: 'order-clear' }, 'Clear filters')
+    ),
+    Dx.h('div', { class: 'table-wrap' }, Dx.h('table', { class: 'table' },
+      Dx.h('thead', null, Dx.h('tr', null,
+        ['Order', 'Customer', 'Items', 'Total', 'Status', 'Channel', 'Placed', ''].map(function (label) {
+          return Dx.h('th', { scope: 'col', text: label });
+        })
+      )),
+      Dx.h('tbody', { id: 'orders-body' })
+    )),
+    Dx.h('div', { class: 'pagination', id: 'orders-pagination' })
+  ));
+
+  const statusSelect = document.getElementById('order-status');
+  statusSelect.value = state.status;
+
+  const searchInput = document.getElementById('order-search');
+  let debounce = null;
+
+  searchInput.addEventListener('input', function () {
+    clearTimeout(debounce);
+    debounce = setTimeout(function () { state.q = searchInput.value.trim(); state.page = 1; load(); }, 320);
+  });
+
+  statusSelect.addEventListener('change', function () { state.status = statusSelect.value; state.page = 1; load(); });
+
+  document.getElementById('order-clear').addEventListener('click', function () {
+    state = { status: '', q: '', page: 1 };
+    searchInput.value = '';
+    statusSelect.value = '';
+    load();
+  });
+
+  async function load() {
+    Dx.skeletonRows('orders-body', 8, 5);
+
+    try {
+      const data = await Dx.endpoints.admin.orders('?page=' + state.page + '&status=' + encodeURIComponent(state.status) + '&q=' + encodeURIComponent(state.q));
+      const body = document.getElementById('orders-body');
+      Dx.clear(body);
+
+      if (!data.orders.length) {
+        body.appendChild(Dx.h('tr', null, Dx.h('td', { colspan: '8' },
+          Dx.h('div', { class: 'empty', text: 'No order matches those filters.' }))));
+        Dx.clear('orders-pagination');
+        return;
+      }
+
+      data.orders.forEach(function (row) {
+        body.appendChild(Dx.h('tr', null,
+          Dx.h('td', null, Dx.h('div', { class: 'cell-title mono', text: row.order_number })),
+          Dx.h('td', null, Dx.h('div', { class: 'cell-title', text: row.user_name }), Dx.h('span', { class: 'sub', text: row.user_email })),
+          Dx.h('td', { class: 'num', text: String(row.item_count ?? '—') }),
+          Dx.h('td', { class: 'num', text: Dx.money(row.total_amount) }),
+          Dx.h('td', null, Admin.stamp(row.status)),
+          Dx.h('td', { class: 'mono', text: row.payment_method }),
+          Dx.h('td', { text: Dx.formatDateTime(row.created_at) }),
+          Dx.h('td', null, Dx.h('div', { class: 'actions' },
+            Dx.h('button', { class: 'btn btn-ghost btn-sm', type: 'button', onclick: function () { openOrder(row.id); } }, 'Open')
+          ))
+        ));
+      });
+
+      Admin.pager('orders-pagination', data.meta, state.page, function (next) { state.page = next; load(); });
+    } catch (error) {
+      Dx.mount('orders-body', Dx.h('tr', null, Dx.h('td', { colspan: '8' }, Dx.h('div', { class: 'banner banner-danger', text: error.message }))));
+    }
   }
-}
 
-async function openOrder(id) {
-  const modal = document.getElementById('order-modal');
-  const body = document.getElementById('order-modal-body');
-  modal.classList.remove('hidden');
-  body.innerHTML = `<p class="text-inksoft">Loading…</p>`;
+  function setStatus(order, status, button) {
+    const warn = status === 'paid'
+      ? 'Mark order ' + order.order_number + ' as paid? Pass codes will be issued to ' + order.user_name + '.'
+      : 'Mark order ' + order.order_number + ' as ' + status + '? Reserved stock goes back to the catalogue' + (order.status === 'paid' ? ' and already issued passes are NOT revoked.' : '.');
 
-  try {
-    const { order } = await AdminApi.orders.get(id);
-    document.getElementById('order-modal-title').textContent = order.order_number;
-    body.innerHTML = `
-      <div class="flex justify-between"><span class="text-inksoft">Customer</span><span class="font-medium">${order.user_name} (${order.user_email})</span></div>
-      <div class="flex justify-between"><span class="text-inksoft">Phone</span><span class="font-medium">${order.customer_phone || '—'}</span></div>
-      <div class="flex justify-between"><span class="text-inksoft">Payment Method</span><span class="font-semibold capitalize">${order.payment_method || 'sslcommerz'}</span></div>
-      <div class="flex justify-between"><span class="text-inksoft">Placed</span><span class="font-medium">${fmtDate(order.created_at)}</span></div>
-      <div class="pass-perforation my-3"></div>
-      ${order.items.map(i => `
-        <div class="flex justify-between text-sm">
-          <span>${i.item_name} × ${i.quantity}</span>
-          <span class="font-mono">${money(i.line_total)}</span>
-        </div>`).join('')}
-      <div class="pass-perforation my-3"></div>
-      <div class="flex justify-between font-display font-bold text-lg"><span>Total</span><span>${money(order.total_amount)}</span></div>
-      <div class="mt-4">
-        <label class="text-sm font-medium">Update status</label>
-        <select id="order-status-select" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
-          ${['pending','paid','failed','cancelled'].map(s => `<option value="${s}" ${s === order.status ? 'selected' : ''}>${s}</option>`).join('')}
-        </select>
-        <button id="save-status-btn" class="w-full mt-3 bg-navy text-white font-semibold py-2.5 rounded-full hover:bg-ink transition">Save status</button>
-        <p class="text-xs text-inksoft mt-2">Marking an order "paid" issues subscription passes to the customer immediately.</p>
-      </div>
-    `;
+    Admin.confirmAction(warn, function () {
+      return Dx.endpoints.admin.setOrderStatus(order.id, status).then(function (result) {
+        Dx.toast(result.message || 'Order is now ' + status + '.', 'success');
+        load();
+        Admin.refreshReviewBadge();
+      });
+    }, button, 'Saving…');
+  }
 
-    document.getElementById('save-status-btn').addEventListener('click', async () => {
-      const newStatus = document.getElementById('order-status-select').value;
-      try {
-        await AdminApi.orders.updateStatus(id, newStatus);
-        adminToast('Order status updated.', 'success');
-        modal.classList.add('hidden');
-        loadOrders();
-      } catch (e) { adminToast(e.message, 'error'); }
+  function actionRow(order) {
+    const buttons = [];
+    const wanted = STATUSES.filter(function (status) { return status !== order.status && status !== 'pending'; });
+
+    wanted.forEach(function (status) {
+      const button = Dx.h('button', {
+        class: 'btn btn-sm ' + (status === 'paid' ? 'btn-gold' : status === 'failed' ? 'btn-danger' : 'btn-quiet'),
+        type: 'button', text: 'Mark ' + status,
+      });
+      button.addEventListener('click', function () { setStatus(order, status, button); });
+      buttons.push(button);
     });
-  } catch (e) {
-    body.innerHTML = `<p class="text-danger">${e.message}</p>`;
-  }
-}
 
-(async function initOrdersPage() {
-  try { await requireAdminAuth(); } catch { return; }
-  document.getElementById('admin-logout-btn').addEventListener('click', async () => { await AdminApi.logout(); location.href = 'index.html'; });
-  document.getElementById('status-filter').addEventListener('change', loadOrders);
-  document.getElementById('close-order-modal').addEventListener('click', () => document.getElementById('order-modal').classList.add('hidden'));
-  loadOrders();
+    // Re-open is refused by the API on purpose: a settled order must stay settled.
+    if (order.status !== 'pending') {
+      buttons.push(Dx.h('span', { class: 'hint', text: 'An order cannot be pushed back to pending.' }));
+    }
+
+    return Dx.h('div', { class: 'review-actions' }, buttons);
+  }
+
+  async function openOrder(id) {
+    const modal = Dx.h('div', { class: 'modal hide', id: 'order-modal', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Order details' },
+      Dx.h('div', { class: 'modal-box modal-box-wide' },
+        Dx.h('div', { class: 'modal-head' },
+          Dx.h('h2', { id: 'order-modal-title' }, 'Order'),
+          Dx.h('button', { class: 'icon-btn', type: 'button', 'data-close-modal': 'order-modal', 'aria-label': 'Close' },
+            Dx.h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'aria-hidden': 'true' },
+              Dx.h('path', { d: 'M6 6l12 12M18 6 6 18' })))
+        ),
+        Dx.h('div', { class: 'stack', id: 'order-modal-body' }, Dx.h('div', { class: 'skeleton skeleton-cell' }))
+      )
+    );
+
+    document.body.appendChild(modal);
+    Dx.openModal('order-modal');
+
+    try {
+      const order = (await Dx.endpoints.admin.order(id)).order;
+      Dx.mount('order-modal-title', order.order_number);
+
+      const blocks = [
+        Dx.h('div', { class: 'cluster' }, Admin.stamp(order.status), Dx.h('span', { class: 'faint', text: 'placed ' + Dx.formatDateTime(order.created_at) })),
+        Dx.h('dl', { class: 'detail-grid' },
+          cell('Customer', order.user_name),
+          cell('Email', order.user_email),
+          cell('Phone', order.customer_phone || '—'),
+          cell('Email on order', order.customer_email),
+          cell('Total', Dx.money(order.total_amount)),
+          cell('Subtotal', Dx.money(order.subtotal)),
+          cell('Channel', order.payment_method),
+          cell('Paid at', order.paid_at ? Dx.formatDateTime(order.paid_at) : '—'),
+          cell('Hold expires', order.expires_at ? Dx.formatDateTime(order.expires_at) : '—'),
+          cell('Buyer IP', order.ip_address || '—')
+        ),
+        Dx.h('h3', { text: 'Items' }),
+        Dx.h('div', { class: 'stack-tight' }, order.items.map(function (item) {
+          return Dx.h('div', { class: 'summary-line' },
+            Dx.h('span', { text: item.item_name + ' × ' + item.quantity }),
+            Dx.h('span', { class: 'mono', text: Dx.money(item.line_total) + ' · ' + item.duration_days + 'd' + (item.stock_released ? ' · stock returned' : '') })
+          );
+        })),
+      ];
+
+      if (order.passes.length) {
+        blocks.push(Dx.h('h3', { text: 'Passes issued' }), Dx.h('div', { class: 'stack-tight' }, order.passes.map(function (pass) {
+          return Dx.h('div', { class: 'pass-code-row' },
+            Dx.h('code', { class: 'pass-code', text: pass.pass_code }),
+            Admin.stamp(pass.status),
+            Dx.h('span', { class: 'faint', text: pass.item_name + ' until ' + Dx.formatDate(pass.ends_at) })
+          );
+        })));
+      }
+
+      if (order.manual_payment) {
+        const manual = order.manual_payment;
+        blocks.push(Dx.h('div', { class: 'banner ' + (manual.status === 'approved' ? 'banner-teal' : manual.status === 'rejected' ? 'banner-danger' : 'banner-warn') },
+          Dx.h('div', { class: 'stack-tight' },
+            Dx.h('strong', { text: 'Manual payment ' + manual.status }),
+            Dx.h('span', { class: 'mono', text: manual.payment_method + ' · ' + manual.transaction_id + ' · ' + Dx.money(manual.amount) }),
+            manual.sender_number ? Dx.h('span', { class: 'faint', text: 'from ' + manual.sender_number }) : null,
+            manual.admin_note ? Dx.h('span', { class: 'faint', text: 'Note: ' + manual.admin_note }) : null
+          )
+        ));
+      }
+
+      if (order.payments.length) {
+        blocks.push(Dx.h('h3', { text: 'Gateway attempts' }), Dx.h('div', { class: 'stack-tight' }, order.payments.map(function (payment) {
+          return Dx.h('div', { class: 'summary-line' },
+            Dx.h('span', { class: 'mono', text: payment.tran_id }),
+            Dx.h('span', null, Admin.stamp(payment.status), payment.failure_reason ? Dx.h('span', { class: 'faint', text: payment.failure_reason }) : null)
+          );
+        })));
+      }
+
+      blocks.push(Dx.h('div', { class: 'divider' }), Dx.h('h3', { text: 'Settle by hand' }), actionRow(order));
+
+      Dx.mount('order-modal-body', blocks);
+    } catch (error) {
+      Dx.mount('order-modal-body', Dx.h('div', { class: 'banner banner-danger', text: error.message }));
+    }
+  }
+
+  function cell(label, value) {
+    const node = Dx.h('div', { class: 'detail' });
+    node.append(Dx.h('dt', { text: label }), Dx.h('dd', { text: String(value) }));
+    return node;
+  }
+
+  const focus = Number(Dx.queryParam('focus') || 0);
+  await load();
+  if (focus > 0) openOrder(focus);
 })();
