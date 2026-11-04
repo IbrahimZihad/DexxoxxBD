@@ -236,40 +236,47 @@
   }
 
   /* ---------------- resume a pending order ---------------- */
+  async function useOrder(full) {
+    order = {
+      order_id: full.id,
+      order_number: full.order_number,
+      total_amount: Number(full.total_amount),
+      status: full.status,
+      expires_at: full.expires_at,
+    };
+
+    document.getElementById('resume-panel').classList.remove('hide');
+    Dx.mount('resume-body', Dx.h('div', { class: 'stack' },
+      Dx.h('div', { class: 'detail-grid' },
+        tile('Order', order.order_number),
+        tile('Amount', Dx.money(order.total_amount)),
+        tile('Status', Dx.h('span', { class: 'stamp stamp-gold', text: order.status })),
+        tile('Hold until', order.expires_at ? Dx.formatDateTime(order.expires_at) : '—')
+      ),
+      (full.manual_payment && full.manual_payment.status === 'pending')
+        ? Dx.h('div', { class: 'banner banner-warn', text: 'A payment for this order is already waiting for review. Nothing more to do — we will email you when it clears.' })
+        : Dx.h('p', { class: 'muted', text: 'Pick a channel below to pay this order. Choose another one any time.' })
+    ));
+
+    await openPayment();
+    return true;
+  }
+
   async function resumePending() {
+    const wanted = Number(Dx.queryParam('order') || 0);
+
     try {
+      if (wanted > 0) {
+        const full = (await Dx.endpoints.orders.get(wanted)).order;
+        if (full && full.status === 'pending') return useOrder(full);
+        return false;
+      }
+
       const page = await Dx.endpoints.orders.list('?page=1');
       const pending = page.orders.filter(function (row) { return row.status === 'pending'; })[0];
       if (!pending) return false;
 
-      const full = (await Dx.endpoints.orders.get(pending.id)).order;
-      order = {
-        order_id: full.id,
-        order_number: full.order_number,
-        total_amount: Number(full.total_amount),
-        status: full.status,
-        expires_at: full.expires_at,
-      };
-
-      document.getElementById('resume-panel').classList.remove('hide');
-      Dx.mount('resume-body', Dx.h('div', { class: 'stack' },
-        Dx.h('div', { class: 'detail-grid' },
-          tile('Order', order.order_number),
-          tile('Amount', Dx.money(order.total_amount)),
-          tile('Status', Dx.h('span', { class: 'stamp stamp-gold', text: order.status })),
-          tile('Hold until', order.expires_at ? Dx.formatDateTime(order.expires_at) : '—')
-        ),
-        (full.manual_payment && full.manual_payment.status === 'pending')
-          ? Dx.h('div', { class: 'banner banner-warn', text: 'A payment for this order is already waiting for review. Nothing more to do — we will email you when it clears.' }
-          )
-          : Dx.h('div', { class: 'cluster' },
-            Dx.h('button', { class: 'btn btn-quiet btn-sm', type: 'button', onclick: openPayment }, 'Choose another channel')
-          ),
-        Dx.h('a', { class: 'btn btn-ghost btn-sm', href: 'dashboard.html' }, 'See all my orders')
-      ));
-
-      await openPayment();
-      return true;
+      return useOrder((await Dx.endpoints.orders.get(pending.id)).order);
     } catch (error) {
       return false;
     }

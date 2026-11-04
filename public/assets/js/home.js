@@ -19,8 +19,6 @@
       }));
       bar.classList.remove('hide');
     }
-
-    if (settings.site_tagline) document.querySelector('.hero-title').setAttribute('data-tagline', settings.site_tagline);
   }).catch(function () { /* announcement is decorative */ });
 
   Dx.skeletonCards('featured-grid', 4);
@@ -41,8 +39,20 @@
       );
     }));
 
-    Dx.countUp(document.getElementById('stat-products'), featured.meta.total * 4);
-    Dx.countUp(document.getElementById('stat-passes'), 12480);
+    Dx.countUp(document.getElementById('stat-products'), featured.meta.total);
+    Dx.countUp(document.getElementById('stat-categories'), categories.categories.length);
+
+    // "units sold" is the sum of the per-product counters the admin keeps.
+    let page = 1;
+    let sold = 0;
+    let last = 1;
+    do {
+      const chunk = await Dx.endpoints.products.list('?per_page=60&page=' + page);
+      sold += chunk.products.reduce(function (sum, product) { return sum + Number(product.sold_count || 0); }, 0);
+      last = chunk.meta.last_page;
+      page++;
+    } while (page <= last);
+    Dx.countUp(document.getElementById('stat-sold'), sold);
   } catch (error) {
     Dx.mount('featured-grid', Dx.h('p', { class: 'muted', text: error.message }));
   }

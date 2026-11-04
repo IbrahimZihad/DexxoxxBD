@@ -331,11 +331,11 @@ body.is-locked { overflow: hidden; }
   padding: .12rem .6rem;
   font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase;
 }
-.stamp-teal { color: var(--teal); }
-.stamp-navy { color: var(--navy); }
-.stamp-gold { color: var(--gold-ink); }
-.stamp-danger { color: var(--danger); }
-.stamp-faint { color: var(--ink-faint); }
+.stamp-teal { color: var(--teal); background: var(--teal-soft); }
+.stamp-navy { color: var(--navy); background: var(--surface-2); }
+.stamp-gold { color: var(--gold-ink); background: var(--gold-soft); }
+.stamp-danger { color: var(--danger); background: var(--danger-soft); }
+.stamp-faint { color: var(--ink-faint); background: var(--surface-2); }
 .stamp-pulse::before {
   content: ""; width: 6px; height: 6px; border-radius: 50%;
   background: currentColor; animation: pulse-dot 1.8s var(--ease) infinite;
@@ -532,6 +532,7 @@ body.is-locked { overflow: hidden; }
 .progress { height: 6px; border-radius: var(--radius-full); background: var(--bg-deep); overflow: hidden; }
 .progress-bar { height: 100%; width: var(--w, 0%); border-radius: var(--radius-full); background: linear-gradient(90deg, var(--teal), color-mix(in srgb, var(--teal) 60%, var(--gold))); transition: width var(--dur-slow) var(--ease); }
 .progress-bar.is-low { background: var(--danger); }
+.progress-bar.is-strong { background: linear-gradient(90deg, var(--teal), color-mix(in srgb, var(--teal) 40%, #fff)); }
 
 .spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid color-mix(in srgb, currentColor 30%, transparent); border-top-color: currentColor; animation: spin 700ms linear infinite; }
 
@@ -649,7 +650,39 @@ body.is-locked { overflow: hidden; }
 
 .is-dirty { animation: pop var(--dur) var(--ease); }
 
-/* ---------- 18. Keyframes ---------- */
+/* ---------- 18. Tabs, pass list, paging ---------- */
+.tabs { display: flex; gap: var(--sp-1); border-bottom: 1px solid var(--line); margin-bottom: var(--sp-5); overflow-x: auto; }
+.tab {
+  border: 0; background: none; padding: .7rem 1.1rem;
+  font-family: var(--font-display); font-size: .93rem; font-weight: 600; color: var(--ink-faint);
+  position: relative; white-space: nowrap; transition: color var(--dur-fast);
+}
+.tab::after {
+  content: ""; position: absolute; left: .8rem; right: .8rem; bottom: -1px; height: 2px;
+  background: var(--gold); transform: scaleX(0); transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+.tab:hover { color: var(--ink); }
+.tab.is-active { color: var(--ink); }
+.tab.is-active::after { transform: scaleX(1); }
+
+.pass-card .pass-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-4) var(--sp-4) 0; }
+.pass-card .pass-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin: 0; }
+.pass-card .pass-body { padding: var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-3); }
+.pass-card.is-lapsed { filter: saturate(.45); }
+.pass-card.is-lapsed .pass-code { text-decoration: line-through; }
+.pass-code-row { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+.pass-code-row .pass-code { font-size: 1.02rem; background: var(--surface-2); border: 1px dashed var(--line); border-radius: var(--radius-s); padding: .35rem .7rem; }
+.pass-meta { display: flex; flex-wrap: wrap; gap: var(--sp-4); font-size: .8rem; color: var(--ink-soft); }
+.pass-meta strong { font-family: var(--font-mono); color: var(--ink); }
+
+.pagination { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-top: var(--sp-5); flex-wrap: wrap; font-size: .85rem; color: var(--ink-soft); }
+.pagination .pager { display: flex; gap: var(--sp-2); }
+.cell-title { font-family: var(--font-display); font-size: .95rem; font-weight: 600; margin: 0; }
+
+.skeleton-line { height: 76px; border-radius: var(--radius); }
+
+/* ---------- 19. Keyframes ---------- */
 @keyframes reveal-up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes reveal-left { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: none; } }
 @keyframes scale-in { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
@@ -666,7 +699,7 @@ body.is-locked { overflow: hidden; }
 @keyframes slide-in-right { from { transform: translateX(100%); } to { transform: none; } }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 
-/* ---------- 19. Reduced motion ---------- */
+/* ---------- 20. Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
