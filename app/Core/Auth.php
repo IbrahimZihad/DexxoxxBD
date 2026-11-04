@@ -253,7 +253,8 @@ final class Auth
     {
         static $hash = null;
         if ($hash === null) {
-            $hash = password_hash(bin2hex(random_bytes(16)), LoginRateLimiter::preferredAlgorithm(), LoginRateLimiter::hashOptions());
+            $filler = bin2hex(random_bytes(16));
+            $hash = password_hash($filler, LoginRateLimiter::preferredAlgorithm(), LoginRateLimiter::hashOptions());
         }
         return (string) $hash;
     }

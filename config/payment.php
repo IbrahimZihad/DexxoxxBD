@@ -26,7 +26,8 @@ return [
             'label' => 'bKash',
             'description' => 'Pay with your bKash wallet or card through bKash.',
             'enabled' => filter_var(env('PAYMENT_BKASH_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
-            'instructions' => 'You will be redirected to bKash to authorise the payment. The transaction ID is verified on our side before your order is confirmed.',
+            'instructions' => 'You will be redirected to bKash to authorise the payment. '
+                . 'The transaction ID is verified on our side before your order is confirmed.',
             'icon' => 'wallet2',
             'sort' => 2,
             'fee_type' => 'flat',
@@ -56,7 +57,8 @@ return [
             'label' => 'Bank transfer',
             'description' => 'Send a bank transfer and submit the reference.',
             'enabled' => filter_var(env('PAYMENT_BANK_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
-            'instructions' => 'Transfer to the account shown after checkout, then submit the transaction reference. Orders are delivered once our team verifies the deposit.',
+            'instructions' => 'Transfer to the account shown after checkout, then submit the transaction reference. '
+                . 'Orders are delivered once our team verifies the deposit.',
             'icon' => 'landmark',
             'sort' => 5,
             'fee_type' => 'flat',

@@ -268,7 +268,9 @@ final class Validator
         $this->addError($field, $this->message(
             $field,
             'min',
-            is_numeric($value) ? 'The {field} must be at least ' . rtrim(rtrim((string) $parameters[0], '0'), '.') . '.' : 'The {field} must be at least {min} characters.'
+            is_numeric($value)
+                ? 'The {field} must be at least ' . rtrim(rtrim((string) $parameters[0], '0'), '.') . '.'
+                : 'The {field} must be at least {min} characters.'
         ));
         return false;
     }
@@ -292,7 +294,9 @@ final class Validator
         $this->addError($field, $this->message(
             $field,
             'max',
-            is_numeric($value) ? 'The {field} may not be greater than ' . rtrim(rtrim((string) $parameters[0], '0'), '.') . '.' : 'The {field} may not be longer than {max} characters.'
+            is_numeric($value)
+                ? 'The {field} may not be greater than ' . rtrim(rtrim((string) $parameters[0], '0'), '.') . '.'
+                : 'The {field} may not be longer than {max} characters.'
         ));
         return false;
     }

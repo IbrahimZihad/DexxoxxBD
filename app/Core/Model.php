@@ -59,7 +59,8 @@ abstract class Model
     public function findBy(string $column, mixed $value): ?array
     {
         return $this->db()->selectOne(
-            'SELECT * FROM `' . $this->table() . '` WHERE `' . $column . '` = :value' . $this->aliveClause() . ' LIMIT 1',
+            'SELECT * FROM `' . $this->table() . '` WHERE `' . $column . '` = :value'
+                . $this->aliveClause() . ' LIMIT 1',
             ['value' => $value]
         );
     }
@@ -75,7 +76,13 @@ abstract class Model
     }
 
     /** @return list<array<string, mixed>> */
-    public function where(string $sql, array $bindings = [], array $orderBy = [], ?int $limit = null, int $offset = 0): array
+    public function where(
+        string $sql,
+        array $bindings = [],
+        array $orderBy = [],
+        ?int $limit = null,
+        int $offset = 0
+    ): array
     {
         $query = 'SELECT * FROM `' . $this->table() . '` WHERE ' . $sql . $this->aliveAnd($sql)
             . $this->orderBySql($orderBy);

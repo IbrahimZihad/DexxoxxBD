@@ -3,11 +3,11 @@
     PHP_CodeSniffer ruleset for DexxoxxBD (`composer lint`).
 
     PSR-12 is the baseline. The deviations below are deliberate and each one is
-    a consequence of how Phinx, the front controller and the CLI scripts work;
+    a consequence of how Phinx, the schema generator and the CLI scripts work;
     they are not licences to write loosely.
 -->
 <ruleset name="DexxoxxBD">
-    <description>PSR-12 with the documented Phinx and CLI exceptions.</description>
+    <description>PSR-12 with the documented Phinx and generator exceptions.</description>
 
     <arg name="colors"/>
     <arg value="sp"/>
@@ -32,10 +32,12 @@
 
     <rule ref="PSR12"/>
 
-    <!-- Phinx loads a seeder by requiring the file and instantiating the class
-         named after it, so seeders must stay in the global namespace. -->
+    <!-- Phinx loads a seeder or a migration by requiring the file and
+         instantiating the class named after it, so both stay in the global
+         namespace. -->
     <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
         <exclude-pattern>database/seeders/*</exclude-pattern>
+        <exclude-pattern>database/migrations/*</exclude-pattern>
     </rule>
 
     <!-- Migrations, config, routes and CLI scripts are declarations plus the
@@ -50,9 +52,14 @@
     </rule>
 
     <!-- Long SQL, CSP headers and translation strings read better on one line
-         than split, so the 120-column rule warns instead of failing; 160 is the
-         hard error. -->
+         than split, so 120 columns is a warning and 160 an error. Demo content
+         and the schema specs are data tables of prose, and migrations are
+         generated from those specs - re-wrapping them by hand would be undone
+         by the next generate_migrations run, so they are exempt. -->
     <rule ref="Generic.Files.LineLength">
+        <exclude-pattern>database/factories/*</exclude-pattern>
+        <exclude-pattern>database/schema/*</exclude-pattern>
+        <exclude-pattern>database/migrations/*</exclude-pattern>
         <properties>
             <property name="lineLimit" value="120"/>
             <property name="absoluteLineLimit" value="160"/>
