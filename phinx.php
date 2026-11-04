@@ -63,6 +63,12 @@ $connection = static function (string $database) use ($env): array {
     ];
 };
 
+$defaultEnvironment = match (strtolower($env('APP_ENV', 'local'))) {
+    'production' => 'production',
+    'testing' => 'test',
+    default => 'development',
+};
+
 return [
     'paths' => [
         'migrations' => $basePath . '/database/migrations',
@@ -71,21 +77,11 @@ return [
 
     'environments' => [
         'default_migration_table' => 'phinxlog',
-        'default_database' => 'development',
+        'default_environment' => $defaultEnvironment,
         'version_order' => 'creation',
 
         'development' => $connection($env('DB_DATABASE', 'digital_subscription_marketplace')),
         'test' => $connection($env('DB_TEST_DATABASE', 'digital_subscription_marketplace_test')),
         'production' => $connection($env('DB_DATABASE', 'digital_subscription_marketplace')),
     ],
-
-    'version_alias' => [],
-
-    'migration_base_class' => 'DatabaseMigration',
-
-    'templates' => [],
-
-    // Phinx 0.16 keeps the seed/migration bootstrap here.
-    'seed_bases' => ['AbstractSeed'],
-    'migration_bases' => ['AbstractMigration', 'DatabaseMigration'],
 ];
