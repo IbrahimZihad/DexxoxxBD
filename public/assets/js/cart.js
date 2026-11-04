@@ -5,7 +5,7 @@
 
   function lineRow(item) {
     const media = Dx.h('div', { class: 'cart-line-thumb' });
-    if (item.image) media.appendChild(Dx.h('img', { src: item.image, alt: '', loading: 'lazy' }));
+    if (item.image) media.appendChild(Dx.h('img', { src: Dx.asset(item.image), alt: '', loading: 'lazy' }));
     else media.appendChild(Dx.h('span', { class: 'avatar avatar-gold', text: Dx.initials(item.name) }));
 
     const qty = Dx.h('div', { class: 'qty' });
@@ -65,6 +65,13 @@
     items = snapshot.items;
     subtotal = Number(snapshot.subtotal);
 
+    // The header badge has to follow every redraw, including the one that empties the cart.
+    const badge = document.getElementById('cart-badge');
+    if (badge) {
+      badge.textContent = String(snapshot.count);
+      badge.classList.toggle('hide', !snapshot.count);
+    }
+
     const body = document.getElementById('cart-body');
     Dx.clear(body);
 
@@ -106,7 +113,6 @@
     ));
 
     document.getElementById('clear-cart').classList.toggle('hide', false);
-    document.getElementById('cart-badge').textContent = String(snapshot.count);
   }
 
   function load() {

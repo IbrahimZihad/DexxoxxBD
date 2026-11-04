@@ -136,6 +136,23 @@
     },
   };
 
+  /* ---------------- Asset paths ---------------- */
+  // Stored image paths are site-root paths (/assets/img/...), but this app is often
+  // served from a sub-folder, where the origin root belongs to another site. Resolve
+  // them against the folder that holds the api directory instead.
+  const APP_BASE = new URL('../', new URL(API_BASE + '/', window.location.href)).href;
+
+  function asset(url) {
+    const path = String(url === null || url === undefined ? '' : url).trim();
+
+    // Absolute links and data: URIs are already usable; only site-root paths need rebasing.
+    if (path[0] === '/' && path.slice(0, 2) !== '//') {
+      return new URL(path.slice(1), APP_BASE).href;
+    }
+
+    return path;
+  }
+
   /* ---------------- Safe DOM building ---------------- */
   // Nothing that comes from the API is ever assigned to innerHTML: text goes
   // through createTextNode, so a stored <script> in a product name is inert.
@@ -180,7 +197,10 @@
     return template.innerHTML;
   }
 
-  function clear(node) { while (node && node.firstChild) node.removeChild(node.firstChild); }
+  function clear(nodeOrId) {
+    const node = typeof nodeOrId === 'string' ? document.getElementById(nodeOrId) : nodeOrId;
+    while (node && node.firstChild) node.removeChild(node.firstChild);
+  }
   function mount(idOrNode, content) {
     const target = typeof idOrNode === 'string' ? document.getElementById(idOrNode) : idOrNode;
     if (!target) return null;
@@ -473,7 +493,7 @@
 
   function productCard(product, onAdd) {
     const media = h('div', { class: 'tile-media' });
-    if (product.image_url) media.appendChild(h('img', { src: product.image_url, alt: '', loading: 'lazy' }));
+    if (product.image_url) media.appendChild(h('img', { src: asset(product.image_url), alt: '', loading: 'lazy' }));
     if (product.discount_percent) media.appendChild(h('span', { class: 'pill tile-flag', text: '-' + product.discount_percent + '%' }));
     if (product.is_featured) media.appendChild(h('span', { class: 'pill pill-teal tile-fav' }, '★ Featured'));
 
@@ -539,6 +559,7 @@
   window.Dx = {
     api: Api,
     endpoints: Endpoints,
+    asset: asset,
     h: h,
     mount: mount,
     clear: clear,

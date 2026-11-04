@@ -15,7 +15,7 @@
 
     const media = Dx.h('figure', { class: 'card tile' },
       Dx.h('div', { class: 'tile-media detail-media' },
-        product.image_url ? Dx.h('img', { src: product.image_url, alt: product.name }) : null
+        product.image_url ? Dx.h('img', { src: Dx.asset(product.image_url), alt: product.name }) : null
       )
     );
     Dx.mount('detail-media', media);
@@ -107,7 +107,7 @@
       Dx.mount('related-grid', others.map(function (item) {
         return Dx.h('article', { class: 'card card-hover tile reveal' },
           Dx.h('a', { href: 'product-detail.html?slug=' + encodeURIComponent(item.slug) },
-            Dx.h('div', { class: 'tile-media' }, item.image_url ? Dx.h('img', { src: item.image_url, alt: '', loading: 'lazy' }) : null)
+            Dx.h('div', { class: 'tile-media' }, item.image_url ? Dx.h('img', { src: Dx.asset(item.image_url), alt: '', loading: 'lazy' }) : null)
           ),
           Dx.h('div', { class: 'tile-body' },
             Dx.h('h3', { class: 'tile-title' }, Dx.h('a', { href: 'product-detail.html?slug=' + encodeURIComponent(item.slug) }, item.name)),

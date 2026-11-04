@@ -96,7 +96,7 @@
 
         body.appendChild(Dx.h('tr', null,
           Dx.h('td', null, Dx.h('div', { class: 'cell-title' },
-            row.image_url ? Dx.h('img', { src: row.image_url, alt: '', loading: 'lazy' }) : Dx.h('span', { class: 'avatar', text: Dx.initials(row.name) }),
+            row.image_url ? Dx.h('img', { src: Dx.asset(row.image_url), alt: '', loading: 'lazy' }) : Dx.h('span', { class: 'avatar', text: Dx.initials(row.name) }),
             Dx.h('span', null, Dx.h('span', { text: row.name }), Dx.h('span', { class: 'sub mono', text: row.slug }))
           )),
           Dx.h('td', { text: row.category || '—' }),
@@ -169,7 +169,7 @@
             fieldRow('Duration (days)', Dx.h('input', { class: 'input', name: 'duration_days', type: 'number', min: '1', max: '3650', value: editing ? product.duration_days : '30' }), 'Length of the pass granted on purchase.', 'duration_days'),
             fieldRow('Stock (units)', Dx.h('input', { class: 'input', name: 'stock', type: 'number', min: '0', step: '1', value: editing ? product.stock : '10' }), 'Reserved when an order is placed.', 'stock')
           ),
-          fieldRow('Image URL', Dx.h('input', { class: 'input', name: 'image_url', type: 'url', placeholder: 'https://…', value: editing && product.image_url ? product.image_url : '' }), 'A remote https link; leave empty for the gradient placeholder.', 'image_url'),
+          fieldRow('Image', Dx.h('input', { class: 'input', name: 'image_url', type: 'text', placeholder: 'https://… or /assets/img/products/netflix.svg', value: editing && product.image_url ? product.image_url : '' }), 'An https link or a path on this site beginning with a slash. Leave empty to show the name initial.', 'image_url'),
           fieldRow('Description', Dx.h('textarea', { class: 'textarea', name: 'description', maxlength: '5000' }, editing ? product.description : ''), null, 'description'),
           Dx.h('div', { class: 'cluster' },
             Dx.h('label', { class: 'switch' },
