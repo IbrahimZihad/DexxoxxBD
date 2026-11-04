@@ -20,7 +20,7 @@ final class CreateUsersTable extends AbstractMigration
         ]);
 
         $table
-        ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
             ->addColumn('name', 'string', ['limit' => 120])
             ->addColumn('username', 'string', ['limit' => 60, 'null' => true])
             ->addColumn('email', 'string', ['limit' => 190])
@@ -36,7 +36,6 @@ final class CreateUsersTable extends AbstractMigration
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
             ->addColumn('deleted_at', 'datetime', ['null' => true]);
-        ;
 
         $table->addIndex(['email'], ['unique' => true, 'name' => 'users_email_unique']);
         $table->addIndex(['username'], ['unique' => true, 'name' => 'users_username_unique']);

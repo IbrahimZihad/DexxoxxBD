@@ -20,7 +20,7 @@ final class CreateRolesTable extends AbstractMigration
         ]);
 
         $table
-        ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
             ->addColumn('name', 'string', ['limit' => 80])
             ->addColumn('slug', 'string', ['limit' => 80])
             ->addColumn('description', 'string', ['limit' => 255, 'null' => true])
@@ -30,7 +30,6 @@ final class CreateRolesTable extends AbstractMigration
             ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
-        ;
 
         $table->addIndex(['slug'], ['unique' => true, 'name' => 'roles_slug_unique']);
         $table->addIndex(['name'], ['unique' => true, 'name' => 'roles_name_unique']);

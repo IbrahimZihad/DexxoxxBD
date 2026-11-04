@@ -20,7 +20,7 @@ final class CreatePasswordResetTokensTable extends AbstractMigration
         ]);
 
         $table
-        ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('email', 'string', ['limit' => 190])
             ->addColumn('token_hash', 'char', ['limit' => 64])
@@ -28,7 +28,6 @@ final class CreatePasswordResetTokensTable extends AbstractMigration
             ->addColumn('consumed_at', 'datetime', ['null' => true])
             ->addColumn('ip_address', 'string', ['limit' => 45, 'null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP']);
-        ;
 
         $table->addIndex(['token_hash'], ['unique' => true, 'name' => 'password_tokens_hash_unique']);
         $table->addIndex(['email'], ['name' => 'password_tokens_email_index']);

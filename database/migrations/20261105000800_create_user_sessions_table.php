@@ -20,7 +20,7 @@ final class CreateUserSessionsTable extends AbstractMigration
         ]);
 
         $table
-        ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
             ->addColumn('user_id', 'biginteger', ['signed' => false])
             ->addColumn('guard', 'string', ['limit' => 20, 'default' => 'web'])
             ->addColumn('session_hash', 'char', ['limit' => 64])
@@ -31,7 +31,6 @@ final class CreateUserSessionsTable extends AbstractMigration
             ->addColumn('revoked_at', 'datetime', ['null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
-        ;
 
         $table->addIndex(['session_hash'], ['name' => 'user_sessions_hash_index']);
         $table->addIndex(['user_id', 'guard', 'revoked_at'], ['name' => 'user_sessions_user_guard_index']);
