@@ -99,7 +99,14 @@ final class ErrorHandler
             return Response::json($payload, $status);
         }
 
-        $body = self::renderErrorPage($status, $title, $message, $errors, $allowed);
+        $body = self::renderErrorPage(
+            $status,
+            $title,
+            $message,
+            $errors,
+            $allowed,
+            self::debugContext($exception)
+        );
         $response = Response::html($body, $status);
 
         if ($allowed !== []) {
@@ -107,6 +114,36 @@ final class ErrorHandler
         }
 
         return $response;
+    }
+
+    /**
+     * Detail for the debug error page: the same class, message and origin that
+     * Logger::exception() wrote to storage/logs/error.log, so the browser and
+     * the log point at one incident. Null unless APP_DEBUG is on.
+     *
+     * @return array{class: string, message: string, file: string, line: int, trace: list<string>}|null
+     */
+    private static function debugContext(Throwable $exception): ?array
+    {
+        if (!Config::get('app.debug', false)) {
+            return null;
+        }
+
+        $frames = [];
+        foreach (array_slice($exception->getTrace(), 0, 12) as $frame) {
+            $call = ($frame['file'] ?? '[internal function]')
+                . (isset($frame['line']) ? ':' . $frame['line'] : '');
+            $frames[] = ($frame['class'] ?? '') . ($frame['type'] ?? '') . ($frame['function'] ?? '')
+                . ' (' . $call . ')';
+        }
+
+        return [
+            'class' => get_class($exception),
+            'message' => $exception->getMessage(),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+            'trace' => $frames,
+        ];
     }
 
     private static function safeTarget(Request $request): string
@@ -119,12 +156,14 @@ final class ErrorHandler
         return (is_string($host) && $host === $request->host()) ? $referer : url('');
     }
 
+    /** @param array<string, mixed>|null $incident */
     private static function renderErrorPage(
         int $status,
         string $title,
         string $message,
         array $errors,
-        array $allowed
+        array $allowed,
+        ?array $incident = null
     ): string {
         try {
             return App::viewFactory()->render('pages.error', [
@@ -133,7 +172,7 @@ final class ErrorHandler
                 'message' => $message,
                 'errors' => $errors,
                 'allowed' => $allowed,
-                'debug' => (bool) Config::get('app.debug', false),
+                'incident' => $incident,
             ]);
         } catch (Throwable) {
             // The error page itself failed - emit a minimal, safe document.

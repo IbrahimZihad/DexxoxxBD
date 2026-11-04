@@ -8,7 +8,8 @@
  * controller or the route itself failed. Only filesystem-backed helpers (t(),
  * url(), config()) are used so this template cannot throw on its own.
  *
- * $status, $title, $message, $errors, $allowed, $debug come from ErrorHandler.
+ * $status, $title, $message, $errors, $allowed, $incident come from
+ * ErrorHandler; $incident is only ever populated when APP_DEBUG is on.
  */
 
 $copy = match ($status) {
@@ -82,8 +83,15 @@ $lang = current_locale();
         <?php endforeach; ?>
     </nav>
 
-    <?php if ($debug && $status >= 500): ?>
-        <p class="dx-error__ref"><?= e(t('error.reference', ['id' : $status])) ?></p>
+    <?php if ($incident !== null && $status >= 500): ?>
+        <section class="dx-error__debug">
+            <p class="dx-error__ref"><?= e(t('error.debug_note')) ?></p>
+            <pre class="dx-error__trace"><?= e(
+                $incident['class'] . ': ' . $incident['message'] . "\n"
+                . $incident['file'] . ':' . $incident['line'] . "\n\n"
+                . implode("\n", $incident['trace'])
+            ) ?></pre>
+        </section>
     <?php endif; ?>
 </main>
 </body>

@@ -3247,6 +3247,24 @@ a {
   color: #9fc6bd;
 }
 
+.dx-error__debug {
+  width: min(100%, 720px);
+  margin-top: 1.4rem;
+  text-align: left;
+}
+
+.dx-error__trace {
+  margin: .6rem 0 0;
+  padding: .9rem 1rem;
+  border: 1px solid rgba(159, 198, 189, .35);
+  border-radius: var(--dx-radius-sm);
+  background: rgba(0, 0, 0, .28);
+  color: #d9ece7;
+  font: .78rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
 /* ---------- addendum: cart ---------- */
 
 .dx-cartlines {

@@ -28,7 +28,7 @@ return [
     ],
     '500' => [
         'title' => 'Something broke on our side',
-        'text' => 'The incident is logged with a reference. Reload once; if it persists, contact support '
+        'text' => 'The incident is written to the server log. Reload once; if it persists, contact support '
             . 'and mention what you were doing.',
         'cta' => 'Contact support',
         'home' => 'Back to home',
@@ -38,7 +38,7 @@ return [
         'text' => 'We are mid-deploy or a dependency is down. Orders already placed are safe.',
         'cta' => 'Try again',
     ],
-    'reference' => 'Reference: :id',
+    'debug_note' => 'Debug view (APP_DEBUG is on): this is exactly what was written to the error log.',
     'allowed' => 'Allowed methods',
     'actions' => 'Where to go next',
 ];
