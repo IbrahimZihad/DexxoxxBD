@@ -14,6 +14,17 @@ use App\Core\Database;
  */
 final class CategoryRepository
 {
+    /**
+     * Live plans reachable from a category row. A parent sells only through its
+     * children, so counting on its own id alone always returns zero.
+     *
+     * The alias is `c` because every listing query in this class uses it.
+     */
+    private const PRODUCT_COUNT = '(SELECT COUNT(*) FROM products p
+                          WHERE p.status = \'published\' AND p.deleted_at IS NULL
+                            AND (p.category_id = c.id OR p.category_id IN
+                                 (SELECT k.id FROM categories k WHERE k.parent_id = c.id)))';
+
     private Database $db;
 
     public function __construct(?Database $db = null)
@@ -31,8 +42,7 @@ final class CategoryRepository
         return $this->db->select(
             'SELECT c.id, c.parent_id, c.name, c.slug, c.description, c.image, c.icon, c.color,
                     c.is_featured, c.sort_order,
-                    (SELECT COUNT(*) FROM products p
-                      WHERE p.category_id = c.id AND p.status = \'published\' AND p.deleted_at IS NULL) AS product_count
+                    ' . self::PRODUCT_COUNT . ' AS product_count
              FROM categories c
              WHERE c.status = 1 AND c.deleted_at IS NULL
              ORDER BY c.sort_order ASC, c.name ASC'
@@ -81,10 +91,7 @@ final class CategoryRepository
     {
         return $this->db->select(
             'SELECT c.id, c.name, c.slug, c.description, c.image, c.icon, c.color, c.sort_order,
-                    (SELECT COUNT(*) FROM products p
-                      WHERE (p.category_id = c.id OR p.category_id IN
-                            (SELECT k.id FROM categories k WHERE k.parent_id = c.id))
-                        AND p.status = \'published\' AND p.deleted_at IS NULL) AS product_count
+                    ' . self::PRODUCT_COUNT . ' AS product_count
              FROM categories c
              WHERE c.parent_id IS NULL AND c.status = 1 AND c.deleted_at IS NULL
              ORDER BY c.sort_order ASC, c.name ASC
@@ -96,9 +103,8 @@ final class CategoryRepository
     public function featured(int $limit = 8): array
     {
         return $this->db->select(
-            'SELECT c.id, c.name, c.slug, c.image, c.icon, c.color, c.sort_order,
-                    (SELECT COUNT(*) FROM products p
-                      WHERE p.category_id = c.id AND p.status = \'published\' AND p.deleted_at IS NULL) AS product_count
+            'SELECT c.id, c.name, c.slug, c.description, c.image, c.icon, c.color, c.sort_order,
+                    ' . self::PRODUCT_COUNT . ' AS product_count
              FROM categories c
              WHERE c.parent_id IS NULL AND c.is_featured = 1 AND c.status = 1 AND c.deleted_at IS NULL
              ORDER BY c.sort_order ASC, c.name ASC
@@ -109,13 +115,8 @@ final class CategoryRepository
     /** @return array<string, mixed>|null */
     public function bySlug(string $slug): ?array
     {
-        // A parent category sells nothing directly: its plans live in the children,
-        // so the count has to walk one level down or the header reads "0 products".
         $category = $this->db->selectOne(
-            'SELECT c.*, (SELECT COUNT(*) FROM products p
-                          WHERE p.status = \'published\' AND p.deleted_at IS NULL
-                            AND (p.category_id = c.id OR p.category_id IN
-                                 (SELECT k.id FROM categories k WHERE k.parent_id = c.id))) AS product_count
+            'SELECT c.*, ' . self::PRODUCT_COUNT . ' AS product_count
              FROM categories c
              WHERE c.slug = :slug AND c.status = 1 AND c.deleted_at IS NULL',
             ['slug' => $slug]
@@ -167,8 +168,7 @@ final class CategoryRepository
 
         return $this->db->select(
             'SELECT c.id, c.name, c.slug, c.icon, c.image,
-                    (SELECT COUNT(*) FROM products p
-                      WHERE p.category_id = c.id AND p.status = \'published\' AND p.deleted_at IS NULL) AS product_count
+                    ' . self::PRODUCT_COUNT . ' AS product_count
              FROM categories c
              WHERE c.status = 1 AND c.deleted_at IS NULL AND c.id <> :exclude
                AND ' . $scope . '

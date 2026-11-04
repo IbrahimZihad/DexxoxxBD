@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" role="img" aria-labelledby="mark-wavecast">
+<title id="mark-wavecast">Wavecast brand mark</title>
+<rect x="0" y="0" width="400" height="400" rx="24" fill="#08201d"/>
+<rect x="14" y="14" width="372" height="372" rx="18" fill="none" stroke="#12897a" stroke-width="2"/>
+<circle cx="200" cy="200" r="168" fill="none" stroke="#12897a" stroke-width="2" stroke-dasharray="6 11"/>
+<circle cx="200" cy="200" r="144" fill="#0b5d50" stroke="#f4a11a" stroke-width="5"/>
+<path d="M 152 92 L 200 118 L 248 92" fill="none" stroke="#f4a11a" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="200" y="238" font-family="Arial, Helvetica, sans-serif" font-size="112" font-weight="700" letter-spacing="4" text-anchor="middle" fill="#6fd3c2">WA</text>
+</svg>

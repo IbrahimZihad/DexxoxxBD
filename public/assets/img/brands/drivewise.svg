@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" role="img" aria-labelledby="mark-drivewise">
+<title id="mark-drivewise">Drivewise brand mark</title>
+<rect x="0" y="0" width="400" height="400" rx="24" fill="#08201d"/>
+<rect x="14" y="14" width="372" height="372" rx="18" fill="none" stroke="#12897a" stroke-width="2"/>
+<circle cx="200" cy="200" r="168" fill="none" stroke="#12897a" stroke-width="2" stroke-dasharray="6 11"/>
+<polygon points="200,56 325,128 325,272 200,344 75,272 75,128" fill="#0b5d50" stroke="#f4a11a" stroke-width="5"/>
+<path d="M 152 108 L 200 134 L 248 108" fill="none" stroke="#f4a11a" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="200" y="238" font-family="Arial, Helvetica, sans-serif" font-size="104" font-weight="700" letter-spacing="4" text-anchor="middle" fill="#6fd3c2">DR</text>
+</svg>

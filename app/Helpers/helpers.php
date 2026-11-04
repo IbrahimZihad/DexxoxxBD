@@ -75,16 +75,45 @@ if (!function_exists('asset')) {
 }
 
 if (!function_exists('upload_url')) {
-    /** Public URL for an uploaded image path stored relative to public/. */
+    /** Public URL for an uploaded image path stored relative to public/assets. */
     function upload_url(?string $path): string
     {
         if ($path === null || trim($path) === '') {
-            return asset('images/placeholder.svg');
+            return asset('img/placeholder.svg');
         }
         if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
             return $path;
         }
-        return url(ltrim($path, '/'));
+        return asset($path);
+    }
+}
+
+if (!function_exists('image_url')) {
+    /**
+     * Public URL for catalogue artwork.
+     *
+     * Catalogue rows store only the tail of the path ("products/nexora.svg") so a
+     * host can be moved or the art regenerated without rewriting the database.
+     */
+    function image_url(?string $path): string
+    {
+        return upload_url($path);
+    }
+}
+
+if (!function_exists('route')) {
+    /** Absolute URL for a named route. */
+    function route(string $name, array $parameters = []): string
+    {
+        return App\Core\App::instance()->router()->route($name, $parameters);
+    }
+}
+
+if (!function_exists('current_url')) {
+    /** Current request URL, including its query string, for canonical and OG tags. */
+    function current_url(): string
+    {
+        return App\Core\App::instance()->request()->url();
     }
 }
 

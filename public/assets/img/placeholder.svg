@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-labelledby="placeholder">
+<title id="placeholder">DexxoxxBD catalogue image placeholder</title>
+<rect x="0" y="0" width="800" height="600" rx="28" fill="#f4f7f5"/>
+<rect x="20" y="20" width="760" height="560" rx="22" fill="none" stroke="#d7e2dd" stroke-width="3" stroke-dasharray="16 12"/>
+<rect x="290" y="200" width="220" height="170" rx="16" fill="#ffffff" stroke="#d7e2dd" stroke-width="3"/>
+<circle cx="342" cy="248" r="20" fill="#6fd3c2"/>
+<path d="M 306 342 L 372 266 L 438 342" fill="none" stroke="#12897a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 388 342 L 442 288 L 496 342" fill="none" stroke="#0b5d50" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="340" y="404" width="120" height="10" rx="5" fill="#f4a11a"/>
+</svg>

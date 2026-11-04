@@ -151,7 +151,8 @@ final class ContentRepository
     private function withHref(array $item): array
     {
         $item['href'] = match ((string) $item['target_type']) {
-            'page' => is_string($item['page_slug']) && $item['page_slug'] !== '' ? url('page/' . $item['page_slug']) : '',
+            'page' => is_string($item['page_slug']) && $item['page_slug'] !== ''
+                ? url('page/' . $item['page_slug']) : '',
             'category' => is_string($item['category_slug']) && $item['category_slug'] !== ''
                 ? url('category/' . $item['category_slug']) : '',
             'product' => is_string($item['product_slug']) && $item['product_slug'] !== ''
@@ -185,9 +186,11 @@ final class ContentRepository
     public function pageSlugsForSitemap(): array
     {
         $slugs = [];
-        foreach ($this->db->select(
+        $rows = $this->db->select(
             "SELECT slug FROM pages WHERE status = 'published' AND deleted_at IS NULL"
-        ) as $row) {
+        );
+
+        foreach ($rows as $row) {
             $slugs[] = (string) $row['slug'];
         }
 

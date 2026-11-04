@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" role="img" aria-labelledby="mark-lexigo">
+<title id="mark-lexigo">Lexigo brand mark</title>
+<rect x="0" y="0" width="400" height="400" rx="24" fill="#f4f7f5"/>
+<rect x="14" y="14" width="372" height="372" rx="18" fill="none" stroke="#d7e2dd" stroke-width="2"/>
+<circle cx="200" cy="200" r="152" fill="none" stroke="#d7e2dd" stroke-width="2" stroke-dasharray="6 11"/>
+<polygon points="200,72 311,136 311,264 200,328 89,264 89,136" fill="#ffffff" stroke="#c76a12" stroke-width="4"/>
+<path d="M 48 208 A 152 152 0 0 1 96 89" fill="none" stroke="#c76a12" stroke-width="7" stroke-linecap="round"/>
+<text x="200" y="238" font-family="Arial, Helvetica, sans-serif" font-size="104" font-weight="700" letter-spacing="4" text-anchor="middle" fill="#0b5d50">LE</text>
+</svg>

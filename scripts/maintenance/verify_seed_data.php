@@ -224,7 +224,8 @@ foreach (['brand.name', 'brand.tagline', 'contact.email'] as $key) {
 }
 
 if ($failures !== []) {
-    fwrite(STDERR, sprintf("Seed data FAILED in %s (%d problem%s):\n", $schemaName, count($failures), count($failures) === 1 ? '' : 's'));
+    $plural = count($failures) === 1 ? '' : 's';
+    fwrite(STDERR, sprintf("Seed data FAILED in %s (%d problem%s):\n", $schemaName, count($failures), $plural));
     foreach ($failures as $failure) {
         fwrite(STDERR, ' - ' . $failure . "\n");
     }
@@ -232,6 +233,9 @@ if ($failures !== []) {
 }
 
 if (!$quiet) {
-    echo sprintf("Seed data OK in %s: the demo catalogue, CMS content, accounts and coupons are sellable.\n", $schemaName);
+    echo sprintf(
+        "Seed data OK in %s: the demo catalogue, CMS content, accounts and coupons are sellable.\n",
+        $schemaName
+    );
 }
 exit(0);
