@@ -286,13 +286,22 @@ final class Router
 
         $pipeline = static fn (Request $r): Response => self::invokeHandler($handler, $r, $namespace);
 
-        foreach (array_reverse($route['middleware']) as $alias) {
+        foreach (array_reverse($route['middleware']) as $definition) {
+            // 'permission:orders.manage,orders.refund' => alias + argument list.
+            $alias = $definition;
+            $arguments = [];
+            if (str_contains($definition, ':')) {
+                [$alias, $inline] = explode(':', $definition, 2);
+                $arguments = array_values(array_filter(explode(',', $inline), static fn (string $v): bool => $v !== ''));
+            }
+
             $middleware = $this->middlewareAliases[$alias] ?? null;
             if ($middleware === null) {
                 throw new HttpException(500, 'Undefined middleware: ' . $alias);
             }
+
             $next = $pipeline;
-            $pipeline = static fn (Request $r): Response => $middleware($r, $next);
+            $pipeline = static fn (Request $r): Response => $middleware($r, $next, $arguments);
         }
 
         return $pipeline($request);
