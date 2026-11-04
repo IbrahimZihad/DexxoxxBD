@@ -102,7 +102,10 @@ foreach ($specs as $table => $spec) {
     if ($id === null) {
         $failures[] = sprintf('%s: has no id column', $table);
     } else {
-        $columnType = strtolower((string) $id['COLUMN_TYPE']);
+        $columnType = (string) $id['COLUMN_TYPE'];
+        // MariaDB still prints the display width; MySQL 8 does not.
+        $columnType = (string) preg_replace('/\(\d+\)/', '', $columnType);
+        $columnType = strtolower(trim($columnType));
         if ($columnType !== 'bigint unsigned') {
             $failures[] = sprintf('%s.id: expected BIGINT UNSIGNED, found %s', $table, $columnType);
         }
@@ -168,7 +171,7 @@ foreach ($specs as $table => $spec) {
     }
 }
 
-$orphans = array_diff(array_keys($existingTables), array_keys($specs), ['migrations']);
+$orphans = array_diff(array_keys($existingTables), array_keys($specs), ['phinxlog']);
 if ($orphans !== []) {
     $failures[] = 'Unexpected tables in the database: ' . implode(', ', $orphans);
 }
