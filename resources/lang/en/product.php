@@ -51,7 +51,7 @@ return [
     'no_reviews' => 'No approved reviews yet. The first buyer of this term will set the bar.',
     'write_review' => 'Review after purchase',
     'review_hint' => 'Reviews appear only after an order for this plan is completed.',
-    'star' => ':count star|:count stars',
+    'reviews_count' => ':count review|:count reviews',
     'delivery' => [
         'auto_key' => 'Licence key issued automatically',
         'auto_code' => 'Redemption code issued automatically',

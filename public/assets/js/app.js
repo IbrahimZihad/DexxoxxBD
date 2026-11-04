@@ -380,11 +380,31 @@
             (data.plans || []).forEach((plan) => {
                 const li = document.createElement('li');
                 li.className = 'dx-quickview__plan';
+
                 const label = document.createElement('span');
                 label.textContent = plan.label;
                 const value = document.createElement('strong');
                 value.textContent = '\u09f3 ' + Dx.money(plan.price);
+
                 li.append(label, value);
+
+                if (Number(plan.stock) !== 0 && form) {
+                    const add = document.createElement('button');
+                    add.type = 'submit';
+                    add.className = 'btn btn-pill btn-dx-soft';
+                    add.textContent = 'Add';
+                    // The variation travels through the hidden field so a single
+                    // form (and one CSRF token) covers every term.
+                    add.addEventListener('click', () => {
+                        form.querySelector('input[name="variation_id"]').value = plan.id;
+                    });
+                    li.append(add);
+                } else if (Number(plan.stock) === 0) {
+                    const sold = document.createElement('em');
+                    sold.textContent = 'Out of stock';
+                    li.append(sold);
+                }
+
                 plans.append(li);
             });
         };

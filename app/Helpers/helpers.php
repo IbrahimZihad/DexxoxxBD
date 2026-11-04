@@ -268,6 +268,33 @@ if (!function_exists('current_locale')) {
     }
 }
 
+if (!function_exists('choice')) {
+    /**
+     * Translate a pluralised key. A message holds its forms separated by a pipe
+     * ("1 result|:count results") and Bengali, which needs no plural form, can
+     * ship a single segment - the count of segments decides what is used.
+     *
+     * @param array<string, mixed> $replace
+     */
+    function choice(string $key, int $number, array $replace = []): string
+    {
+        $line = t($key, $replace);
+        $forms = array_map('trim', explode('|', $line));
+
+        if (count($forms) === 1) {
+            return $forms[0];
+        }
+
+        $index = count($forms) === 2 ? ($number === 1 ? 0 : 1) : min($number, count($forms) - 1);
+        $form = $forms[$index];
+
+        return strtr($form, [':count' => number_format($number, 0, '.', ',')] + array_map(
+            static fn ($value): string => (string) $value,
+            $replace
+        ));
+    }
+}
+
 if (!function_exists('str_random')) {
     /** Cryptographically secure alphanumeric string. */
     function str_random(int $length = 32): string
