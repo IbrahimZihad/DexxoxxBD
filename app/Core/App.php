@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Exceptions\HttpException;
+use App\Middleware;
 use App\Services\CacheService;
 use App\Services\CartService;
 use App\Services\CouponService;

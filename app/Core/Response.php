@@ -126,7 +126,7 @@ final class Response
      * Attach CSP, clickjacking, MIME-sniffing and referrer policy headers.
      * Configured in config/security.php.
      */
-    public function withSecurityHeaders(?array $cspNonce = null): self
+    public function withSecurityHeaders(?string $cspNonce = null): self
     {
         $security = (array) Config::get('security.headers', []);
 
@@ -169,6 +169,9 @@ final class Response
         }
 
         http_response_code($this->status);
+        // expose_php=Off is a per-directory ini setting, so it is not always
+        // ours to change; dropping the header here works on any host.
+        header_remove('X-Powered-By');
 
         foreach ($this->headers as $line) {
             $parts = explode(': ', $line, 2);
