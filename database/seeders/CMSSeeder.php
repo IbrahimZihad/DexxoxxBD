@@ -31,7 +31,9 @@ final class CMSSeeder extends AbstractSeed
                 'content' => $page['content'],
                 'meta_title' => $page['meta_title'],
                 'meta_description' => $page['meta_description'],
-                'status' => 1,
+                // pages.status is an enum, so the integer 1 would silently store
+                // the first label ('draft') and every content page would 404.
+                'status' => 'published',
                 'is_footer' => (bool) ($page['footer'] ?? true),
                 'sort_order' => (int) ($page['sort'] ?? 0),
             ]);
