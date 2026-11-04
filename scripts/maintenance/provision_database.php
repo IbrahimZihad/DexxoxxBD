@@ -97,7 +97,7 @@ foreach ([$appDatabase, $testDatabase] as $database) {
         // No GRANT OPTION, no global privileges: DML/DDL scoped to these schemas only.
         $pdo->exec(sprintf(
             "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, "
-            . "CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, VIEW, SHOW VIEW, TRIGGER, EVENT "
+            . "CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, TRIGGER, EVENT "
             . "ON `%s`.* TO '%s'@'%s'",
             $database,
             $appUser,
