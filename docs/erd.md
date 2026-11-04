@@ -10,15 +10,17 @@ Conventions that hold for all 50 tables:
 - Money in `DECIMAL(12,2)`; never floats, never a currency column per line - one BDT shop, currency stored on the order.
 - `created_at` / `updated_at` everywhere; `deleted_at` on catalogue, CMS and account records (soft delete).
 - Every foreign key is declared with an index on the child column, so joins and cascades stay fast.
+- A foreign key column is `NOT NULL` unless the row may genuinely be unassigned: guest carts, webhook events that land before their payment row, and `SET NULL` snapshot links that outlive the parent.
 - Historical snapshots: `order_items` and `cart_items` copy the name, price and plan they were bought as.
 - `stock = -1` means "not stock limited"; digital fulfilment is capped by the rows in `digital_inventory`.
 
 | Metric | Count |
 |---|---:|
 | Tables | 50 |
-| Columns | 598 |
-| Indexes | 164 |
+| Columns | 593 |
+| Indexes | 213 |
 | Foreign keys | 75 |
+| Foreign key columns | 75 (40 mandatory, 35 optional) |
 | Full-text indexes | 1 |
 
 ## Domains

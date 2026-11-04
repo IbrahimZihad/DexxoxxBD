@@ -62,34 +62,39 @@ if ($tables === []) {
 }
 
 $columns = [];
+$nullableColumns = [];
 foreach ($db->select(
     'SELECT TABLE_NAME AS tbl, COLUMN_NAME AS name, COLUMN_TYPE AS type, IS_NULLABLE AS nullable,
         COLUMN_DEFAULT AS default_value, COLUMN_KEY AS tab_key, EXTRA AS extra
-     FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? ORDER BY TABLE_NAME, ORDINAL_POSITION',
-    [$schema]
+     FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME <> ?
+     ORDER BY TABLE_NAME, ORDINAL_POSITION',
+    [$schema, 'phinxlog']
 ) as $row) {
     $columns[(string) $row['tbl']][] = $row;
+    $nullableColumns[(string) $row['tbl']][(string) $row['name']] = (string) $row['nullable'] === 'YES';
 }
 
 $indexes = [];
 foreach ($db->select(
     'SELECT TABLE_NAME AS tbl, INDEX_NAME AS name, COLUMN_NAME AS column_name, NON_UNIQUE AS non_unique,
         INDEX_TYPE AS index_type
-     FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = ?
+     FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = ? AND TABLE_NAME <> ?
      ORDER BY TABLE_NAME, INDEX_NAME, SEQ_IN_INDEX',
-    [$schema]
+    [$schema, 'phinxlog']
 ) as $row) {
-    $name = (string) $row['name'];
-    if (!isset($indexes[$name])) {
-        $indexes[$name] = [
-            'name' => $name,
+    // Keyed by table and name: PRIMARY is PRIMARY in every table, and two tables
+    // can carry the same auto-generated name, so the bare name is not an identity.
+    $key = $row['tbl'] . '.' . $row['name'];
+    if (!isset($indexes[$key])) {
+        $indexes[$key] = [
+            'name' => (string) $row['name'],
             'table' => (string) $row['tbl'],
             'unique' => (int) $row['non_unique'] === 0,
             'type' => (string) $row['index_type'],
             'columns' => [],
         ];
     }
-    $indexes[$name]['columns'][] = (string) $row['column_name'];
+    $indexes[$key]['columns'][] = (string) $row['column_name'];
 }
 
 $foreignKeys = [];
@@ -146,6 +151,20 @@ foreach ($indexes as $index) {
     }
 }
 
+// A NULL-able foreign key is a deliberate snapshot link: the child row survives and
+// its reference is blanked when the parent goes. Every other foreign key column is
+// mandatory, so a parent cannot be deleted out from under a row that needs it.
+$fkColumnCount = 0;
+$fkOptionalCount = 0;
+foreach ($foreignKeys as $fk) {
+    foreach ($fk['columns'] as $column) {
+        $fkColumnCount++;
+        if ($nullableColumns[$fk['table']][$column] ?? false) {
+            $fkOptionalCount++;
+        }
+    }
+}
+
 // Domain -> tables, in the order information_schema returned them.
 $tablesByDomain = [];
 foreach ($tables as $name => $unused) {
@@ -194,6 +213,8 @@ $out[] = '- InnoDB, `utf8mb4`, `utf8mb4_unicode_ci`, `BIGINT UNSIGNED` surrogate
 $out[] = '- Money in `DECIMAL(12,2)`; never floats, never a currency column per line - one BDT shop, currency stored on the order.';
 $out[] = '- `created_at` / `updated_at` everywhere; `deleted_at` on catalogue, CMS and account records (soft delete).';
 $out[] = '- Every foreign key is declared with an index on the child column, so joins and cascades stay fast.';
+$out[] = '- A foreign key column is `NOT NULL` unless the row may genuinely be unassigned: guest carts, webhook '
+    . 'events that land before their payment row, and `SET NULL` snapshot links that outlive the parent.';
 $out[] = '- Historical snapshots: `order_items` and `cart_items` copy the name, price and plan they were bought as.';
 $out[] = '- `stock = -1` means "not stock limited"; digital fulfilment is capped by the rows in `digital_inventory`.';
 $out[] = '';
@@ -203,6 +224,8 @@ $out[] = '| Tables | ' . count($tables) . ' |';
 $out[] = '| Columns | ' . array_sum(array_map('count', $columns)) . ' |';
 $out[] = '| Indexes | ' . count($indexes) . ' |';
 $out[] = '| Foreign keys | ' . count($foreignKeys) . ' |';
+$out[] = '| Foreign key columns | ' . $fkColumnCount . ' (' . ($fkColumnCount - $fkOptionalCount)
+    . ' mandatory, ' . $fkOptionalCount . ' optional) |';
 $out[] = '| Full-text indexes | ' . count(array_filter($indexes, static fn (array $i): bool => $i['type'] === 'FULLTEXT')) . ' |';
 $out[] = '';
 $out[] = '## Domains';
