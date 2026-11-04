@@ -1,0 +1,13 @@
+# The project root is not a web location — public/ is. XAMPP setups often point
+# the document root at this folder, so the environment file and dotfiles have to
+# be refused here as well as inside each source directory.
+Options -Indexes
+
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>

@@ -1,4 +1,5 @@
 Options -Indexes
+
 <FilesMatch "^\.">
     <IfModule mod_authz_core.c>
         Require all denied
@@ -7,3 +8,17 @@ Options -Indexes
         Deny from all
     </IfModule>
 </FilesMatch>
+
+# Every page here is markup plus /assets/js/core.js — there are no inline scripts
+# and no style="" attributes anywhere, so this policy needs no unsafe keyword.
+# API responses set their own, stricter CSP from PHP (see src/Security/Headers.php),
+# which is why this block is limited to .html.
+<IfModule mod_headers.c>
+    <FilesMatch "\.html$">
+        Header set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+        Header set X-Content-Type-Options "nosniff"
+        Header set Referrer-Policy "strict-origin-when-cross-origin"
+        Header set X-Frame-Options "DENY"
+        Header set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+    </FilesMatch>
+</IfModule>
