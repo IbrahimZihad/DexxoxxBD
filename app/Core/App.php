@@ -7,6 +7,7 @@ namespace App\Core;
 use App\Exceptions\HttpException;
 use App\Services\CacheService;
 use App\Services\CartService;
+use App\Services\CouponService;
 use App\Services\MailService;
 use App\Services\RbacService;
 use App\Services\SettingService;
@@ -100,6 +101,7 @@ final class App
         $this->singleton('rbac', static fn (): RbacService => new RbacService());
         $this->singleton('settings', static fn (): SettingService => new SettingService());
         $this->singleton('cart', static fn (): CartService => new CartService());
+        $this->singleton('coupon', static fn (): CouponService => new CouponService());
         $this->singleton('mailer', static fn (): MailService => new MailService());
     }
 
@@ -233,6 +235,13 @@ final class App
         /** @var RbacService $rbac */
         $rbac = self::instance()->make('rbac');
         return $rbac;
+    }
+
+    public static function coupon(): CouponService
+    {
+        /** @var CouponService $coupon */
+        $coupon = self::instance()->make('coupon');
+        return $coupon;
     }
 
     public static function cspNonce(): string

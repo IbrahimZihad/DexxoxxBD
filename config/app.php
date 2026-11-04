@@ -46,5 +46,8 @@ return [
         'allow_negative_stock' => false,
         'low_stock_threshold' => 5,
         'abandoned_cart_days' => 7,
+        'max_per_cart' => 5,
+        'max_cart_lines' => 20,
+        'delivery_fee' => 0,
     ],
 ];
