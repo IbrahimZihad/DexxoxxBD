@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * Sign-in, registration, password reset and account labels.
+ */
+
+return [
+    'sign_in_title' => 'Sign in',
+    'sign_in_subtitle' => 'Your carts, orders and delivered keys live in one account.',
+    'sign_up_title' => 'Create your account',
+    'sign_up_subtitle' => 'One minute to register, then every order and key stays in one place.',
+    'name' => 'Full name',
+    'email' => 'Email address',
+    'phone' => 'Mobile number',
+    'password' => 'Password',
+    'confirm_password' => 'Confirm password',
+    'remember_me' => 'Keep me signed in',
+    'forgot_password' => 'Forgot your password?',
+    'no_account' => 'New to DexxoxxBD?',
+    'have_account' => 'Already registered?',
+    'log_in' => 'Sign in',
+    'register' => 'Create account',
+    'reset_title' => 'Reset your password',
+    'reset_subtitle' => 'We will email a link that expires in one hour.',
+    'send_link' => 'Email me the link',
+    'check_inbox' => 'If that address is registered, a reset link is on its way.',
+    'verify_title' => 'Confirm your email',
+    'verify_subtitle' => 'We sent a code to :email. Orders cannot be placed until it is confirmed.',
+    'resend_verification' => 'Send it again',
+    'logout' => 'Sign out',
+    'welcome_back' => 'Welcome back, :name',
+    'dashboard' => 'Dashboard',
+    'orders' => 'Orders',
+    'order_detail' => 'Order :number',
+    'licenses' => 'Delivered keys',
+    'profile' => 'Profile & security',
+    'change_password' => 'Change password',
+    'current_password' => 'Current password',
+    'new_password' => 'New password',
+    'sessions' => 'Signed-in devices',
+    'revoke' => 'Sign out this device',
+    'terms_agree' => 'I agree to the terms of service and privacy policy.',
+    'password_hint' => 'At least 10 characters, mixed case and one digit.',
+    'guest_note' => 'You can checkout as a guest, but an account keeps your cart and keys safe.',
+];

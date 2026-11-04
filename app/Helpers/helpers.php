@@ -101,6 +101,33 @@ if (!function_exists('image_url')) {
     }
 }
 
+if (!function_exists('link_url')) {
+    /**
+     * Resolve a CMS-authored link into a usable href.
+     *
+     * Banner and menu rows store paths like "/products?sort=discount" with no
+     * subdirectory, so a leading slash means app-relative, not host-relative.
+     * Anything that is not http(s), mailto or tel collapses into a path instead
+     * of becoming an executable URL.
+     */
+    function link_url(?string $link): string
+    {
+        $link = trim((string) $link);
+        if ($link === '' || $link === '#') {
+            return '#';
+        }
+        if (
+            str_starts_with($link, 'https://')
+            || str_starts_with($link, 'http://')
+            || str_starts_with($link, 'mailto:')
+            || str_starts_with($link, 'tel:')
+        ) {
+            return $link;
+        }
+        return url(ltrim($link, '/'));
+    }
+}
+
 if (!function_exists('route')) {
     /** Absolute URL for a named route. */
     function route(string $name, array $parameters = []): string

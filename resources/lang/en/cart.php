@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * Cart, coupon and summary copy. Totals are always recalculated server-side,
+ * so nothing here claims a price the backend has not confirmed.
+ */
+
+return [
+    'title' => 'Your cart',
+    'empty_title' => 'Your cart is empty',
+    'empty_text' => 'Pick a term and it will wait here - carts persist for signed-in customers.',
+    'continue_shopping' => 'Browse plans',
+    'item' => 'Plan',
+    'term' => 'Term',
+    'unit_price' => 'Unit',
+    'line_total' => 'Total',
+    'remove' => 'Remove',
+    'removed' => ':name removed from your cart.',
+    'update' => 'Update',
+    'updated' => 'Cart updated.',
+    'clear' => 'Empty cart',
+    'cleared' => 'Your cart is empty.',
+    'coupon' => 'Coupon code',
+    'coupon_placeholder' => 'Enter code',
+    'apply' => 'Apply',
+    'applied' => 'Coupon :code applied.',
+    'remove_coupon' => 'Remove coupon',
+    'coupon_rejected' => 'That coupon cannot be used on this cart.',
+    'subtotal' => 'Subtotal',
+    'discount' => 'Discount',
+    'delivery_fee' => 'Delivery',
+    'free' => 'Free',
+    'total' => 'Total',
+    'items_count' => ':count item|:count items',
+    'checkout' => 'Proceed to checkout',
+    'login_to_checkout' => 'Sign in to check out',
+    'summary' => 'Order summary',
+    'limit_reached' => 'Only :count units of that term can be ordered at once.',
+    'not_available' => 'That term is no longer on sale.',
+    'added' => 'Added to cart',
+    'wishlist' => 'Wishlist',
+    'add_to_wishlist' => 'Save for later',
+    'remove_from_wishlist' => 'Remove from wishlist',
+    'saved_for_later' => 'Saved for later',
+];
