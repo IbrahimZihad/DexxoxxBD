@@ -1,8 +1,0 @@
-# CLI-only entry point. Refuse it over HTTP even if the document root is
-# misconfigured to point above public/.
-<IfModule mod_authz_core.c>
-    Require all denied
-</IfModule>
-<IfModule !mod_authz_core.c>
-    Deny from all
-</IfModule>

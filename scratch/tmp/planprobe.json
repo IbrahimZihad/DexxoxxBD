@@ -1,2 +1,0 @@
-[POST /api/plans.php] -> 201
-{"id":8,"slug":"empty-badge-probe"}
