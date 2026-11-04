@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Exceptions\HttpException;
+use App\Services\CacheService;
 use App\Services\CartService;
+use App\Services\MailService;
+use App\Services\RbacService;
 use App\Services\SettingService;
 use App\Services\Translator;
 use Closure;
@@ -211,6 +214,27 @@ final class App
         return $service->all();
     }
 
+    public static function cache(): CacheService
+    {
+        /** @var CacheService $cache */
+        $cache = self::instance()->make('cache');
+        return $cache;
+    }
+
+    public static function mailer(): MailService
+    {
+        /** @var MailService $mailer */
+        $mailer = self::instance()->make('mailer');
+        return $mailer;
+    }
+
+    public static function rbac(): RbacService
+    {
+        /** @var RbacService $rbac */
+        $rbac = self::instance()->make('rbac');
+        return $rbac;
+    }
+
     public static function cspNonce(): string
     {
         return self::instance()->cspNonce;
@@ -226,6 +250,16 @@ final class App
      */
     public function handle(): Response
     {
+        // Production redirect before anything else can leak over plaintext.
+        if (Config::get('security.force_https', false) && $this->request->scheme() === 'http') {
+            $target = 'https://' . $this->request->host() . '/' . ltrim($this->request->path(), '/');
+            $query = (string) parse_url($this->request->uri(), PHP_URL_QUERY);
+            if ($query !== '') {
+                $target .= '?' . $query;
+            }
+            return Response::redirect($target, 301)->withSecurityHeaders($this->cspNonce);
+        }
+
         Session::start();
 
         try {
