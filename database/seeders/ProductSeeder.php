@@ -51,7 +51,7 @@ final class ProductSeeder extends AbstractSeed
             $idsBySlug[$product['slug']] = $id;
             $categoryOf[$product['slug']] = (string) $product['category'];
 
-            $this->fill($id, (array) $product['features'], (array) $product['faqs'], (string) $product['name']);
+            $this->fill($id, (string) $product['slug'], (string) $product['name'], (array) $product['features'], (array) $product['faqs']);
         }
 
         $this->relate($idsBySlug, $categoryOf, $products);
@@ -61,7 +61,7 @@ final class ProductSeeder extends AbstractSeed
      * @param list<string>           $features
      * @param list<array<string, mixed>> $faqs
      */
-    private function fill(int $productId, array $features, array $faqs, string $name): void
+    private function fill(int $productId, string $slug, string $name, array $features, array $faqs): void
     {
         $rows = [];
         foreach ($features as $offset => $label) {
@@ -88,7 +88,7 @@ final class ProductSeeder extends AbstractSeed
 
         Seed::sync($this, 'product_images', 'product_id', $productId, [[
             'product_id' => $productId,
-            'path' => 'products/' . slugify($name) . '.svg',
+            'path' => 'products/' . $slug . '.svg',
             'alt' => $name . ' plan artwork',
             'is_primary' => true,
             'sort_order' => 10,
