@@ -8,7 +8,7 @@ declare(strict_types=1);
  * strings used by the `permission:` route middleware, so a typo fails at the
  * door instead of silently granting nothing.
  *
- * @return array{permissions: list<array<string, string>>, roles: list<array<string, mixed>>}
+ * @return array{permissions: list<array{slug: string, name: string, description: string, module: string}>, roles: list<array<string, mixed>>}
  */
 
 $catalogue = [
@@ -77,19 +77,21 @@ $catalogue = [
     ],
 ];
 
-$all = [];
-foreach ($catalogue as $entries) {
+$permissions = [];
+$slugs = [];
+foreach ($catalogue as $module => $entries) {
     foreach ($entries as $entry) {
-        $all[] = $entry['slug'];
+        $slugs[] = $entry['slug'];
+        $permissions[] = $entry + ['module' => $module];
     }
 }
 
-$without = static function (array $except) use ($all): array {
-    return array_values(array_diff($all, $except));
+$without = static function (array $except) use ($slugs): array {
+    return array_values(array_diff($slugs, $except));
 };
 
 return [
-    'permissions' => $all === [] ? [] : $catalogue['dashboard'] === [] ? [] : array_merge(...array_values($catalogue)),
+    'permissions' => $permissions,
 
     'roles' => [
         [
