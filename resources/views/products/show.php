@@ -23,7 +23,7 @@ $mainImage = image_url($primary['path'] ?? $product['image'] ?? null);
 $gallery = $images === [] ? [['path' => $product['image'] ?? null]] : $images;
 $cheapest = null;
 foreach ($plans as $index => $plan) {
-    if ($cheapest === null || (float) $plan['price'] < (float) $cheapest['price']) {
+    if ($cheapest === null || (float) $plan['price'] < (float) $plans[$cheapest]['price']) {
         $cheapest = $index;
     }
 }

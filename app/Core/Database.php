@@ -114,10 +114,23 @@ final class Database
             // Real prepared statements: required for injection safety and correct types.
             PDO::ATTR_EMULATE_PREPARES => false,
             PDO::ATTR_STRINGIFY_FETCHES => false,
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $this->escapeLiteral($charset)
+            $this->initCommand() => 'SET NAMES ' . $this->escapeLiteral($charset)
                 . ' COLLATE ' . $this->escapeLiteral($charset . '_unicode_ci')
                 . ", sql_mode='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION'",
         ];
+    }
+
+    /**
+     * PDO::MYSQL_ATTR_INIT_COMMAND is deprecated in PHP 8.5 in favour of
+     * Pdo\Mysql::ATTR_INIT_COMMAND, which does not exist on the 8.2 baseline this
+     * project supports - so the constant is resolved at runtime rather than
+     * written literally, and neither version emits a deprecation.
+     */
+    private function initCommand(): int
+    {
+        return class_exists(\Pdo\Mysql::class)
+            ? (int) constant('Pdo\\Mysql::ATTR_INIT_COMMAND')
+            : (int) constant('PDO::MYSQL_ATTR_INIT_COMMAND');
     }
 
     private function escapeLiteral(string $value): string

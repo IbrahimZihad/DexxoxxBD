@@ -273,14 +273,17 @@ final class App
 
         Session::start();
 
+        // Shared before dispatch, not after: controllers render during dispatch,
+        // and so does the error page, so a view that reads $request, $authUser or
+        // $errors would otherwise find them missing.
+        $this->shareViewGlobals();
+
         try {
             $this->translator->setLocale(LocaleResolver::resolve($this->request));
             $response = $this->router->dispatch($this->request);
         } catch (Throwable $exception) {
             $response = ErrorHandler::toResponse($exception, $this->request);
         }
-
-        $this->shareViewGlobals();
 
         return $response->withSecurityHeaders($this->cspNonce);
     }
