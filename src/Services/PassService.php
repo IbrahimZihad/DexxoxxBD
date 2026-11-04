@@ -33,6 +33,18 @@ final class PassService
                 return false; // already granted
             }
 
+            // 'failed'/'cancelled' are deliberate outcomes; a late settlement on one
+            // of those goes to the logs for a human instead of silently minting passes.
+            if (in_array($order['status'], ['failed', 'cancelled'], true)) {
+                Logger::warning('Settlement arrived for a closed order', [
+                    'order_id' => $orderId,
+                    'status' => $order['status'],
+                    'via' => $via,
+                ]);
+
+                return false;
+            }
+
             $pdo->prepare("UPDATE orders SET status = 'paid', paid_at = NOW() WHERE id = ?")->execute([$orderId]);
 
             $items = OrderRepository::items($orderId);
