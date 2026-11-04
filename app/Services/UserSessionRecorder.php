@@ -87,7 +87,8 @@ final class UserSessionRecorder
     public function revokeAll(int $userId): int
     {
         return $this->db->statement(
-            'UPDATE user_sessions SET revoked_at = NOW(), updated_at = NOW() WHERE user_id = :uid AND revoked_at IS NULL',
+            'UPDATE user_sessions SET revoked_at = NOW(), updated_at = NOW() '
+                . 'WHERE user_id = :uid AND revoked_at IS NULL',
             ['uid' => $userId]
         );
     }

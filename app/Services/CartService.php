@@ -88,7 +88,11 @@ final class CartService
         $quantity = max(1, $quantity);
         $cart = $this->currentCart(true);
         if ($cart === []) {
-            return ['ok' => false, 'message' => 'We could not start a cart for you. Please sign in and retry.', 'remaining' => null];
+            return [
+                'ok' => false,
+                'message' => 'We could not start a cart for you. Please sign in and retry.',
+                'remaining' => null,
+            ];
         }
 
         $product = $this->products->findPublishable($productId);

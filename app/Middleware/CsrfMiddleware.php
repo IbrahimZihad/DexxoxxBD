@@ -50,7 +50,11 @@ final class CsrfMiddleware
                 Session::rotateCsrfOnFailure();
 
                 if ($request->wantsJson()) {
-                    return Response::json(['ok' => false, 'message' => 'Your session expired. Please refresh and try again.', 'code' => 'csrf_mismatch'], 419);
+                    return Response::json([
+                        'ok' => false,
+                        'message' => 'Your session expired. Please refresh and try again.',
+                        'code' => 'csrf_mismatch',
+                    ], 419);
                 }
 
                 flash('danger', 'Your session expired for security reasons. Please try again.');

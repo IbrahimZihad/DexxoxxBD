@@ -92,7 +92,8 @@ final class SettingService
             ]);
         } else {
             $this->db->statement(
-                'UPDATE settings SET `value` = :value, `type` = :type, group_name = :group, updated_at = NOW() WHERE `key` = :key',
+                'UPDATE settings SET `value` = :value, `type` = :type, group_name = :group, '
+                    . 'updated_at = NOW() WHERE `key` = :key',
                 [
                     'value' => self::serialize($value),
                     'type' => $type,
@@ -143,7 +144,8 @@ final class SettingService
         }
 
         $this->db->statement(
-            'UPDATE settings SET `value` = :value, `type` = :type, group_name = :group, updated_at = NOW() WHERE `key` = :key',
+            'UPDATE settings SET `value` = :value, `type` = :type, group_name = :group, '
+                . 'updated_at = NOW() WHERE `key` = :key',
             ['value' => self::serialize($value), 'type' => $type, 'group' => $group, 'key' => $key]
         );
     }

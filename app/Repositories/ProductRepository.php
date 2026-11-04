@@ -138,7 +138,8 @@ final class ProductRepository
 
         if (!empty($filters['category'])) {
             $slug = (string) $filters['category'];
-            $where[] = '(c.slug = :category OR c.parent_id = (SELECT pc.id FROM categories pc WHERE pc.slug = :category2))';
+            $where[] = '(c.slug = :category OR c.parent_id = '
+                . '(SELECT pc.id FROM categories pc WHERE pc.slug = :category2))';
             $bindings['category'] = $slug;
             $bindings['category2'] = $slug;
         }
@@ -149,7 +150,10 @@ final class ProductRepository
         }
 
         if (!empty($filters['brand'])) {
-            $brands = array_values(array_filter((array) $filters['brand'], static fn ($v): bool => $v !== '' && $v !== null));
+            $brands = array_values(array_filter(
+                (array) $filters['brand'],
+                static fn ($v): bool => $v !== '' && $v !== null
+            ));
             if ($brands !== []) {
                 $placeholders = [];
                 foreach ($brands as $index => $brand) {

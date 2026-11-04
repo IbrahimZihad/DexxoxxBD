@@ -120,13 +120,23 @@ final class Logger
     /** Never log secrets even if a caller passes them in. */
     private static function redact(string $value): string
     {
-        $pattern = '/(password|secret|token|api_key|authorization|store_password)(["\']?\s*[:=]\s*["\']?)([^"\'\s,}]{3})[^,}"\']*/i';
+        $pattern = '/(password|secret|token|api_key|authorization|store_password)'
+            . '(["\']?\s*[:=]\s*["\']?)([^"\'\s,}]{3})[^,}"\']*/i';
         return preg_replace($pattern, '$1$2***REDACTED***', $value) ?? $value;
     }
 
     private static function redactArray(array $context): array
     {
-        $sensitive = ['password', 'password_confirmation', 'secret', 'token', 'api_key', 'store_password', 'authorization', 'card'];
+        $sensitive = [
+            'password',
+            'password_confirmation',
+            'secret',
+            'token',
+            'api_key',
+            'store_password',
+            'authorization',
+            'card',
+        ];
         foreach ($context as $key => $value) {
             if (in_array(strtolower((string) $key), $sensitive, true)) {
                 $context[$key] = '***REDACTED***';

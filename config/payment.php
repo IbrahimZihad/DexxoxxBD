@@ -37,7 +37,8 @@ return [
             'label' => 'Nagad',
             'description' => 'Pay with your Nagad account.',
             'enabled' => filter_var(env('PAYMENT_NAGAD_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
-            'instructions' => 'Complete the payment on Nagad’s secure page. We confirm it from the notification Nagad sends us.',
+            'instructions' => 'Complete the payment on Nagad’s secure page. '
+                . 'We confirm it from the notification Nagad sends us.',
             'icon' => 'smartphone',
             'sort' => 3,
             'fee_type' => 'flat',
@@ -47,7 +48,8 @@ return [
             'label' => 'Card / SSLCommerz',
             'description' => 'Visa, Mastercard, Amex, DBBL and other local cards.',
             'enabled' => filter_var(env('PAYMENT_SSLCOMMERZ_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
-            'instructions' => 'Card details are entered only on the SSLCommerz page. We never see or store your card number.',
+            'instructions' => 'Card details are entered only on the SSLCommerz page. '
+                . 'We never see or store your card number.',
             'icon' => 'credit-card',
             'sort' => 4,
             'fee_type' => 'percent',
@@ -75,7 +77,8 @@ return [
             'label' => 'Manual / office payment',
             'description' => 'Pay in cash at our office when the order is processed.',
             'enabled' => filter_var(env('PAYMENT_MANUAL_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
-            'instructions' => 'Our team contacts you to arrange payment and delivery. Nothing is released until the payment is marked verified.',
+            'instructions' => 'Our team contacts you to arrange payment and delivery. '
+                . 'Nothing is released until the payment is marked verified.',
             'icon' => 'banknote',
             'sort' => 6,
             'fee_type' => 'flat',

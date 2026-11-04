@@ -56,7 +56,8 @@ final class ProductVariation extends Model
         foreach ($rows as &$row) {
             $row['available_stock'] = $this->stockFor($row, (int) $row['inventory_count']);
             $row['percent_off'] = percent_off($row['compare_price'] ?? $row['price'], $row['price']);
-            $row['duration_label'] = $this->durationLabel((int) $row['duration_days'], (string) ($row['duration_label'] ?? ''));
+            $declared = (string) ($row['duration_label'] ?? '');
+            $row['duration_label'] = $this->durationLabel((int) $row['duration_days'], $declared);
         }
         unset($row);
 

@@ -147,7 +147,10 @@ if ($writeEnv) {
     }
 
     if ($missing !== []) {
-        fwrite(STDERR, 'These keys are not in .env.example, so .env was not written: ' . implode(', ', $missing) . ".\n");
+        fwrite(
+            STDERR,
+            'These keys are not in .env.example, so .env was not written: ' . implode(', ', $missing) . ".\n"
+        );
         exit(1);
     }
 

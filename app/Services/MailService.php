@@ -255,7 +255,11 @@ final class MailService
             'From: ' => sprintf('%s <%s>', $this->encodeHeader($fromName), $from),
             'To: ' => $toName === '' ? $to : sprintf('%s <%s>', $this->encodeHeader($toName), $to),
             'Subject: ' => $this->encodeHeader($subject),
-            'Message-ID: ' => sprintf('<%s@%s>', bin2hex(random_bytes(12)), parse_url((string) Config::get('app.url', ''), PHP_URL_HOST) ?: 'localhost'),
+            'Message-ID: ' => sprintf(
+                '<%s@%s>',
+                bin2hex(random_bytes(12)),
+                (string) (parse_url((string) Config::get('app.url', ''), PHP_URL_HOST) ?: 'localhost')
+            ),
             'MIME-Version: ' => '1.0',
             'Content-Type: ' => 'multipart/alternative; boundary="' . $boundary . '"',
             'X-Mailer: ' => 'DexxoxxBD Marketplace',

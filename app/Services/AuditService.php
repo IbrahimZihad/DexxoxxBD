@@ -84,7 +84,16 @@ final class AuditService
     private static function encode(array $values): string
     {
         $filtered = [];
-        $sensitive = ['password', 'password_confirmation', 'token', 'secret', 'api_key', 'credential', 'encrypted_payload', 'card'];
+        $sensitive = [
+            'password',
+            'password_confirmation',
+            'token',
+            'secret',
+            'api_key',
+            'credential',
+            'encrypted_payload',
+            'card',
+        ];
 
         foreach ($values as $key => $value) {
             $lower = strtolower((string) $key);

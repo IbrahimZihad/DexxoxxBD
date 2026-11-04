@@ -238,7 +238,10 @@ final class Validator
             if (preg_match('/^1[3-9]\d{8}$/', $normalized) === 1) {
                 return true;
             }
-            $this->addError($field, $this->message($field, 'phone', 'Enter a valid Bangladeshi mobile number (e.g. 01712345678).'));
+            $this->addError(
+                $field,
+                $this->message($field, 'phone', 'Enter a valid Bangladeshi mobile number (e.g. 01712345678).')
+            );
             return false;
         }
 
@@ -469,7 +472,8 @@ final class Validator
             throw new InvalidArgumentException('unique rule needs a table name.');
         }
 
-        $sql = 'SELECT COUNT(*) FROM `' . self::identifier($table) . '` WHERE `' . self::identifier((string) $column) . '` = :value';
+        $sql = 'SELECT COUNT(*) FROM `' . self::identifier($table) . '`'
+            . ' WHERE `' . self::identifier((string) $column) . '` = :value';
         $bindings = ['value' => (string) $value];
 
         if ($ignoreId !== null && $ignoreId !== '') {
