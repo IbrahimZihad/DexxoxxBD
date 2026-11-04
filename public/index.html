@@ -3,124 +3,149 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DexxoxxBD — Every subscription, one pass</title>
+<title>DexxoxxBD — digital subscriptions, delivered in minutes</title>
+<meta name="description" content="Netflix, Spotify, ChatGPT, Canva and more — paid for you, activated in minutes, with bKash, Nagad, Rocket or card.">
+<meta name="theme-color" content="#1B2340">
+<link rel="icon" href="assets/img/dexxoxxbd.jpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="assets/css/custom.css">
-<script>
-  tailwind.config = { theme: { extend: { colors: {
-    bg:'#EEF1F6', surface:'#FFFFFF', ink:'#12172B', inksoft:'#4A5068',
-    navy:'#1B2340', gold:'#E8A33D', goldink:'#7A4E0E', teal:'#1F9C8B', line:'#C9CEDB', danger:'#D64545'
-  } } } };
-</script>
+<link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body class="bg-bg text-ink font-sans">
+<body>
 
-<div id="toast-wrap" class="fixed top-4 right-4 z-50 flex flex-col gap-2 items-end"></div>
+<div id="announcement" class="announcement hide">
+  <div class="announcement-track" id="announcement-track"></div>
+</div>
 
-<!-- NAV -->
-<header class="sticky top-0 z-40 bg-bg/90 backdrop-blur border-b border-line">
-  <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="index.html" class="flex items-center gap-2 font-display font-bold text-xl">
-      <img
-        src="assets/img/dexxoxxbd.jpeg"
-        alt="DexxoxxBD Logo"
-        class="w-10 h-10 rounded-full object-cover"
-      >
+<header class="site-header">
+  <nav class="shell site-nav" aria-label="Main">
+    <a class="brand" href="index.html">
+      <img src="assets/img/dexxoxxbd.jpeg" alt="DexxoxxBD logo">
       DexxoxxBD
     </a>
-    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-inksoft">
-      <a href="products.html" class="hover:text-ink transition">Products</a>
-      <a href="plans.html" class="hover:text-ink transition">Passes</a>
-      <a href="dashboard.html" class="hover:text-ink transition">My Passes</a>
-      <a href="admin/index.html" id="nav-admin-link" class="hidden hover:text-ink transition">Admin</a>
+    <div class="nav-links">
+      <a href="products.html">Products</a>
+      <a href="plans.html">Passes</a>
+      <a href="dashboard.html">My passes</a>
+      <a href="admin/index.html" id="nav-admin-link" class="hide">Admin</a>
     </div>
-    <div class="flex items-center gap-4">
-      <a href="cart.html" class="relative p-2 hover:bg-line/40 rounded-full transition" aria-label="Cart">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-        <span id="cart-badge" class="hidden absolute -top-1 -right-1 bg-gold text-goldink text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"></span>
+    <div class="nav-actions">
+      <a class="icon-btn" href="cart.html" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.3 2.3c-.6.6-.2 1.7.7 1.7H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        <span id="cart-badge" class="badge-count hide">0</span>
       </a>
-      <div id="nav-auth-area" class="flex items-center gap-4"></div>
+      <div id="nav-auth-area" class="cluster"></div>
     </div>
   </nav>
 </header>
 
-<!-- HERO -->
-<section class="max-w-7xl mx-auto px-6 pt-16 pb-20 grid md:grid-cols-2 gap-12 items-center">
-  <div>
-    <span class="stamp text-teal mb-6">On-demand digital access</span>
-    <h1 class="font-display text-5xl md:text-6xl font-bold leading-[1.05] mt-4">
-      Every subscription,<br> one <span class="text-gold-ink" style="color:#7A4E0E">pass</span> away.
-    </h1>
-    <p class="mt-6 text-lg text-inksoft max-w-md">
-      Buy Netflix, Spotify, ChatGPT Plus and more individually — or grab a DexxoxxBD membership pass for ongoing access and cashback. Pay locally with SSLCommerz.
-    </p>
-    <div class="mt-8 flex flex-wrap gap-4">
-      <a href="products.html" class="bg-navy text-white font-semibold px-6 py-3 rounded-full hover:bg-ink transition">Browse products</a>
-      <a href="plans.html" class="border border-line font-semibold px-6 py-3 rounded-full hover:border-ink transition">See passes</a>
-    </div>
-  </div>
-
-  <!-- Signature pass card -->
-  <div class="pass-card p-6 shadow-xl rotate-1">
-    <div class="flex justify-between items-start">
-      <div>
-        <p class="text-xs uppercase tracking-widest text-inksoft font-mono">DexxoxxBD Membership</p>
-        <p class="font-display text-2xl font-bold mt-1">Plus Pass</p>
+<main class="page">
+  <section class="shell hero">
+    <div>
+      <p class="eyebrow reveal">Dhaka · since 2021</p>
+      <h1 class="hero-title reveal">Every subscription you want, <em>active in minutes</em>.</h1>
+      <p class="lead reveal">Pay with bKash, Nagad, Rocket or card. We top up the service, send you the pass code, and keep it renewed so you never lose access mid-season.</p>
+      <div class="cluster reveal">
+        <a class="btn btn-primary btn-lg" href="products.html">Browse products</a>
+        <a class="btn btn-ghost btn-lg" href="plans.html">See membership passes</a>
       </div>
-      <span class="stamp text-gold" style="color:#E8A33D">Most Popular</span>
-    </div>
-    <div class="pass-perforation my-6"></div>
-    <div class="flex justify-between items-end">
-      <div>
-        <p class="text-xs text-inksoft">Valid for</p>
-        <p class="font-semibold">30 days</p>
-      </div>
-      <div>
-        <p class="text-xs text-inksoft text-right">Holder</p>
-        <p class="font-semibold text-right">Ibrahim Z.</p>
-      </div>
-      <div class="text-right">
-        <p class="text-xs text-inksoft">Price</p>
-        <p class="font-display text-2xl font-bold">Tk 499</p>
+      <div class="hero-stats reveal">
+        <div class="hero-stat"><span class="num" id="stat-products">0</span><span class="lbl">products live</span></div>
+        <div class="hero-stat"><span class="num" id="stat-passes">0</span><span class="lbl">passes issued</span></div>
+        <div class="hero-stat"><span class="num" id="stat-minutes">12</span><span class="lbl">minute average activation</span></div>
       </div>
     </div>
-    <p class="pass-code text-xs text-inksoft mt-6">PASS-9F3C21A0</p>
+    <div class="hero-orbit">
+      <div class="pass-card float" id="hero-card-a">
+        <div class="card-pad">
+          <p class="eyebrow">Now playing</p>
+          <h3 class="display">Netflix Premium</h3>
+          <p class="muted">4K · four screens</p>
+          <div class="cluster-between">
+            <span class="pass-code">DXB-4K7P-9M2Q</span>
+            <span class="stamp stamp-teal stamp-pulse">active</span>
+          </div>
+        </div>
+        <div class="pass-perforation"></div>
+        <div class="card-pad">
+          <div class="barcode" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="pass-card float float-slow" id="hero-card-b">
+        <div class="card-pad stack-tight">
+          <p class="eyebrow">Next renewal</p>
+          <h3 class="display">ChatGPT Plus</h3>
+          <div class="progress"><div class="progress-bar" id="hero-progress"></div></div>
+          <p class="muted mono">23 days left</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell section">
+    <div class="cluster-between">
+      <div>
+        <p class="eyebrow reveal">Handpicked</p>
+        <h2 class="reveal">Featured this week</h2>
+      </div>
+      <a class="btn btn-quiet btn-sm reveal" href="products.html">All products →</a>
+    </div>
+    <div class="grid-cards section" id="featured-grid"></div>
+  </section>
+
+  <section class="shell section">
+    <p class="eyebrow reveal">Categories</p>
+    <h2 class="reveal">Browse by what you watch, play or build</h2>
+    <div class="filters" id="category-chips"></div>
+  </section>
+
+  <section class="shell section">
+    <div class="panel reveal">
+      <h2>How DexxoxxBD works</h2>
+      <div class="steps">
+        <div class="step"><strong>Pick a product</strong>Add it to your cart — prices include the activation fee.</div>
+        <div class="step"><strong>Pay your way</strong>Card through SSLCommerz, or send bKash, Nagad, Rocket or a bank transfer.</div>
+        <div class="step"><strong>Get your pass</strong>A DXB code lands in your dashboard as soon as payment clears.</div>
+        <div class="step"><strong>We keep it alive</strong>Renewals are one click, and expiring passes warn you a week ahead.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell section">
+    <div class="feature-row">
+      <div class="feature reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 2l7 4v6c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6l7-4z"/></svg></div>
+        <h3>Verified, never shared</h3>
+        <p>Every subscription is topped up on a dedicated account. No borrowed logins, no sudden lockouts.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M13 2L4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5z"/></svg></div>
+        <h3>Activation in minutes</h3>
+        <p>Card payments unlock instantly. Manual transfers are reviewed within 30 minutes during business hours.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <h3>Real humans on support</h3>
+        <p>Chat and email every day from 10:00 to 22:00. If a service fails us, we refund or replace it.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <h3>Honest taka pricing</h3>
+        <p>What you see is what you pay — no service charge added at the last step.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="shell">
+    <p>© <span id="footer-year">2026</span> DexxoxxBD · Digital goods marketplace, Dhaka, Bangladesh.</p>
+    <p class="mono">bKash · Nagad · Rocket · SSLCommerz</p>
   </div>
-</section>
-
-<!-- CATEGORIES -->
-<section class="max-w-7xl mx-auto px-6 pb-16">
-  <h2 class="font-display text-2xl font-bold mb-6">Shop by category</h2>
-  <div id="category-strip" class="grid grid-cols-2 md:grid-cols-5 gap-4"></div>
-</section>
-
-<!-- FEATURED PRODUCTS -->
-<section class="max-w-7xl mx-auto px-6 pb-20">
-  <div class="flex items-center justify-between mb-6">
-    <h2 class="font-display text-2xl font-bold">Featured passes</h2>
-    <a href="products.html" class="text-sm font-semibold text-navy hover:underline">View all →</a>
-  </div>
-  <div id="featured-products" class="grid sm:grid-cols-2 md:grid-cols-4 gap-6"></div>
-</section>
-
-<!-- PLANS TEASER -->
-<section class="bg-navy text-white py-20">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-    <h2 class="font-display text-3xl font-bold">Not sure what to pick? Get a DexxoxxBD membership.</h2>
-    <p class="text-white/70 mt-3 max-w-xl mx-auto">One recurring pass unlocks discounts and priority checkout across every product on the marketplace.</p>
-    <a href="plans.html" class="inline-block mt-8 bg-gold text-goldink font-semibold px-6 py-3 rounded-full hover:brightness-95 transition">Compare passes</a>
-  </div>
-</section>
-
-<footer class="max-w-7xl mx-auto px-6 py-10 text-sm text-inksoft flex flex-wrap justify-between gap-4">
-  <p>© 2021 DexxoxxBD. Digital goods marketplace, Dhaka, Bangladesh.</p>
-  <p>Payments secured by SSLCommerz.</p>
 </footer>
 
-<script src="assets/js/api.js"></script>
-<script src="assets/js/main.js"></script>
+<script src="assets/js/core.js"></script>
 <script src="assets/js/home.js"></script>
 </body>
 </html>

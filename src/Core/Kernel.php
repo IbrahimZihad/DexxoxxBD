@@ -60,7 +60,7 @@ final class Kernel
         }
 
         $route = $routes[$key];
-        $methods = $route['methods'] ?? ['GET'];
+        $methods = $route['methods'] ?? (preg_match('/^(GET|POST|PUT|PATCH|DELETE|OPTIONS)$/', (string) $key) ? [(string) $key] : ['GET']);
 
         if (!in_array($this->request->method(), $methods, true)) {
             throw new HttpException(405, 'Method not allowed.', ['allow' => implode(', ', $methods)]);

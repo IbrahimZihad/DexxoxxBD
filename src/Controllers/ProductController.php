@@ -10,6 +10,7 @@ use App\Http\Response;
 use App\Repositories\CategoryRepository;
 use App\Repositories\ProductRepository;
 use App\Security\Sanitizer;
+use App\Security\Validator;
 
 final class ProductController extends Controller
 {
@@ -137,7 +138,7 @@ final class ProductController extends Controller
         }
 
         $input = array_intersect_key($body, $scoped);
-        $validated = \App\Security\Validator::make($input, $scoped, [
+        $validated = Validator::make($input, $scoped, [
             'compare_at_price' => 'compare-at price',
             'duration_days' => 'duration',
             'image_url' => 'image URL',

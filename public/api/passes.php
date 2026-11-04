@@ -1,16 +1,7 @@
 <?php
-require_once __DIR__ . '/../../config/config.php';
-$db = get_db();
-$user = require_login();
+declare(strict_types=1);
 
-if (method() !== 'GET') fail('Method not allowed.', 405);
+/** Thin dispatcher - routing and guards live in routes/api.php. */
+$kernel = require dirname(__DIR__, 2) . '/src/bootstrap.php';
 
-$stmt = $db->prepare("
-    UPDATE user_subscriptions SET status = 'expired'
-    WHERE user_id = ? AND status = 'active' AND ends_at < CURDATE()
-");
-$stmt->execute([$user['id']]);
-
-$stmt = $db->prepare('SELECT * FROM user_subscriptions WHERE user_id = ? ORDER BY created_at DESC');
-$stmt->execute([$user['id']]);
-respond(['passes' => $stmt->fetchAll()]);
+$kernel->handle('passes.php')->send();

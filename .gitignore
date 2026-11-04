@@ -1,6 +1,20 @@
-# Environment variables
+# Environment variables — never commit real credentials
 .env
+.env.local
+.env.*.local
 
-# Optional: ignore all environment files
-.env.*
-!.env.example
+# Runtime artefacts
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# Local tooling / OS noise
+/vendor/
+/node_modules/
+/.idea/
+/.vscode/
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Archives that were previously committed by accident
+public.zip

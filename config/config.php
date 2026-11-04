@@ -57,11 +57,12 @@ return [
     ],
 
     'rate_limits' => [
+        'read' => ['max' => Env::int('THROTTLE_READ_HITS', 240), 'window' => 60],
         'auth.login' => ['max' => Env::int('THROTTLE_LOGIN_ATTEMPTS', 8), 'window' => 900],
-        'auth.register' => ['max' => 5, 'window' => 3600],
-        'orders.create' => ['max' => 30, 'window' => 3600],
-        'payment.init' => ['max' => 20, 'window' => 3600],
-        'payment.manual' => ['max' => 20, 'window' => 3600],
+        'auth.register' => ['max' => Env::int('THROTTLE_REGISTER_ATTEMPTS', 5), 'window' => 3600],
+        'orders.create' => ['max' => Env::int('THROTTLE_ORDER_CREATES', 30), 'window' => 3600],
+        'payment.init' => ['max' => Env::int('THROTTLE_PAYMENT_INITIATIONS', 20), 'window' => 3600],
+        'payment.manual' => ['max' => Env::int('THROTTLE_MANUAL_PAYMENT_SUBMITS', 20), 'window' => 3600],
         'default' => ['max' => 600, 'window' => 60],
     ],
 

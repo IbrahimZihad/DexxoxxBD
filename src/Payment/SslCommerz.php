@@ -96,7 +96,7 @@ final class SslCommerz
         }
 
         if (($response['status'] ?? '') !== 'SUCCESS' || empty($response['GatewayPageURL'])) {
-            Logger::warning('Gateway refused session', ['tran_id' => $tranId, 'reason' => (string) ($response['failedreason'] ?? 'unknown')));
+            Logger::warning('Gateway refused session', ['tran_id' => $tranId, 'reason' => (string) ($response['failedreason'] ?? 'unknown')]);
 
             return ['ok' => false, 'error' => 'The payment gateway refused this transaction. Please try another method.'];
         }

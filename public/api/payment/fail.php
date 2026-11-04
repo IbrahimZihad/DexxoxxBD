@@ -1,12 +1,7 @@
 <?php
-require_once __DIR__ . '/../../../config/config.php';
-$db = get_db();
+declare(strict_types=1);
 
-$tranId = $_POST['tran_id'] ?? $_GET['tran_id'] ?? '';
-if ($tranId) {
-    $db->prepare('UPDATE payments SET status = "failed" WHERE tran_id = ?')->execute([$tranId]);
-}
+/** Thin dispatcher - routing and guards live in routes/api.php. */
+$kernel = require dirname(__DIR__, 3) . '/src/bootstrap.php';
 
-$frontendBase = FRONTEND_URL;
-header('Location: ' . rtrim($frontendBase, '/') . '/checkout.html?payment=fail');
-exit;
+$kernel->handle('payment/fail.php')->send();

@@ -10,6 +10,12 @@ final class Database
 {
     private static ?PDO $pdo = null;
 
+    /** Used by the CLI tools so migrate/seed share one connection with the repositories. */
+    public static function adopt(PDO $pdo): void
+    {
+        self::$pdo = $pdo;
+    }
+
     public static function pdo(): PDO
     {
         if (self::$pdo instanceof PDO) {

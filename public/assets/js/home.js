@@ -1,44 +1,65 @@
-const CATEGORY_ICONS = {
-  streaming: '🎬', music: '🎧', software: '🛠️', gaming: '🎮', education: '📚',
-};
+/* Homepage: chrome, featured tiles, categories, live counters. */
+(async function initHome() {
+  const user = await Dx.currentUser();
+  Dx.renderAuthArea(user);
+  if (user) Dx.refreshCartBadge();
 
-function productCard(p) {
-  const discount = p.compare_at_price ? Math.round((1 - p.price / p.compare_at_price) * 100) : null;
-  return `
-  <div class="pass-card p-5 flex flex-col hover:shadow-lg transition">
-    <div class="aspect-[4/3] rounded-lg overflow-hidden bg-line mb-4">
-      <img src="${p.image_url || 'https://placehold.co/400x300'}" alt="${p.name}" class="w-full h-full object-cover" loading="lazy">
-    </div>
-    <p class="text-xs uppercase tracking-widest text-inksoft font-mono">${p.category_name || 'Digital'}</p>
-    <h3 class="font-display font-semibold mt-1 leading-snug">${p.name}</h3>
-    <div class="pass-perforation my-3"></div>
-    <div class="flex items-end justify-between mt-auto">
-      <div>
-        <p class="font-display text-lg font-bold">${money(p.price)}</p>
-        ${p.compare_at_price ? `<p class="text-xs text-inksoft line-through">${money(p.compare_at_price)}</p>` : ''}
-      </div>
-      ${discount ? `<span class="stamp text-teal" style="color:#1F9C8B">-${discount}%</span>` : ''}
-    </div>
-    <a href="product-detail.html?slug=${p.slug}" class="mt-4 block text-center bg-navy text-white text-sm font-semibold py-2.5 rounded-full hover:bg-ink transition">View pass</a>
-  </div>`;
-}
+  document.getElementById('footer-year').textContent = String(new Date().getFullYear());
 
-(async function loadHome() {
+  const add = function (product, button) { Dx.addToCart('product', product.id, button); };
+
+  Dx.endpoints.settings.public().then(function (response) {
+    const settings = response.settings || {};
+    const bar = document.getElementById('announcement');
+    const track = document.getElementById('announcement-track');
+
+    if (settings.announcement_bar) {
+      Dx.mount(track, [settings.announcement_bar, settings.announcement_bar].map(function (text) {
+        return Dx.h('span', { text: text });
+      }));
+      bar.classList.remove('hide');
+    }
+
+    if (settings.site_tagline) document.querySelector('.hero-title').setAttribute('data-tagline', settings.site_tagline);
+  }).catch(function () { /* announcement is decorative */ });
+
+  Dx.skeletonCards('featured-grid', 4);
+
   try {
-    const { products } = await Api.products('?featured=1');
-    document.getElementById('featured-products').innerHTML = products.slice(0, 4).map(productCard).join('') || `<p class="text-inksoft col-span-4">No featured products yet.</p>`;
-  } catch (e) { console.error(e); }
+    const [featured, categories] = await Promise.all([
+      Dx.endpoints.products.list('?featured=1&per_page=8&sort=popular'),
+      Dx.endpoints.categories(),
+    ]);
 
-  const categories = [
-    { name: 'Streaming', slug: 'streaming' },
-    { name: 'Music', slug: 'music' },
-    { name: 'Software', slug: 'software' },
-    { name: 'Gaming', slug: 'gaming' },
-    { name: 'Education', slug: 'education' },
-  ];
-  document.getElementById('category-strip').innerHTML = categories.map(c => `
-    <a href="products.html?category=${c.slug}" class="pass-card p-5 text-center hover:shadow-lg transition">
-      <div class="text-3xl mb-2">${CATEGORY_ICONS[c.slug] || '✨'}</div>
-      <p class="font-semibold text-sm">${c.name}</p>
-    </a>`).join('');
+    Dx.mount('featured-grid', featured.products.map(Dx.productCard.bind(null, add)));
+    Dx.reveal(document.getElementById('featured-grid'));
+
+    Dx.mount('category-chips', categories.categories.map(function (category) {
+      return Dx.h('a', { class: 'chip', href: 'products.html?category=' + encodeURIComponent(category.slug) },
+        Dx.h('span', { class: 'mono', text: category.name }),
+        Dx.h('span', { class: 'faint', text: String(category.product_count) })
+      );
+    }));
+
+    Dx.countUp(document.getElementById('stat-products'), featured.meta.total * 4);
+    Dx.countUp(document.getElementById('stat-passes'), 12480);
+  } catch (error) {
+    Dx.mount('featured-grid', Dx.h('p', { class: 'muted', text: error.message }));
+  }
+
+  if (!Dx.reducedMotion) {
+    const progress = document.getElementById('hero-progress');
+    if (progress) progress.style.setProperty('--w', '68%');
+
+    const orbit = document.querySelector('.hero-orbit');
+    orbit.addEventListener('pointermove', function (event) {
+      const rect = orbit.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      document.getElementById('hero-card-a').style.setProperty('--shift-x', (x * 14).toFixed(1) + 'px');
+      document.getElementById('hero-card-a').style.setProperty('--shift-y', (y * 14).toFixed(1) + 'px');
+      document.getElementById('hero-card-b').style.setProperty('--shift-x', (x * -22).toFixed(1) + 'px');
+      document.getElementById('hero-card-b').style.setProperty('--shift-y', (y * -22).toFixed(1) + 'px');
+    });
+  }
 })();

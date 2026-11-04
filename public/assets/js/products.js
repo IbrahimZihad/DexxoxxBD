@@ -1,64 +1,127 @@
-function productGridCard(p) {
-  const discount = p.compare_at_price ? Math.round((1 - p.price / p.compare_at_price) * 100) : null;
-  return `
-  <div class="pass-card p-5 flex flex-col hover:shadow-lg transition">
-    <a href="product-detail.html?slug=${p.slug}" class="block aspect-[4/3] rounded-lg overflow-hidden bg-line mb-4">
-      <img src="${p.image_url || 'https://placehold.co/400x300'}" alt="${p.name}" class="w-full h-full object-cover" loading="lazy">
-    </a>
-    <p class="text-xs uppercase tracking-widest text-inksoft font-mono">${p.category_name || 'Digital'}</p>
-    <a href="product-detail.html?slug=${p.slug}"><h3 class="font-display font-semibold mt-1 leading-snug hover:underline">${p.name}</h3></a>
-    <div class="pass-perforation my-3"></div>
-    <div class="flex items-end justify-between mt-auto">
-      <div>
-        <p class="font-display text-lg font-bold">${money(p.price)}</p>
-        ${p.compare_at_price ? `<p class="text-xs text-inksoft line-through">${money(p.compare_at_price)}</p>` : ''}
-      </div>
-      ${discount ? `<span class="stamp text-teal" style="color:#1F9C8B">-${discount}%</span>` : ''}
-    </div>
-    <button data-id="${p.id}" class="add-to-cart-btn mt-4 bg-navy text-white text-sm font-semibold py-2.5 rounded-full hover:bg-ink transition">Add to cart</button>
-  </div>`;
-}
+/* Catalogue: search, category filter, sort and paging — all server-side queries. */
+(function initProducts() {
+  const state = {
+    category: Dx.queryParam('category') || '',
+    q: '',
+    sort: 'newest',
+    page: 1,
+    perPage: 12,
+  };
 
-async function loadProducts() {
-  const grid = document.getElementById('product-grid');
-  const params = new URLSearchParams(location.search);
-  const q = document.getElementById('search-input').value.trim();
-  const category = document.getElementById('category-select').value;
+  const add = function (product, button) { Dx.addToCart('product', product.id, button); };
 
-  const qs = new URLSearchParams();
-  if (q) qs.set('q', q);
-  if (category) qs.set('category', category);
+  let debounce;
 
-  grid.innerHTML = `<p class="text-inksoft col-span-4">Loading products…</p>`;
-  try {
-    const { products } = await Api.products('?' + qs.toString());
-    grid.innerHTML = products.length
-      ? products.map(productGridCard).join('')
-      : `<p class="text-inksoft col-span-4">No products match your search.</p>`;
+  async function load() {
+    const grid = document.getElementById('product-grid');
+    Dx.skeletonCards(grid, 6);
 
-    grid.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        try {
-          await Api.cart.add('product', Number(btn.dataset.id), 1);
-          toast('Added to cart.', 'success');
-          initNav();
-        } catch (e) {
-          if (e.status === 401) { toast('Please sign in first.', 'error'); setTimeout(() => location.href = 'login.html', 800); }
-          else toast(e.message, 'error');
-        }
-      });
+    const params = new URLSearchParams({
+      per_page: String(state.perPage),
+      page: String(state.page),
+      sort: state.sort,
     });
-  } catch (e) {
-    grid.innerHTML = `<p class="text-danger col-span-4">${e.message}</p>`;
+    if (state.category) params.set('category', state.category);
+    if (state.q) params.set('q', state.q);
+
+    try {
+      const response = await Dx.endpoints.products.list('?' + params.toString());
+      const meta = response.meta || { total: response.products.length, page: 1, last_page: 1 };
+
+      if (!response.products.length) {
+        Dx.mount(grid, Dx.h('div', { class: 'empty' },
+          Dx.h('h3', { text: 'Nothing matches that search' }),
+          Dx.h('p', { class: 'muted', text: 'Try another keyword, or clear the category filter.' })
+        ));
+      } else {
+        Dx.mount(grid, response.products.map(function (product) { return Dx.productCard(product, add); }));
+        Dx.reveal(grid);
+      }
+
+      document.getElementById('result-count').textContent =
+        meta.total + ' product' + (meta.total === 1 ? '' : 's') +
+        (state.category ? ' in ' + state.category : '') +
+        (state.q ? ' matching “' + state.q + '”' : '');
+
+      renderPager(meta);
+    } catch (error) {
+      Dx.mount(grid, Dx.h('p', { class: 'banner banner-danger', text: error.message }));
+    }
   }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(location.search);
-  if (params.get('category')) document.getElementById('category-select').value = params.get('category');
+  function renderPager(meta) {
+    const pager = document.getElementById('pagination');
+    if (meta.last_page <= 1) { Dx.clear(pager); return; }
 
-  loadProducts();
-  document.getElementById('category-select').addEventListener('change', loadProducts);
-  let t;
-  document.getElementById('search-input').addEventListener('input', () => { clearTimeout(t); t = setTimeout(loadProducts, 350); });
-});
+    const goto = function (page) {
+      state.page = page;
+      load();
+      window.scrollTo({ top: 0, behavior: Dx.reducedMotion ? 'auto' : 'smooth' });
+    };
+
+    Dx.mount(pager, [
+      Dx.h('span', { text: 'Page ' + meta.page + ' of ' + meta.last_page }),
+      Dx.h('div', { class: 'pager' },
+        Dx.h('button', { class: 'btn btn-ghost btn-sm', type: 'button', disabled: meta.page <= 1, onclick: function () { goto(meta.page - 1); } }, 'Previous'),
+        Dx.h('button', { class: 'btn btn-ghost btn-sm', type: 'button', disabled: meta.page >= meta.last_page, onclick: function () { goto(meta.page + 1); } }, 'Next')
+      )
+    ]);
+  }
+
+  async function loadCategories() {
+    try {
+      const response = await Dx.endpoints.categories();
+      const chips = [Dx.h('button', { class: 'chip', type: 'button', dataset: { category: '' } }, 'All products')];
+
+      response.categories.forEach(function (category) {
+        chips.push(Dx.h('button', { class: 'chip', type: 'button', dataset: { category: category.slug } },
+          category.name,
+          Dx.h('span', { class: 'faint', text: String(category.product_count) })
+        ));
+      });
+
+      Dx.mount('category-chips', chips);
+      syncChips();
+
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          state.category = chip.dataset.category;
+          state.page = 1;
+          syncChips();
+          load();
+        });
+      });
+    } catch (error) { /* chips are optional */ }
+  }
+
+  function syncChips() {
+    document.querySelectorAll('#category-chips .chip').forEach(function (chip) {
+      chip.setAttribute('aria-pressed', String(chip.dataset.category === state.category));
+    });
+  }
+
+  document.getElementById('search-input').addEventListener('input', function (event) {
+    clearTimeout(debounce);
+    debounce = setTimeout(function () {
+      state.q = event.target.value.trim();
+      state.page = 1;
+      load();
+    }, 280);
+  });
+
+  document.getElementById('sort-select').addEventListener('change', function (event) {
+    state.sort = event.target.value;
+    state.page = 1;
+    load();
+  });
+
+  document.getElementById('footer-year').textContent = String(new Date().getFullYear());
+
+  (async function boot() {
+    const user = await Dx.currentUser();
+    Dx.renderAuthArea(user);
+    if (user) Dx.refreshCartBadge();
+    loadCategories();
+    load();
+  })();
+})();

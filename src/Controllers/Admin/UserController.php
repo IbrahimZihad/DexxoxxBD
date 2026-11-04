@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Auth\Auth;
+use App\Core\Database;
 use App\Core\Logger;
 use App\Exceptions\HttpException;
 use App\Http\Controller;
@@ -73,7 +74,7 @@ final class UserController extends Controller
 
     private function activeAdmins(): int
     {
-        $row = \App\Core\Database::selectOne("SELECT COUNT(*) AS c FROM users WHERE role = 'admin' AND status = 'active'");
+        $row = Database::selectOne("SELECT COUNT(*) AS c FROM users WHERE role = 'admin' AND status = 'active'");
 
         return (int) ($row['c'] ?? 0);
     }

@@ -16,7 +16,11 @@ use App\Security\Sanitizer;
 
 final class AuthController extends Controller
 {
-    private const DUMMY_HASH = '$2b$12$C6UzMDM.H6dfI/f/IKcEeO7ZBpQL0kj0uXm1n1n1n1n1n1n1n1n1n'; // cost-12 bcrypt shape
+    /**
+     * A real cost-12 bcrypt digest of a throwaway string. Unknown emails are
+     * verified against it so a login attempt always costs the same hash time.
+     */
+    private const DUMMY_HASH = '$2y$12$NyAq5/gT2P11vK77XSx5X.gIODaGMtoMDc4iHjM4s8/SgjHQRCpqC';
 
     public function token(): Response
     {

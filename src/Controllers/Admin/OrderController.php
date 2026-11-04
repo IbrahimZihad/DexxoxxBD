@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Auth\Auth;
+use App\Core\Logger;
 use App\Exceptions\HttpException;
 use App\Http\Controller;
 use App\Http\Response;
@@ -95,7 +96,7 @@ final class OrderController extends Controller
 
         (new OrderService())->release($id, $status);
 
-        \App\Core\Logger::info('Admin closed order', ['order_id' => $id, 'status' => $status, 'admin_id' => (int) $admin['id']]);
+        Logger::info('Admin closed order', ['order_id' => $id, 'status' => $status, 'admin_id' => (int) $admin['id']]);
 
         return $this->json(['ok' => true, 'changed' => true]);
     }

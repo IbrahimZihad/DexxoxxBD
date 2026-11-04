@@ -36,7 +36,8 @@ final class Env
             }
 
             if ($key !== '') {
-                self::$file[$key] = $value;
+                // Keys are upper-cased so app_env=... and APP_ENV=... behave alike.
+                self::$file[strtoupper($key)] = $value;
             }
         }
     }
