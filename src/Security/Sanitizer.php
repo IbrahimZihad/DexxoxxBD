@@ -45,12 +45,24 @@ final class Sanitizer
         return self::cut(preg_replace('/[^0-9A-Za-z]/', '', self::raw($value)) ?? '', $max);
     }
 
-    /** Remote image/document URLs only over HTTPS; anything else becomes null. */
+    /**
+     * Asset URLs: https (http on a dev box) or a root-relative path on this site.
+     * Protocol-relative //host, javascript:, data: and anything malformed become null.
+     */
     public static function url(mixed $value): ?string
     {
         $url = trim(self::raw($value));
 
-        if ($url === '' || strlen($url) > 500 || !filter_var($url, FILTER_VALIDATE_URL)) {
+        if ($url === '' || strlen($url) > 500) {
+            return null;
+        }
+
+        if (str_starts_with($url, '/') && !str_starts_with($url, '//')) {
+            // Local artwork: no space, quote, backslash or control character may survive.
+            return preg_match('/[\s"\'\\\\\x00-\x1F]/', $url) === 1 ? null : $url;
+        }
+
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
             return null;
         }
 
