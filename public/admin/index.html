@@ -3,68 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Admin sign in — DexxoxxBD</title>
+<link rel="icon" href="../assets/img/dexxoxxbd.jpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="../assets/css/custom.css">
-<script>
-  tailwind.config = { theme: { extend: { colors: {
-    bg:'#EEF1F6', surface:'#FFFFFF', ink:'#12172B', inksoft:'#4A5068',
-    navy:'#1B2340', gold:'#E8A33D', goldink:'#7A4E0E', teal:'#1F9C8B', line:'#C9CEDB', danger:'#D64545'
-  } } } };
-</script>
+<link rel="stylesheet" href="../assets/css/app.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
 </head>
-<body class="bg-navy text-white min-h-screen flex items-center justify-center px-6">
-<div id="toast-wrap" class="fixed top-4 right-4 z-50 flex flex-col gap-2 items-end"></div>
+<body class="admin-login">
 
-<div class="bg-surface text-ink pass-card p-8 w-full max-w-md">
-  <div class="flex items-center gap-2 font-display font-bold text-xl mb-1">
-    <img
-        src="../assets/img/dexxoxxbd.jpeg"
-        alt="DexxoxxBD Logo"
-        class="w-10 h-10 rounded-full object-cover"
-      >
-    DexxoxxBD Admin
+  <div class="auth-card card card-pad reveal-scale">
+    <a class="brand" href="../index.html"><img src="../assets/img/dexxoxxbd.jpeg" alt="DexxoxxBD logo">DexxoxxBD</a>
+    <p class="eyebrow">Staff only</p>
+    <h1>Admin sign in</h1>
+    <p class="muted">Accounts here are role-checked on every request — a customer cannot reach this panel.</p>
+
+    <div class="banner banner-danger hide section" id="login-error" role="alert"></div>
+
+    <form class="stack" id="login-form" novalidate autocomplete="on">
+      <label class="field">
+        <span class="label">Email</span>
+        <input class="input" type="email" name="email" autocomplete="email" inputmode="email" required>
+        <span class="error-text" data-for="email"></span>
+      </label>
+
+      <label class="field">
+        <span class="label">Password</span>
+        <input class="input" type="password" name="password" autocomplete="current-password" required>
+        <span class="error-text" data-for="password"></span>
+      </label>
+
+      <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in to the panel</button>
+    </form>
+
+    <p class="auth-alt">Shopping instead? <a class="link-strong" href="../index.html">Back to the storefront</a></p>
+    <p class="hint center">Repeated failures pause this IP for a few minutes.</p>
   </div>
-  <p class="text-inksoft text-sm">Sign in with an admin account.</p>
 
-  <form id="admin-login-form" class="space-y-4 mt-6">
-    <div>
-      <label class="text-sm font-medium">Email</label>
-      <input id="email" type="email" required value="admin@DexxoxxBD.test" class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
-    </div>
-    <div>
-      <label class="text-sm font-medium">Password</label>
-      <input id="password" type="password" required class="w-full mt-1 border border-line rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold">
-    </div>
-    <button type="submit" class="w-full bg-navy text-white font-semibold py-3 rounded-full hover:bg-ink transition">Sign in</button>
-  </form>
-  <a href="../index.html" class="text-xs text-navy font-semibold hover:underline mt-2 block">← Back to storefront</a>
-</div>
-
-<script src="assets/js/admin-api.js"></script>
-<script>
-  (async () => {
-    try {
-      const { user } = await AdminApi.me();
-      if (user.role === 'admin') location.href = 'dashboard.html';
-    } catch { /* not logged in, stay here */ }
-  })();
-
-  document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    btn.disabled = true; btn.textContent = 'Signing in…';
-    try {
-      const { user } = await AdminApi.login({ email: document.getElementById('email').value.trim(), password: document.getElementById('password').value });
-      if (user.role !== 'admin') { adminToast('This account does not have admin access.', 'error'); btn.disabled = false; btn.textContent = 'Sign in'; return; }
-      location.href = 'dashboard.html';
-    } catch (err) {
-      adminToast(err.message, 'error');
-      btn.disabled = false; btn.textContent = 'Sign in';
-    }
-  });
-</script>
+<script src="../assets/js/core.js"></script>
+<script src="../assets/js/auth.js"></script>
 </body>
 </html>

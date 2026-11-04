@@ -18,7 +18,26 @@ final class SettingController extends Controller
 
     public function adminIndex(): Response
     {
-        return $this->json(['settings' => SettingRepository::all(false)]);
+        $values = SettingRepository::all(false);
+        $groups = [];
+
+        foreach (SettingRepository::definitions() as $row) {
+            $group = (string) $row['group_name'];
+
+            if (!isset($groups[$group])) {
+                $groups[$group] = [];
+            }
+
+            $groups[$group][] = [
+                'key' => (string) $row['key_name'],
+                'label' => (string) $row['label'],
+                'type' => (string) $row['type'],
+                'is_public' => (int) $row['is_public'] === 1,
+                'value' => $values[$row['key_name']] ?? $row['value'],
+            ];
+        }
+
+        return $this->json(['settings' => $values, 'groups' => $groups]);
     }
 
     public function update(): Response

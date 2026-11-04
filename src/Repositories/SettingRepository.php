@@ -26,6 +26,12 @@ final class SettingRepository
         return $settings;
     }
 
+    /** Full rows, including the labels and groups the admin screen renders. */
+    public static function definitions(): array
+    {
+        return Database::select('SELECT key_name, value, type, group_name, label, is_public FROM settings ORDER BY group_name, key_name');
+    }
+
     public static function get(string $key, mixed $default = null): mixed
     {
         $row = Database::selectOne('SELECT value, type FROM settings WHERE key_name = ? LIMIT 1', [$key]);
