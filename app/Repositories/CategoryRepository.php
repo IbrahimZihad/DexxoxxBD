@@ -109,9 +109,13 @@ final class CategoryRepository
     /** @return array<string, mixed>|null */
     public function bySlug(string $slug): ?array
     {
+        // A parent category sells nothing directly: its plans live in the children,
+        // so the count has to walk one level down or the header reads "0 products".
         $category = $this->db->selectOne(
             'SELECT c.*, (SELECT COUNT(*) FROM products p
-                          WHERE p.category_id = c.id AND p.status = \'published\' AND p.deleted_at IS NULL) AS product_count
+                          WHERE p.status = \'published\' AND p.deleted_at IS NULL
+                            AND (p.category_id = c.id OR p.category_id IN
+                                 (SELECT k.id FROM categories k WHERE k.parent_id = c.id))) AS product_count
              FROM categories c
              WHERE c.slug = :slug AND c.status = 1 AND c.deleted_at IS NULL',
             ['slug' => $slug]
