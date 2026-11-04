@@ -33,7 +33,7 @@ final class CategorySeeder extends AbstractSeed
         $fallback = $category['name'] . ' plans available for monthly and annual terms.';
         $description = (string) ($category['description'] ?? $fallback);
 
-        return Seed::upsert($this, 'categories', ['slug' => $category['slug']], [
+        $rows = [
             'parent_id' => $parentId,
             'name' => $category['name'],
             'description' => $description,
@@ -43,6 +43,15 @@ final class CategorySeeder extends AbstractSeed
             'status' => 1,
             'meta_title' => $category['name'] . ' subscriptions - DexxoxxBD',
             'meta_description' => mb_substr($description, 0, 155),
-        ]);
+        ];
+
+        // generate_catalog_art.php draws one tile per root slug and nothing for
+        // children, so only shelves that have artwork get a path stored; a NULL
+        // image makes the views fall back to the neutral placeholder.
+        if ($isParent) {
+            $rows['image'] = 'categories/' . $category['slug'] . '.svg';
+        }
+
+        return Seed::upsert($this, 'categories', ['slug' => $category['slug']], $rows);
     }
 }
