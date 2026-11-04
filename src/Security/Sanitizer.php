@@ -58,8 +58,12 @@ final class Sanitizer
         }
 
         if (str_starts_with($url, '/') && !str_starts_with($url, '//')) {
-            // Local artwork: no space, quote, backslash or control character may survive.
-            return preg_match('/[\s"\'\\\\\x00-\x1F]/', $url) === 1 ? null : $url;
+            // Local artwork: no traversal, space, quote, backslash or control character.
+            if (str_contains($url, '..') || preg_match('/[\s"\'\\\\\x00-\x1F]/', $url) === 1) {
+                return null;
+            }
+
+            return $url;
         }
 
         if (!filter_var($url, FILTER_VALIDATE_URL)) {

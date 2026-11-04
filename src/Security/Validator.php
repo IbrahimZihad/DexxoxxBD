@@ -150,8 +150,8 @@ final class Validator
                 return true;
 
             case 'url':
-                if (!filter_var($value, FILTER_VALIDATE_URL) || strlen((string) $value) > 500) {
-                    return $this->fail($field, 'must be a valid URL.');
+                if (Sanitizer::url($value) === null) {
+                    return $this->fail($field, 'must be an https URL or a path on this site, e.g. /assets/img/logo.svg.');
                 }
                 return true;
 

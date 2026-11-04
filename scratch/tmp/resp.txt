@@ -1,1 +1,1 @@
-{"error":"Please check the highlighted fields.","errors":{"name":"Name is required.","price":"Price is required.","duration_days":"Duration is required."}}
+{"error":"Please check the highlighted fields.","errors":{"image_url":"Image URL must be a valid URL."}}
