@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Development-time scaffolder: compiles the declarative table specs in
  * database/schema/*.php into versioned Phinx migration files.
@@ -13,6 +11,8 @@ declare(strict_types=1);
  *
  * Usage: php scripts/maintenance/generate_migrations.php [--force]
  */
+
+declare(strict_types=1);
 
 $root = dirname(__DIR__, 2);
 $targetDir = $root . '/database/migrations';
@@ -47,7 +47,12 @@ $previousVersion = 0;
 foreach ($tables as $spec) {
     foreach (['version', 'class', 'table', 'comment', 'columns'] as $required) {
         if (!isset($spec[$required])) {
-            $errors[] = sprintf('%s: missing "%s.": %s', $spec['_origin'], $required, json_encode($spec['table'] ?? '?'));
+            $errors[] = sprintf(
+                '%s: missing "%s.": %s',
+                $spec['_origin'],
+                $required,
+                json_encode($spec['table'] ?? '?')
+            );
         }
     }
 
@@ -113,7 +118,12 @@ foreach ($byTable as $table => $spec) {
 
         $referenced = (string) ($key['table'] ?? '');
         if (!isset($byTable[$referenced])) {
-            $errors[] = sprintf('%s: foreign key %s points at unknown table %s.', $table, $key['name'] ?? '?', $referenced);
+            $errors[] = sprintf(
+                '%s: foreign key %s points at unknown table %s.',
+                $table,
+                $key['name'] ?? '?',
+                $referenced
+            );
             continue;
         }
 
@@ -123,7 +133,13 @@ foreach ($byTable as $table => $spec) {
 
         foreach ($referencedColumns as $column) {
             if (!in_array($column, $byTable[$referenced]['_columns'], true)) {
-                $errors[] = sprintf('%s: foreign key %s references unknown column %s.%s.', $table, $key['name'] ?? '?', $referenced, $column);
+                $errors[] = sprintf(
+                    '%s: foreign key %s references unknown column %s.%s.',
+                    $table,
+                    $key['name'] ?? '?',
+                    $referenced,
+                    $column
+                );
             }
         }
 

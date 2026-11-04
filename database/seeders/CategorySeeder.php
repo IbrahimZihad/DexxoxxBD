@@ -30,7 +30,8 @@ final class CategorySeeder extends AbstractSeed
      */
     private function store(array $category, ?int $parentId, int $sortOrder, bool $isParent): int
     {
-        $description = (string) ($category['description'] ?? $category['name'] . ' plans available for monthly and annual terms.');
+        $fallback = $category['name'] . ' plans available for monthly and annual terms.';
+        $description = (string) ($category['description'] ?? $fallback);
 
         return Seed::upsert($this, 'categories', ['slug' => $category['slug']], [
             'parent_id' => $parentId,

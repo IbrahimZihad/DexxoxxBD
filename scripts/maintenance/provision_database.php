@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Local/CI database provisioning.
  *
@@ -18,6 +16,8 @@ declare(strict_types=1);
  * `--with-env` also writes .env from .env.example, generating APP_KEY,
  * INVENTORY_ENCRYPTION_KEY, PAYMENT_WEBHOOK_TOKEN and the app user password.
  */
+
+declare(strict_types=1);
 
 $basePath = dirname(__DIR__, 2);
 require $basePath . '/vendor/autoload.php';

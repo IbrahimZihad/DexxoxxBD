@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Guarded development reset: drop every table in the configured schema, rebuild
  * it from the Phinx migrations, and re-seed the demo data.
@@ -15,6 +13,8 @@ declare(strict_types=1);
  * Add --keep-data to only re-run the migrations and seeders on top of what is
  * already there (that is safe, because both are idempotent).
  */
+
+declare(strict_types=1);
 
 use App\Core\Config;
 
@@ -59,11 +59,25 @@ $database = (string) ($environment === 'test'
 
 echo 'Target environment: ' . $environment . ' (database ' . ($database !== '' ? $database : 'unknown') . ")\n";
 
-$run = static function (array $argv) use ($php): int {
+/**
+ * passthru() takes one shell string, so every token is whitelisted before it is
+ * quoted. The pattern excludes every cmd.exe metacharacter, which means an
+ * unexpected --env value aborts here instead of becoming shell syntax.
+ */
+$safeToken = static function (string $token) use ($abort): string {
+    if (preg_match('/^[A-Za-z0-9.:_\/\\\\-]+=?[A-Za-z0-9.:_\/\\\\-]*$/', $token) !== 1) {
+        $abort('the token "' . $token . '" is not a safe path, option or migration name.');
+    }
+
+    return '"' . $token . '"';
+};
+
+$run = static function (array $argv) use ($php, $safeToken): int {
     array_unshift($argv, $php);
-    echo '+ ' . implode(' ', $argv) . "\n";
+    $command = implode(' ', array_map($safeToken, $argv));
+    echo '+ ' . $command . "\n";
     // Never pass secrets through the command line, so Phinx re-reads .env itself.
-    passthru($argv, $status);
+    passthru($command, $status);
 
     return (int) $status;
 };
@@ -87,7 +101,7 @@ if ($run([$phinx, 'status', '-e', $environment]) !== 0) {
     exit(1);
 }
 
-if ($run([$basePath . '/scripts/maintenance/verify_schema.php']) !== 0) {
+if ($run([$basePath . '/scripts/maintenance/verify_schema.php', '--env=' . $environment]) !== 0) {
     exit(1);
 }
 

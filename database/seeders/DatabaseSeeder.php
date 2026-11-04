@@ -32,6 +32,18 @@ final class DatabaseSeeder extends AbstractSeed
         CMSSeeder::class,
     ];
 
+    /** Printed after seeding so a fresh install can be checked without a database client. */
+    private const SUMMARY = [
+        'users',
+        'categories',
+        'brands',
+        'products',
+        'product_variations',
+        'coupons',
+        'pages',
+        'settings',
+    ];
+
     /**
      * @return list<string>
      */
@@ -55,9 +67,10 @@ final class DatabaseSeeder extends AbstractSeed
             Seed::ensure($this, $class);
         }
 
-        foreach (['users', 'categories', 'brands', 'products', 'product_variations', 'coupons', 'pages', 'settings'] as $table) {
+        foreach (self::SUMMARY as $table) {
             $count = (int) Seed::scalar($this, 'SELECT COUNT(*) FROM `' . $table . '`');
-            $this->getOutput()->writeln(sprintf('  %-20s %6d rows', $table, $count), OutputInterface::VERBOSITY_NORMAL);
+            $line = sprintf('  %-20s %6d rows', $table, $count);
+            $this->getOutput()->writeln($line, OutputInterface::VERBOSITY_NORMAL);
         }
     }
 }

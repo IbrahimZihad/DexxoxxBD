@@ -12,6 +12,15 @@ use Phinx\Seed\AbstractSeed;
  */
 final class ProductSeeder extends AbstractSeed
 {
+    /** Keyword to Bootstrap-Icon map for the feature bullets. */
+    private const FEATURE_ICONS = [
+        'bi-people' => ['seat', 'team', 'device', 'user'],
+        'bi-stars' => ['credit', 'generation', 'render', 'bonus'],
+        'bi-cloud-download' => ['offline', 'download', 'backup', 'storage'],
+        'bi-shield-check' => ['warranty', 'support', 'protection', 'no-logs', 'privacy'],
+        'bi-clock-history' => ['history', 'retention', 'renewal', 'expiry'],
+    ];
+
     public function run(): void
     {
         Seed::ensure($this, CategorySeeder::class);
@@ -51,7 +60,13 @@ final class ProductSeeder extends AbstractSeed
             $idsBySlug[$product['slug']] = $id;
             $categoryOf[$product['slug']] = (string) $product['category'];
 
-            $this->fill($id, (string) $product['slug'], (string) $product['name'], (array) $product['features'], (array) $product['faqs']);
+            $this->fill(
+                $id,
+                (string) $product['slug'],
+                (string) $product['name'],
+                (array) $product['features'],
+                (array) $product['faqs']
+            );
         }
 
         $this->relate($idsBySlug, $categoryOf, $products);
@@ -169,13 +184,7 @@ final class ProductSeeder extends AbstractSeed
     private function iconFor(string $label): string
     {
         $needle = mb_strtolower($label);
-        foreach ([
-            'bi-people' => ['seat', 'team', 'device', 'user'],
-            'bi-stars' => ['credit', 'generation', 'render', 'bonus'],
-            'bi-cloud-download' => ['offline', 'download', 'backup', 'storage'],
-            'bi-shield-check' => ['warranty', 'support', 'protection', 'no-logs', 'privacy'],
-            'bi-clock-history' => ['history', 'retention', 'renewal', 'expiry'],
-        ] as $icon => $keywords) {
+        foreach (self::FEATURE_ICONS as $icon => $keywords) {
             foreach ($keywords as $keyword) {
                 if (str_contains($needle, $keyword)) {
                     return $icon;

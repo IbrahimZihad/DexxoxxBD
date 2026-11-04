@@ -212,11 +212,9 @@ final class Seed
             $params[] = self::value($value);
         }
 
-        self::statement(
-            $seed,
-            'INSERT INTO ' . self::wrap($table) . ' (' . implode(', ', $columns) . ') VALUES (' . implode(', ', $placeholders) . ')',
-            $params
-        );
+        $sql = 'INSERT INTO ' . self::wrap($table) . ' (' . implode(', ', $columns) . ')'
+            . ' VALUES (' . implode(', ', $placeholders) . ')';
+        self::statement($seed, $sql, $params);
 
         $id = (int) self::pdo($seed)->lastInsertId();
         if ($id === 0) {

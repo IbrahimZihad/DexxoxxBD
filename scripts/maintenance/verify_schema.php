@@ -1,18 +1,24 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Schema verifier. Reads the same specs that produced the migrations and checks
  * them against information_schema, so a hand-edited migration, a partial
  * migrate or a wrong engine/collation fails loudly instead of surprising the
  * app later.
  *
- * Usage: php scripts/maintenance/verify_schema.php [--quiet]
+ * Usage: php scripts/maintenance/verify_schema.php [--quiet] [--env=test]
  */
+
+declare(strict_types=1);
 
 $quiet = in_array('--quiet', array_slice($argv, 1), true);
 $root = dirname(__DIR__, 2);
+
+// --env=test checks the dedicated PHPUnit schema; anything else keeps the
+// configured development connection.
+if (in_array('--env=test', array_slice($argv, 1), true)) {
+    putenv('DB_CONNECTION_TARGET=mysql_test');
+}
 
 /** @var \App\Core\Database $db */
 $db = require $root . '/bootstrap/database.php';
@@ -164,9 +170,16 @@ foreach ($specs as $table => $spec) {
             $failures[] = sprintf('%s: foreign key %s is missing', $table, $name);
             continue;
         }
+        $expectedTable = (string) $key['table'];
         $referenced = (string) $fkByName[$name]['REFERENCED_TABLE_NAME'];
-        if ($referenced !== (string) $key['table']) {
-            $failures[] = sprintf('%s: foreign key %s points at %s, expected %s', $table, $name, $referenced, (string) $key['table']);
+        if ($referenced !== $expectedTable) {
+            $failures[] = sprintf(
+                '%s: foreign key %s points at %s, expected %s',
+                $table,
+                $name,
+                $referenced,
+                $expectedTable
+            );
         }
     }
 }
