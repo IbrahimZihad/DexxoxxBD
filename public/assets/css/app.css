@@ -602,8 +602,10 @@ body.is-locked { overflow: hidden; }
 }
 .cart-line { display: flex; gap: var(--sp-3); align-items: center; padding-block: var(--sp-3); border-bottom: 1px dashed var(--line-soft); }
 .cart-line:last-child { border-bottom: 0; }
+.cart-line.is-unavailable { opacity: .58; background: var(--surface-2); border-radius: var(--radius-s); }
 .cart-line-thumb { width: 46px; height: 46px; border-radius: var(--radius-s); overflow: hidden; background: var(--bg-deep); flex: none; }
 .cart-line-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.text-right { text-align: right; }
 
 /* ---------- 14. Summary / checkout ---------- */
 .summary-line { display: flex; justify-content: space-between; gap: var(--sp-3); font-size: .92rem; padding-block: var(--sp-2); }

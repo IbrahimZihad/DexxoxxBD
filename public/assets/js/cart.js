@@ -1,61 +1,135 @@
-function cartRow(item) {
-  return `
-  <div class="pass-card p-4 flex items-center gap-4" data-cart-id="${item.cart_item_id}">
-    <div class="w-16 h-16 rounded-lg overflow-hidden bg-line shrink-0">
-      ${item.image ? `<img src="${item.image}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-xl">🎫</div>`}
-    </div>
-    <div class="flex-1 min-w-0">
-      <p class="text-xs uppercase tracking-widest text-inksoft font-mono">${item.type}</p>
-      <p class="font-semibold truncate">${item.name}</p>
-      <p class="text-sm text-inksoft">${money(item.unit_price)} · ${item.duration_days} days</p>
-    </div>
-    <div class="flex items-center gap-2">
-      <button class="qty-btn w-8 h-8 rounded-full border border-line hover:border-ink" data-cart-id="${item.cart_item_id}" data-delta="-1">−</button>
-      <span class="w-6 text-center font-mono">${item.quantity}</span>
-      <button class="qty-btn w-8 h-8 rounded-full border border-line hover:border-ink" data-cart-id="${item.cart_item_id}" data-delta="1">+</button>
-    </div>
-    <p class="font-display font-semibold w-24 text-right">${money(item.line_total)}</p>
-    <button class="remove-btn text-inksoft hover:text-danger" data-cart-id="${item.cart_item_id}" aria-label="Remove">✕</button>
-  </div>`;
-}
+/* Cart: every price shown here is the server's, this page only sends ids and quantities. */
+(function initCart() {
+  let items = [];
+  let subtotal = 0;
 
-async function renderCart() {
-  const wrap = document.getElementById('cart-items');
-  try {
-    const { items, total } = await Api.cart.list();
-    wrap.innerHTML = items.length
-      ? items.map(cartRow).join('')
-      : `<div class="pass-card p-10 text-center text-inksoft">Your cart is empty. <a href="products.html" class="text-navy font-semibold hover:underline">Browse products →</a></div>`;
+  function lineRow(item) {
+    const media = Dx.h('div', { class: 'cart-line-thumb' });
+    if (item.image) media.appendChild(Dx.h('img', { src: item.image, alt: '', loading: 'lazy' }));
+    else media.appendChild(Dx.h('span', { class: 'avatar avatar-gold', text: Dx.initials(item.name) }));
 
-    document.getElementById('cart-subtotal').textContent = money(total);
-    document.getElementById('cart-total').textContent = money(total);
+    const qty = Dx.h('div', { class: 'qty' });
+    const output = Dx.h('output', { text: String(item.quantity), 'aria-label': item.name + ' quantity' });
 
-    const checkoutBtn = document.getElementById('checkout-btn');
-    if (!items.length) { checkoutBtn.classList.add('pointer-events-none', 'opacity-50'); }
-    else { checkoutBtn.classList.remove('pointer-events-none', 'opacity-50'); }
+    const send = function (next, button) {
+      if (next === item.quantity || next < 1) return;
+      Dx.setBusy(button, true, '…');
+      Dx.endpoints.cart.update(item.cart_item_id, { quantity: next })
+        .then(draw)
+        .catch(function (error) {
+          Dx.setBusy(button, false);
+          Dx.toast(error.message, 'error');
+        });
+    };
 
-    wrap.querySelectorAll('.qty-btn').forEach(btn => btn.addEventListener('click', async () => {
-      const row = items.find(i => i.cart_item_id === Number(btn.dataset.cartId));
-      const newQty = row.quantity + Number(btn.dataset.delta);
-      if (newQty < 1) return;
-      await Api.cart.update(btn.dataset.cartId, newQty);
-      renderCart();
-      initNav();
-    }));
+    qty.append(
+      Dx.h('button', { type: 'button', 'aria-label': 'Decrease ' + item.name, onclick: function () { send(item.quantity - 1, this); } }, '−'),
+      output,
+      Dx.h('button', { type: 'button', 'aria-label': 'Increase ' + item.name, onclick: function () { send(item.quantity + 1, this); } }, '+')
+    );
 
-    wrap.querySelectorAll('.remove-btn').forEach(btn => btn.addEventListener('click', async () => {
-      await Api.cart.remove(btn.dataset.cartId);
-      toast('Removed from cart.', 'info');
-      renderCart();
-      initNav();
-    }));
-  } catch (e) {
-    if (e.status === 401) {
-      wrap.innerHTML = `<div class="pass-card p-10 text-center text-inksoft">Please <a href="login.html" class="text-navy font-semibold hover:underline">sign in</a> to view your cart.</div>`;
-    } else {
-      wrap.innerHTML = `<p class="text-danger">${e.message}</p>`;
-    }
+    if (!item.available) Dx.clear(qty);
+
+    const title = Dx.h('h3', { class: 'cell-title' }, item.slug
+      ? Dx.h('a', { class: 'link-strong', href: 'product-detail.html?slug=' + encodeURIComponent(item.slug) }, item.name)
+      : Dx.h('span', { text: item.name })
+    );
+
+    return Dx.h('div', { class: 'cart-line' + (item.available ? '' : ' is-unavailable') },
+      media,
+      Dx.h('div', { class: 'stack-tight' },
+        title,
+        Dx.h('div', { class: 'cluster' },
+          Dx.h('span', { class: 'tile-meta mono', text: (item.type === 'plan' ? 'Bundle' : 'Pass') + ' · ' + item.duration_days + ' days' }),
+          item.available ? null : Dx.h('span', { class: 'stamp stamp-danger' }, 'Unavailable')
+        )
+      ),
+      Dx.h('div', { class: 'spacer' }),
+      qty,
+      Dx.h('div', { class: 'stack-tight text-right' },
+        Dx.h('span', { class: 'price', text: Dx.money(item.line_total) }),
+        Dx.h('span', { class: 'tile-meta', text: Dx.money(item.unit_price) + ' each' })
+      ),
+      Dx.h('button', {
+        class: 'icon-btn', type: 'button', 'aria-label': 'Remove ' + item.name,
+        onclick: function () {
+          Dx.endpoints.cart.remove(item.cart_item_id).then(draw).catch(function (error) { Dx.toast(error.message, 'error'); });
+        }
+      }, Dx.h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'aria-hidden': 'true' },
+        Dx.h('path', { d: 'M3 6h18M8 6V4h8v2m-9 0 1 14h6l1-14' }))
+      )
+    );
   }
-}
 
-document.addEventListener('DOMContentLoaded', renderCart);
+  function draw(snapshot) {
+    items = snapshot.items;
+    subtotal = Number(snapshot.subtotal);
+
+    const body = document.getElementById('cart-body');
+    Dx.clear(body);
+
+    if (!items.length) {
+      body.append(Dx.h('div', { class: 'empty' },
+        Dx.h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.6', 'stroke-linecap': 'round', 'aria-hidden': 'true' },
+          Dx.h('path', { d: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13 5.4 5M7 13l-2.3 2.3c-.6.6-.2 1.7.7 1.7H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z' })),
+        Dx.h('h3', { text: 'Nothing in the cart yet' }),
+        Dx.h('p', { class: 'muted', text: 'Add a bundle or pick a single service — activation is instant either way.' }),
+        Dx.h('div', { class: 'cluster' },
+          Dx.h('a', { class: 'btn btn-primary', href: 'plans.html' }, 'See passes'),
+          Dx.h('a', { class: 'btn btn-ghost', href: 'products.html' }, 'Browse products')
+        )
+      ));
+      Dx.clear('cart-summary');
+      document.getElementById('clear-cart').classList.add('hide');
+      document.getElementById('cart-note').classList.add('hide');
+      return;
+    }
+
+    body.append(Dx.h('div', { class: 'stack' }, items.map(lineRow)));
+
+    const blocked = items.some(function (item) { return !item.available; });
+    const checkout = Dx.h('a', { class: 'btn btn-gold btn-lg btn-block', href: blocked ? '#cart-body' : 'checkout.html' },
+      blocked ? 'Remove unavailable items' : 'Checkout · ' + Dx.money(subtotal)
+    );
+    if (blocked) checkout.addEventListener('click', function (event) { event.preventDefault(); Dx.toast('Remove the greyed-out items to continue.', 'error'); });
+
+    Dx.mount('cart-summary', Dx.h('div', { class: 'panel stack' },
+      Dx.h('h2', { class: 'display' }, 'Order summary'),
+      Dx.h('div', { class: 'stack-tight' },
+        Dx.h('div', { class: 'summary-line' }, Dx.h('span', { text: 'Items' }), Dx.h('span', { class: 'mono', text: String(snapshot.count) })),
+        Dx.h('div', { class: 'summary-line' }, Dx.h('span', { text: 'Subtotal' }), Dx.h('span', { class: 'mono', text: Dx.money(subtotal) })),
+        Dx.h('div', { class: 'summary-line' }, Dx.h('span', { text: 'Activation' }), Dx.h('span', { class: 'mono', text: 'Free' }))
+      ),
+      Dx.h('div', { class: 'summary-total' }, Dx.h('span', { text: 'Total' }), Dx.h('span', { text: Dx.money(subtotal) })),
+      checkout,
+      Dx.h('p', { class: 'hint', text: 'Pay by card, bKash, Nagad, Rocket or bank transfer on the next step.' })
+    ));
+
+    document.getElementById('clear-cart').classList.toggle('hide', false);
+    document.getElementById('cart-badge').textContent = String(snapshot.count);
+  }
+
+  function load() {
+    return Dx.endpoints.cart.list().then(draw).catch(function (error) {
+      Dx.mount('cart-body', Dx.h('div', { class: 'banner banner-danger', text: error.message }));
+    });
+  }
+
+  (async function boot() {
+    const user = await Dx.requireUser('login.html?next=' + encodeURIComponent('cart.html'));
+    Dx.renderAuthArea(user);
+    document.getElementById('footer-year').textContent = String(new Date().getFullYear());
+
+    Dx.skeletonCards('cart-body', 2, 'skeleton-line');
+    Dx.mount('cart-summary', Dx.h('div', { class: 'panel' }, Dx.h('div', { class: 'skeleton skeleton-text' }), Dx.h('div', { class: 'skeleton skeleton-cell' })));
+
+    document.getElementById('clear-cart').addEventListener('click', function () {
+      Dx.setBusy(this, true, 'Emptying…');
+      Dx.endpoints.cart.clear()
+        .then(function () { Dx.toast('Cart emptied.'); Dx.refreshCartBadge(); draw({ items: [], subtotal: 0, count: 0 }); })
+        .catch(function (error) { Dx.setBusy(this, false); Dx.toast(error.message, 'error'); }.bind(this));
+    });
+
+    await load();
+  })();
+})();
