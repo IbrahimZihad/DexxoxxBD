@@ -1,48 +1,117 @@
-function userRow(u) {
-  return `
-  <tr class="border-b border-line/60 last:border-0">
-    <td class="p-4 font-medium">${u.name}</td>
-    <td class="p-4 text-inksoft">${u.email}</td>
-    <td class="p-4">
-      <select class="role-select border border-line rounded-lg px-2 py-1 text-xs" data-id="${u.id}">
-        <option value="customer" ${u.role === 'customer' ? 'selected' : ''}>Customer</option>
-        <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
-      </select>
-    </td>
-    <td class="p-4">
-      <span class="stamp" style="color:${u.status === 'active' ? '#1F9C8B' : '#D64545'}">${u.status}</span>
-    </td>
-    <td class="p-4 text-inksoft">${fmtDate(u.created_at)}</td>
-    <td class="p-4 text-right">
-      <button class="toggle-status-btn text-sm font-semibold ${u.status === 'active' ? 'text-danger' : 'text-teal'} hover:underline" data-id="${u.id}" data-next="${u.status === 'active' ? 'suspended' : 'active'}">
-        ${u.status === 'active' ? 'Suspend' : 'Reactivate'}
-      </button>
-    </td>
-  </tr>`;
-}
+/* Admin accounts: role and status only — passwords are never readable here. */
+(async function initAdminUsers() {
+  const me = await Admin.start('Accounts', 'Everyone with a login, customers and staff.', 'users.html');
 
-async function loadUsers() {
-  const tbody = document.getElementById('users-tbody');
-  try {
-    const { users } = await AdminApi.users.list();
-    tbody.innerHTML = users.map(userRow).join('');
+  let state = { q: '', page: 1 };
 
-    tbody.querySelectorAll('.role-select').forEach(sel => sel.addEventListener('change', async () => {
-      try { await AdminApi.users.update(sel.dataset.id, { role: sel.value }); adminToast('Role updated.', 'success'); }
-      catch (e) { adminToast(e.message, 'error'); loadUsers(); }
-    }));
+  Admin.outlet(Dx.h('div', { class: 'panel stack' },
+    Dx.h('div', { class: 'filters' },
+      Dx.h('input', { class: 'input', id: 'user-search', type: 'search', placeholder: 'Name or email…', autocomplete: 'off' }),
+      Dx.h('span', { class: 'hint', text: 'Suspended accounts cannot sign in; their existing passes stay listed for support.' })
+    ),
+    Dx.h('div', { class: 'table-wrap' }, Dx.h('table', { class: 'table' },
+      Dx.h('thead', null, Dx.h('tr', null,
+        ['Account', 'Phone', 'Role', 'Status', 'Last seen', 'Joined', ''].map(function (label) {
+          return Dx.h('th', { scope: 'col', text: label });
+        })
+      )),
+      Dx.h('tbody', { id: 'user-body' })
+    )),
+    Dx.h('div', { class: 'pagination', id: 'user-pagination' })
+  ));
 
-    tbody.querySelectorAll('.toggle-status-btn').forEach(btn => btn.addEventListener('click', async () => {
-      try { await AdminApi.users.update(btn.dataset.id, { status: btn.dataset.next }); adminToast('Status updated.', 'success'); loadUsers(); }
-      catch (e) { adminToast(e.message, 'error'); }
-    }));
-  } catch (e) {
-    tbody.innerHTML = `<tr><td class="p-4 text-danger" colspan="6">${e.message}</td></tr>`;
+  const search = document.getElementById('user-search');
+  let debounce = null;
+  search.addEventListener('input', function () {
+    clearTimeout(debounce);
+    debounce = setTimeout(function () { state.q = search.value.trim(); state.page = 1; load(); }, 320);
+  });
+
+  function save(row, body, button, message) {
+    Dx.setBusy(button, true, 'Saving…');
+    Dx.endpoints.admin.setUser(row.id, body).then(function () {
+      Dx.setBusy(button, false);
+      Dx.toast(message, 'success');
+      load();
+    }).catch(function (error) {
+      Dx.setBusy(button, false);
+      Dx.toast(error.message, 'error');
+    });
   }
-}
 
-(async function initUsersPage() {
-  try { await requireAdminAuth(); } catch { return; }
-  document.getElementById('admin-logout-btn').addEventListener('click', async () => { await AdminApi.logout(); location.href = 'index.html'; });
-  loadUsers();
+  async function load() {
+    Dx.skeletonRows('user-body', 7, 5);
+
+    try {
+      const data = await Dx.endpoints.admin.users('?page=' + state.page + '&per_page=25&q=' + encodeURIComponent(state.q));
+      const body = document.getElementById('user-body');
+      Dx.clear(body);
+
+      if (!data.users.length) {
+        body.appendChild(Dx.h('tr', null, Dx.h('td', { colspan: '7' },
+          Dx.h('div', { class: 'empty', text: 'No account matches that search.' }))));
+        Dx.clear('user-pagination');
+        return;
+      }
+
+      data.users.forEach(function (row) {
+        const isSelf = Number(row.id) === Number(me.id);
+
+        const roleSelect = Dx.h('select', { class: 'select' },
+          ['customer', 'admin'].map(function (role) {
+            return Dx.h('option', { value: role, text: role, selected: row.role === role ? 'selected' : null });
+          })
+        );
+
+        if (isSelf) roleSelect.setAttribute('disabled', 'disabled');
+
+        roleSelect.addEventListener('change', function () {
+          save(row, { role: roleSelect.value }, roleSelect, row.name + ' is now ' + roleSelect.value + '.');
+        });
+
+        const statusButton = Dx.h('button', {
+          class: 'btn btn-sm ' + (row.status === 'active' ? 'btn-danger' : 'btn-quiet'),
+          type: 'button',
+          text: row.status === 'active' ? 'Suspend' : 'Re-activate',
+        });
+        statusButton.addEventListener('click', function () {
+          const next = row.status === 'active' ? 'suspended' : 'active';
+          Admin.confirmAction(
+            'Set ' + row.email + ' to ' + next + '?',
+            function () {
+              return Dx.endpoints.admin.setUser(row.id, { status: next }).then(function () {
+                Dx.toast(row.name + ' is ' + next + '.', 'success');
+                load();
+              });
+            },
+            statusButton,
+            'Saving…'
+          );
+        });
+        if (isSelf) statusButton.setAttribute('disabled', 'disabled');
+
+        body.appendChild(Dx.h('tr', null,
+          Dx.h('td', null, Dx.h('div', { class: 'cell-title' },
+            Dx.h('span', { class: 'avatar' + (row.role === 'admin' ? ' avatar-gold' : ''), text: Dx.initials(row.name) }),
+            Dx.h('span', null,
+              Dx.h('span', { text: row.name + (isSelf ? ' (you)' : '') }),
+              Dx.h('span', { class: 'sub', text: row.email })
+            )
+          )),
+          Dx.h('td', { class: 'mono', text: row.phone || '—' }),
+          Dx.h('td', null, roleSelect),
+          Dx.h('td', null, Admin.stamp(row.status)),
+          Dx.h('td', { text: row.last_login_at ? Dx.formatDateTime(row.last_login_at) : 'Never' }),
+          Dx.h('td', { text: Dx.formatDate(row.created_at) }),
+          Dx.h('td', null, Dx.h('div', { class: 'actions' }, statusButton))
+        ));
+      });
+
+      Admin.pager('user-pagination', data.meta, state.page, function (next) { state.page = next; load(); });
+    } catch (error) {
+      Dx.mount('user-body', Dx.h('tr', null, Dx.h('td', { colspan: '7' }, Dx.h('div', { class: 'banner banner-danger', text: error.message }))));
+    }
+  }
+
+  load();
 })();
