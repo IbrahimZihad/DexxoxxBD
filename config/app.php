@@ -38,16 +38,4 @@ return [
         'address' => 'Dhaka, Bangladesh',
         'hours' => 'Open 24/7 - our team replies within 2 hours',
     ],
-
-    'shop' => [
-        'minimum_order_amount' => 0,
-        'order_number_prefix' => 'DXB',
-        'guest_checkout' => true,
-        'allow_negative_stock' => false,
-        'low_stock_threshold' => 5,
-        'abandoned_cart_days' => 7,
-        'max_per_cart' => 5,
-        'max_cart_lines' => 20,
-        'delivery_fee' => 0,
-    ],
 ];
