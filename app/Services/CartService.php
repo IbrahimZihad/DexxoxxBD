@@ -337,27 +337,20 @@ final class CartService
     }
 
     /**
-     * Stock for a variation: license-key inventory when the plan is delivered
-     * automatically, otherwise the manually maintained counter.
+     * Sellable quantity for a plan.
+     *
+     * product_variations.stock is the merchant's own counter and -1 means "not
+     * limited" (see the migration), so that is what gates the sale. The encrypted
+     * pool in digital_inventory is a fulfilment concern, not a purchase gate: if
+     * it runs dry the order is delivered admin-assisted by the fulfilment
+     * service instead of blocking the customer at add-to-cart.
      */
     public function availableStock(array $variation): int
     {
-        $method = (string) ($variation['delivery_method'] ?? 'manual');
+        $stock = (int) ($variation['stock'] ?? -1);
 
-        if ($method === 'auto_key' || $method === 'auto_code') {
-            $count = (int) db()->scalar(
-                'SELECT COUNT(*) FROM digital_inventory
-                 WHERE variation_id = :vid AND status = \'available\' AND (expires_at IS NULL OR expires_at > NOW())',
-                ['vid' => (int) $variation['id']]
-            );
-            // Unlimited sentinel: stock -1 means "managed by inventory only".
-            if ((int) $variation['stock'] === -1) {
-                return $count;
-            }
-            return min($count, (int) $variation['stock']);
-        }
-
-        $stock = (int) ($variation['stock'] ?? 0);
+        // 999 is the numeric stand-in for "unlimited" so callers can compare
+        // against a requested quantity without a special case.
         return $stock === -1 ? 999 : max(0, $stock);
     }
 

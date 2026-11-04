@@ -126,7 +126,9 @@ final class Validator
     {
         $parts = explode(':', $rule, 2);
         $name = $parts[0];
-        $parameters = isset($parts[1]) ? str_getcsv($parts[1], ',') : [];
+        // PHP 8.4+ deprecates relying on str_getcsv()'s default escape character,
+        // and rule parameters never need backslash escaping, so it is set to none.
+        $parameters = isset($parts[1]) ? str_getcsv($parts[1], ',', '"', '') : [];
         return [$name, array_map(static fn ($p): string => trim((string) $p), $parameters)];
     }
 
