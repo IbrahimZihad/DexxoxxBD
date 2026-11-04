@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Storefront routes.
  *
@@ -9,6 +7,8 @@ declare(strict_types=1);
  * the CSRF check. CSRF is a no-op for GET, so listing it on the group means a
  * future POST route is protected by default instead of by memory.
  */
+
+declare(strict_types=1);
 
 use App\Core\Router;
 

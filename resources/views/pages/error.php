@@ -84,13 +84,14 @@ $lang = current_locale();
     </nav>
 
     <?php if ($incident !== null && $status >= 500): ?>
+        <?php
+        $trace = $incident['class'] . ': ' . $incident['message'] . "\n"
+            . $incident['file'] . ':' . $incident['line'] . "\n\n"
+            . implode("\n", $incident['trace']);
+        ?>
         <section class="dx-error__debug">
             <p class="dx-error__ref"><?= e(t('error.debug_note')) ?></p>
-            <pre class="dx-error__trace"><?= e(
-                $incident['class'] . ': ' . $incident['message'] . "\n"
-                . $incident['file'] . ':' . $incident['line'] . "\n\n"
-                . implode("\n", $incident['trace'])
-            ) ?></pre>
+            <pre class="dx-error__trace"><?= e($trace) ?></pre>
         </section>
     <?php endif; ?>
 </main>

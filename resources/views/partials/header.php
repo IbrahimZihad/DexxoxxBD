@@ -82,8 +82,8 @@ $brandName = (string) setting('brand.name', config('app.name', 'DexxoxxBD'));
                                 <?php endforeach; ?>
                             </ul>
                         <?php else: ?>
-                            <a class="dx-nav__link<?= is_current_path((string) parse_url((string) $item['href'],
-                                PHP_URL_PATH) ?? '') ? ' is-active' : '' ?>"
+                            <?php $navPath = (string) parse_url((string) $item['href'], PHP_URL_PATH); ?>
+                            <a class="dx-nav__link<?= is_current_path($navPath) ? ' is-active' : '' ?>"
                                href="<?= e((string) $item['href']) ?>">
                                 <?= e((string) $item['label']) ?>
                             </a>

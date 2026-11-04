@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * AJAX endpoints for the storefront.
  *
@@ -10,6 +8,8 @@ declare(strict_types=1);
  * tightest budget. Responses go through the same session and locale pipeline as
  * a page request so a signed-in customer sees the same prices they see in HTML.
  */
+
+declare(strict_types=1);
 
 use App\Core\Router;
 

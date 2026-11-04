@@ -1,11 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Storefront commerce rules. Cart, coupon and stock code paths read these keys
  * with `shop.*` so a deployment can tune limits without touching classes.
  */
+
+declare(strict_types=1);
+
 return [
     'currency' => env('DEFAULT_CURRENCY', 'BDT'),
 

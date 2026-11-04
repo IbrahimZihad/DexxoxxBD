@@ -6,6 +6,7 @@
  * The triggers are real links, so with JavaScript disabled the shopper simply
  * lands on the product page.
  */
+
 ?>
 <div class="dx-quickview" id="dx-quick-view" role="dialog" aria-modal="true" aria-labelledby="dx-qv-title" hidden>
     <div class="dx-quickview__backdrop" data-qv-close></div>

@@ -4,9 +4,17 @@
 Options -Indexes -MultiViews
 DirectoryIndex index.php
 
+# The application root denies everything; this is the one grant, so the folder
+# above and beside this one stays unreachable even when htdocs/ serves the tree.
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /
+    # Deliberately no RewriteBase: the app is written to work at any mount point,
+    # and a hardcoded "/" resolved every clean URL against the server root, which
+    # silently handed unknown paths to whatever index.php owned that document root.
 
     # Never expose dotfiles (.env, .git) even if they are copied in by mistake.
     RewriteRule "(^|/)\." - [F,L,NC]

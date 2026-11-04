@@ -178,14 +178,15 @@ final class App
         return $this->views;
     }
 
-    public function viewFactory(): ViewFactory
+    /** Static facade used by controllers, helpers and the error handler. */
+    public static function viewFactory(): ViewFactory
     {
-        return $this->views;
+        return self::instance()->views;
     }
 
-    public function request(): Request
+    public static function request(): Request
     {
-        return $this->request;
+        return self::instance()->request;
     }
 
     public function replaceRequest(Request $request): void

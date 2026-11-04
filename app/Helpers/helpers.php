@@ -173,7 +173,7 @@ if (!function_exists('route')) {
     /** Absolute URL for a named route. */
     function route(string $name, array $parameters = []): string
     {
-        return App\Core\App::instance()->router()->route($name, $parameters);
+        return App::instance()->router()->route($name, $parameters);
     }
 }
 
@@ -181,7 +181,7 @@ if (!function_exists('current_url')) {
     /** Current request URL, including its query string, for canonical and OG tags. */
     function current_url(): string
     {
-        return App\Core\App::instance()->request()->url();
+        return App::instance()->request()->url();
     }
 }
 

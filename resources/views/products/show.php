@@ -339,13 +339,16 @@ $view->setSection('json_ld', $schema);
                             <?php $reviewTotal = array_sum($breakdown); ?>
                             <ul class="dx-breakdown" aria-label="<?= e(t('product.rating_breakdown')) ?>">
                                 <?php for ($stars = 5; $stars >= 1; $stars--): ?>
-                                    <?php $bucket = (int) ($breakdown[$stars] ?? 0); ?>
+                                    <?php
+                                    $bucket = (int) ($breakdown[$stars] ?? 0);
+                                    $share = $reviewTotal > 0 ? $bucket * 100 / $reviewTotal : 0.0;
+                                    ?>
                                     <li>
                                         <span class="dx-breakdown__label"><?= e($stars) ?> <i class="bi bi-star-fill"
                                                aria-hidden="true"></i></span>
                                         <span class="dx-breakdown__bar">
-                                            <span class="dx-breakdown__fill" style="width: <?= e(number_format(
-                                                $reviewTotal > 0 ? $bucket * 100 / $reviewTotal : 0.0, 1)) ?>%"></span>
+                                            <span class="dx-breakdown__fill"
+                                                  style="width: <?= e(number_format($share, 1)) ?>%"></span>
                                         </span>
                                         <span class="dx-breakdown__count"><?= e($bucket) ?></span>
                                     </li>
