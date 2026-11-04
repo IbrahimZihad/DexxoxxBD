@@ -20,9 +20,9 @@ final class CreateCouponProductsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('coupon_id', 'biginteger', ['signed' => false])
-            ->addColumn('product_id', 'biginteger', ['signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('coupon_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('product_id', 'biginteger', ['signed' => false, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP']);
 
         $table->addIndex(['coupon_id', 'product_id'], ['unique' => true, 'name' => 'coupon_products_pair_unique']);

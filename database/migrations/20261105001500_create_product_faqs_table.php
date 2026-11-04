@@ -20,12 +20,12 @@ final class CreateProductFaqsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('product_id', 'biginteger', ['signed' => false])
-            ->addColumn('question', 'string', ['limit' => 255])
-            ->addColumn('answer', 'text', [])
-            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('product_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('question', 'string', ['limit' => 255, 'null' => false])
+            ->addColumn('answer', 'text', ['null' => false])
+            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
 

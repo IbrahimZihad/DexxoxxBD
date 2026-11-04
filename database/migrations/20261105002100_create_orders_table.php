@@ -20,8 +20,8 @@ final class CreateOrdersTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('order_number', 'string', ['limit' => 32])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('order_number', 'string', ['limit' => 32, 'null' => false])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('status', 'enum', [
             'values' => [
@@ -36,22 +36,24 @@ final class CreateOrdersTable extends AbstractMigration
                         'failed',
                     ],
             'default' => 'pending',
+            'null' => false,
         ])
-            ->addColumn('subtotal', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00'])
-            ->addColumn('discount', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00'])
+            ->addColumn('subtotal', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00', 'null' => false])
+            ->addColumn('discount', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00', 'null' => false])
             ->addColumn('coupon_code', 'string', ['limit' => 60, 'null' => true])
-            ->addColumn('total', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00'])
-            ->addColumn('grand_total', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00'])
-            ->addColumn('refunded_amount', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00'])
-            ->addColumn('currency', 'string', ['limit' => 3, 'default' => 'BDT'])
+            ->addColumn('total', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00', 'null' => false])
+            ->addColumn('grand_total', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00', 'null' => false])
+            ->addColumn('refunded_amount', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00', 'null' => false])
+            ->addColumn('currency', 'string', ['limit' => 3, 'default' => 'BDT', 'null' => false])
             ->addColumn('payment_method', 'string', ['limit' => 40, 'null' => true])
             ->addColumn('payment_status', 'enum', [
             'values' => ['unpaid', 'pending', 'paid', 'failed', 'cancelled', 'refunded', 'partially_refunded'],
             'default' => 'unpaid',
+            'null' => false,
         ])
             ->addColumn('payment_reference', 'string', ['limit' => 120, 'null' => true])
-            ->addColumn('customer_name', 'string', ['limit' => 120])
-            ->addColumn('customer_email', 'string', ['limit' => 190])
+            ->addColumn('customer_name', 'string', ['limit' => 120, 'null' => false])
+            ->addColumn('customer_email', 'string', ['limit' => 190, 'null' => false])
             ->addColumn('customer_phone', 'string', ['limit' => 20, 'null' => true])
             ->addColumn('billing_address', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('billing_city', 'string', ['limit' => 80, 'null' => true])

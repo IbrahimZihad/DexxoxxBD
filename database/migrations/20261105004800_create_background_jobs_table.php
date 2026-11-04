@@ -20,15 +20,19 @@ final class CreateBackgroundJobsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('queue', 'string', ['limit' => 40, 'default' => 'default'])
-            ->addColumn('job', 'string', ['limit' => 120])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('queue', 'string', ['limit' => 40, 'default' => 'default', 'null' => false])
+            ->addColumn('job', 'string', ['limit' => 120, 'null' => false])
             ->addColumn('payload', 'text', ['null' => true])
-            ->addColumn('attempts', 'tinyinteger', ['signed' => false, 'default' => 0])
+            ->addColumn('attempts', 'tinyinteger', ['signed' => false, 'default' => 0, 'null' => false])
             ->addColumn('available_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('reserved_at', 'datetime', ['null' => true])
             ->addColumn('executed_at', 'datetime', ['null' => true])
-            ->addColumn('status', 'enum', ['values' => ['pending', 'processing', 'completed', 'failed', 'cancelled'], 'default' => 'pending'])
+            ->addColumn('status', 'enum', [
+            'values' => ['pending', 'processing', 'completed', 'failed', 'cancelled'],
+            'default' => 'pending',
+            'null' => false,
+        ])
             ->addColumn('last_error', 'text', ['null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);

@@ -20,14 +20,14 @@ final class CreateRolesTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('name', 'string', ['limit' => 80])
-            ->addColumn('slug', 'string', ['limit' => 80])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('name', 'string', ['limit' => 80, 'null' => false])
+            ->addColumn('slug', 'string', ['limit' => 80, 'null' => false])
             ->addColumn('description', 'string', ['limit' => 255, 'null' => true])
-            ->addColumn('level', 'smallinteger', ['signed' => false, 'default' => 100])
-            ->addColumn('staff', 'boolean', ['default' => false, 'comment' => 'Grants access to the admin panel'])
-            ->addColumn('is_system', 'boolean', ['default' => false, 'comment' => 'Cannot be deleted from the admin panel'])
-            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1])
+            ->addColumn('level', 'smallinteger', ['signed' => false, 'default' => 100, 'null' => false])
+            ->addColumn('staff', 'boolean', ['default' => false, 'comment' => 'Grants access to the admin panel', 'null' => false])
+            ->addColumn('is_system', 'boolean', ['default' => false, 'comment' => 'Cannot be deleted from the admin panel', 'null' => false])
+            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
 

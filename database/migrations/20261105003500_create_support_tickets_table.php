@@ -20,17 +20,22 @@ final class CreateSupportTicketsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('ticket_number', 'string', ['limit' => 24])
-            ->addColumn('user_id', 'biginteger', ['signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('ticket_number', 'string', ['limit' => 24, 'null' => false])
+            ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => false])
             ->addColumn('order_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('department', 'enum', ['values' => ['general', 'order', 'payment', 'delivery', 'technical'], 'default' => 'general'])
-            ->addColumn('subject', 'string', ['limit' => 190])
-            ->addColumn('body', 'text', [])
-            ->addColumn('priority', 'enum', ['values' => ['low', 'normal', 'high', 'urgent'], 'default' => 'normal'])
+            ->addColumn('department', 'enum', [
+            'values' => ['general', 'order', 'payment', 'delivery', 'technical'],
+            'default' => 'general',
+            'null' => false,
+        ])
+            ->addColumn('subject', 'string', ['limit' => 190, 'null' => false])
+            ->addColumn('body', 'text', ['null' => false])
+            ->addColumn('priority', 'enum', ['values' => ['low', 'normal', 'high', 'urgent'], 'default' => 'normal', 'null' => false])
             ->addColumn('status', 'enum', [
             'values' => ['open', 'answered', 'customer_reply', 'in_progress', 'resolved', 'closed'],
             'default' => 'open',
+            'null' => false,
         ])
             ->addColumn('assigned_to', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('last_reply_at', 'datetime', ['null' => true])

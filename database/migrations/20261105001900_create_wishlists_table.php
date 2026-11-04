@@ -20,10 +20,10 @@ final class CreateWishlistsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('user_id', 'biginteger', ['signed' => false])
-            ->addColumn('name', 'string', ['limit' => 80, 'default' => 'default'])
-            ->addColumn('is_public', 'boolean', ['default' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('name', 'string', ['limit' => 80, 'default' => 'default', 'null' => false])
+            ->addColumn('is_public', 'boolean', ['default' => false, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
 

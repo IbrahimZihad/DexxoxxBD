@@ -20,26 +20,30 @@ final class CreateProductVariationsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('product_id', 'biginteger', ['signed' => false])
-            ->addColumn('label', 'string', ['limit' => 120])
-            ->addColumn('sku', 'string', ['limit' => 80])
-            ->addColumn('price', 'decimal', ['precision' => 12, 'scale' => 2])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('product_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('label', 'string', ['limit' => 120, 'null' => false])
+            ->addColumn('sku', 'string', ['limit' => 80, 'null' => false])
+            ->addColumn('price', 'decimal', ['precision' => 12, 'scale' => 2, 'null' => false])
             ->addColumn('compare_price', 'decimal', ['precision' => 12, 'scale' => 2, 'null' => true])
             ->addColumn('cost_price', 'decimal', ['precision' => 12, 'scale' => 2, 'null' => true])
-            ->addColumn('duration_days', 'integer', ['signed' => false, 'default' => 30])
+            ->addColumn('duration_days', 'integer', ['signed' => false, 'default' => 30, 'null' => false])
             ->addColumn('duration_label', 'string', ['limit' => 60, 'null' => true])
             ->addColumn('device_limit', 'smallinteger', ['signed' => false, 'null' => true])
             ->addColumn('account_type', 'string', ['limit' => 60, 'null' => true])
-            ->addColumn('delivery_method', 'enum', ['values' => ['auto_key', 'auto_code', 'manual', 'account_transfer'], 'default' => 'manual'])
-            ->addColumn('stock', 'integer', ['default' => -1, 'comment' => '-1 means not stock limited'])
-            ->addColumn('min_quantity', 'smallinteger', ['signed' => false, 'default' => 1])
-            ->addColumn('max_quantity', 'smallinteger', ['signed' => false, 'default' => 10])
+            ->addColumn('delivery_method', 'enum', [
+            'values' => ['auto_key', 'auto_code', 'manual', 'account_transfer'],
+            'default' => 'manual',
+            'null' => false,
+        ])
+            ->addColumn('stock', 'integer', ['default' => -1, 'comment' => '-1 means not stock limited', 'null' => false])
+            ->addColumn('min_quantity', 'smallinteger', ['signed' => false, 'default' => 1, 'null' => false])
+            ->addColumn('max_quantity', 'smallinteger', ['signed' => false, 'default' => 10, 'null' => false])
             ->addColumn('warranty_days', 'smallinteger', ['signed' => false, 'null' => true])
             ->addColumn('notes', 'text', ['null' => true])
-            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('sales_count', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1])
+            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('sales_count', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
             ->addColumn('deleted_at', 'datetime', ['null' => true]);

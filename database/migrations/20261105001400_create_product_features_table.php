@@ -20,11 +20,11 @@ final class CreateProductFeaturesTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('product_id', 'biginteger', ['signed' => false])
-            ->addColumn('label', 'string', ['limit' => 190])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('product_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('label', 'string', ['limit' => 190, 'null' => false])
             ->addColumn('icon', 'string', ['limit' => 60, 'null' => true])
-            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0])
+            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
 

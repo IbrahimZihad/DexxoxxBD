@@ -20,7 +20,7 @@ final class CreateCartsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('guest_token', 'char', ['limit' => 40, 'null' => true])
             ->addColumn('coupon_code', 'string', ['limit' => 60, 'null' => true])

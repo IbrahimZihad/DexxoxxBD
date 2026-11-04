@@ -20,16 +20,16 @@ final class CreatePaymentTransactionsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
             ->addColumn('payment_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('order_id', 'biginteger', ['signed' => false])
-            ->addColumn('event', 'string', ['limit' => 60])
-            ->addColumn('status', 'string', ['limit' => 30])
+            ->addColumn('order_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('event', 'string', ['limit' => 60, 'null' => false])
+            ->addColumn('status', 'string', ['limit' => 30, 'null' => false])
             ->addColumn('amount', 'decimal', ['precision' => 12, 'scale' => 2, 'null' => true])
             ->addColumn('currency', 'string', ['limit' => 3, 'null' => true])
             ->addColumn('reference', 'string', ['limit' => 190, 'null' => true])
             ->addColumn('idempotency_key', 'string', ['limit' => 190, 'null' => true])
-            ->addColumn('signature_valid', 'tinyinteger', ['signed' => false, 'default' => 0])
+            ->addColumn('signature_valid', 'tinyinteger', ['signed' => false, 'default' => 0, 'null' => false])
             ->addColumn('source_ip', 'string', ['limit' => 45, 'null' => true])
             ->addColumn('raw_payload', 'json', ['null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP']);

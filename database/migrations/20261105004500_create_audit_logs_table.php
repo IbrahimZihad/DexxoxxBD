@@ -20,9 +20,9 @@ final class CreateAuditLogsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('action', 'string', ['limit' => 100])
+            ->addColumn('action', 'string', ['limit' => 100, 'null' => false])
             ->addColumn('description', 'string', ['limit' => 500, 'null' => true])
             ->addColumn('subject_type', 'string', ['limit' => 80, 'null' => true])
             ->addColumn('subject_id', 'biginteger', ['signed' => false, 'null' => true])

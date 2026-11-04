@@ -20,15 +20,15 @@ final class CreateCartItemsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('cart_id', 'biginteger', ['signed' => false])
-            ->addColumn('product_id', 'biginteger', ['signed' => false])
-            ->addColumn('variation_id', 'biginteger', ['signed' => false])
-            ->addColumn('quantity', 'integer', ['signed' => false, 'default' => 1])
-            ->addColumn('unit_price', 'decimal', ['precision' => 12, 'scale' => 2])
-            ->addColumn('product_name', 'string', ['limit' => 190])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('cart_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('product_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('variation_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('quantity', 'integer', ['signed' => false, 'default' => 1, 'null' => false])
+            ->addColumn('unit_price', 'decimal', ['precision' => 12, 'scale' => 2, 'null' => false])
+            ->addColumn('product_name', 'string', ['limit' => 190, 'null' => false])
             ->addColumn('variation_label', 'string', ['limit' => 120, 'null' => true])
-            ->addColumn('sku', 'string', ['limit' => 80])
+            ->addColumn('sku', 'string', ['limit' => 80, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
 

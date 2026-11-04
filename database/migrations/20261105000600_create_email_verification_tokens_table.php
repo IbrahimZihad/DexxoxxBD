@@ -21,10 +21,10 @@ final class CreateEmailVerificationTokensTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('user_id', 'biginteger', ['signed' => false])
-            ->addColumn('token_hash', 'char', ['limit' => 64])
-            ->addColumn('expires_at', 'datetime', [])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('token_hash', 'char', ['limit' => 64, 'null' => false])
+            ->addColumn('expires_at', 'datetime', ['null' => false])
             ->addColumn('consumed_at', 'datetime', ['null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP']);
 

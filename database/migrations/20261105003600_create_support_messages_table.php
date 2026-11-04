@@ -20,11 +20,11 @@ final class CreateSupportMessagesTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('ticket_id', 'biginteger', ['signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('ticket_id', 'biginteger', ['signed' => false, 'null' => false])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('is_staff', 'boolean', ['default' => false])
-            ->addColumn('body', 'text', [])
+            ->addColumn('is_staff', 'boolean', ['default' => false, 'null' => false])
+            ->addColumn('body', 'text', ['null' => false])
             ->addColumn('attachment', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);

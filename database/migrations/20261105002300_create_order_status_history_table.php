@@ -20,13 +20,13 @@ final class CreateOrderStatusHistoryTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('order_id', 'biginteger', ['signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('order_id', 'biginteger', ['signed' => false, 'null' => false])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('from_status', 'string', ['limit' => 30, 'null' => true])
-            ->addColumn('to_status', 'string', ['limit' => 30])
+            ->addColumn('to_status', 'string', ['limit' => 30, 'null' => false])
             ->addColumn('note', 'string', ['limit' => 500, 'null' => true])
-            ->addColumn('is_customer_visible', 'boolean', ['default' => false])
+            ->addColumn('is_customer_visible', 'boolean', ['default' => false, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP']);
 
         $table->addIndex(['order_id', 'created_at'], ['name' => 'order_status_history_order_index']);

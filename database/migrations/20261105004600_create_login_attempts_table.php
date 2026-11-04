@@ -20,13 +20,13 @@ final class CreateLoginAttemptsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('identifier', 'char', ['limit' => 64])
-            ->addColumn('ip', 'string', ['limit' => 45])
+            ->addColumn('identifier', 'char', ['limit' => 64, 'null' => false])
+            ->addColumn('ip', 'string', ['limit' => 45, 'null' => false])
             ->addColumn('user_agent', 'string', ['limit' => 512, 'null' => true])
-            ->addColumn('successful', 'boolean', ['default' => false])
-            ->addColumn('attempted_at', 'datetime', []);
+            ->addColumn('successful', 'boolean', ['default' => false, 'null' => false])
+            ->addColumn('attempted_at', 'datetime', ['null' => false]);
 
         $table->addIndex(['identifier', 'successful', 'attempted_at'], ['name' => 'login_attempts_identifier_index']);
         $table->addIndex(['ip', 'successful', 'attempted_at'], ['name' => 'login_attempts_ip_index']);

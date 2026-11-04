@@ -20,10 +20,10 @@ final class CreateSystemLogsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('level', 'string', ['limit' => 16])
-            ->addColumn('channel', 'string', ['limit' => 40, 'default' => 'app'])
-            ->addColumn('message', 'text', [])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('level', 'string', ['limit' => 16, 'null' => false])
+            ->addColumn('channel', 'string', ['limit' => 40, 'default' => 'app', 'null' => false])
+            ->addColumn('message', 'text', ['null' => false])
             ->addColumn('context', 'text', ['null' => true])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('ip_address', 'string', ['limit' => 45, 'null' => true])

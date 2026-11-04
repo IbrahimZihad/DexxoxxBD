@@ -20,10 +20,10 @@ final class CreateUserSessionsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('user_id', 'biginteger', ['signed' => false])
-            ->addColumn('guard', 'string', ['limit' => 20, 'default' => 'web'])
-            ->addColumn('session_hash', 'char', ['limit' => 64])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('guard', 'string', ['limit' => 20, 'default' => 'web', 'null' => false])
+            ->addColumn('session_hash', 'char', ['limit' => 64, 'null' => false])
             ->addColumn('ip_address', 'string', ['limit' => 45, 'null' => true])
             ->addColumn('user_agent', 'string', ['limit' => 512, 'null' => true])
             ->addColumn('last_activity', 'datetime', ['null' => true])

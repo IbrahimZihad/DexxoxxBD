@@ -20,12 +20,12 @@ final class CreateIdempotencyKeysTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('key', 'string', ['limit' => 190])
-            ->addColumn('scope', 'string', ['limit' => 80])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('key', 'string', ['limit' => 190, 'null' => false])
+            ->addColumn('scope', 'string', ['limit' => 80, 'null' => false])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('request_hash', 'char', ['limit' => 64, 'null' => true])
-            ->addColumn('status', 'enum', ['values' => ['in_progress', 'completed', 'failed'], 'default' => 'in_progress'])
+            ->addColumn('status', 'enum', ['values' => ['in_progress', 'completed', 'failed'], 'default' => 'in_progress', 'null' => false])
             ->addColumn('response_code', 'smallinteger', ['signed' => false, 'null' => true])
             ->addColumn('response_body', 'text', ['null' => true])
             ->addColumn('resource_type', 'string', ['limit' => 60, 'null' => true])

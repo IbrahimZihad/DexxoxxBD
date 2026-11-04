@@ -21,19 +21,20 @@ final class CreateDigitalInventoryTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('product_id', 'biginteger', ['signed' => false])
-            ->addColumn('variation_id', 'biginteger', ['signed' => false])
-            ->addColumn('type', 'enum', ['values' => ['license_key', 'code', 'credential', 'account'], 'default' => 'license_key'])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('product_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('variation_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('type', 'enum', ['values' => ['license_key', 'code', 'credential', 'account'], 'default' => 'license_key', 'null' => false])
             ->addColumn('encrypted_payload', 'text', ['null' => false])
-            ->addColumn('encryption_iv', 'string', ['limit' => 44])
-            ->addColumn('auth_tag', 'string', ['limit' => 44])
-            ->addColumn('key_version', 'smallinteger', ['signed' => false, 'default' => 1])
-            ->addColumn('dedupe_hash', 'char', ['limit' => 64])
+            ->addColumn('encryption_iv', 'string', ['limit' => 44, 'null' => false])
+            ->addColumn('auth_tag', 'string', ['limit' => 44, 'null' => false])
+            ->addColumn('key_version', 'smallinteger', ['signed' => false, 'default' => 1, 'null' => false])
+            ->addColumn('dedupe_hash', 'char', ['limit' => 64, 'null' => false])
             ->addColumn('code_hint', 'string', ['limit' => 12, 'null' => true, 'comment' => 'Last characters, for staff lists without decrypting'])
             ->addColumn('status', 'enum', [
             'values' => ['available', 'reserved', 'assigned', 'delivered', 'expired', 'revoked', 'invalid'],
             'default' => 'available',
+            'null' => false,
         ])
             ->addColumn('order_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('order_item_id', 'biginteger', ['signed' => false, 'null' => true])

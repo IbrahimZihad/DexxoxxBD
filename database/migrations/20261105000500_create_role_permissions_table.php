@@ -20,9 +20,9 @@ final class CreateRolePermissionsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('role_id', 'biginteger', ['signed' => false])
-            ->addColumn('permission_id', 'biginteger', ['signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('role_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('permission_id', 'biginteger', ['signed' => false, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP']);
 
         $table->addIndex(['role_id', 'permission_id'], ['unique' => true, 'name' => 'role_permissions_role_permission_unique']);

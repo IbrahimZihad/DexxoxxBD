@@ -20,15 +20,15 @@ final class CreateBrandsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('name', 'string', ['limit' => 120])
-            ->addColumn('slug', 'string', ['limit' => 140])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('name', 'string', ['limit' => 120, 'null' => false])
+            ->addColumn('slug', 'string', ['limit' => 140, 'null' => false])
             ->addColumn('logo', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('description', 'text', ['null' => true])
             ->addColumn('website', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('country', 'string', ['limit' => 60, 'null' => true])
-            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1])
+            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
             ->addColumn('deleted_at', 'datetime', ['null' => true]);

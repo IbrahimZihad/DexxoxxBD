@@ -20,10 +20,10 @@ final class CreateSubscriptionEventsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('subscription_id', 'biginteger', ['signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('subscription_id', 'biginteger', ['signed' => false, 'null' => false])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('event', 'string', ['limit' => 60])
+            ->addColumn('event', 'string', ['limit' => 60, 'null' => false])
             ->addColumn('from_status', 'string', ['limit' => 30, 'null' => true])
             ->addColumn('to_status', 'string', ['limit' => 30, 'null' => true])
             ->addColumn('note', 'string', ['limit' => 500, 'null' => true])

@@ -20,9 +20,9 @@ final class CreateUserRolesTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('user_id', 'biginteger', ['signed' => false])
-            ->addColumn('role_id', 'biginteger', ['signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('role_id', 'biginteger', ['signed' => false, 'null' => false])
             ->addColumn('assigned_by', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);

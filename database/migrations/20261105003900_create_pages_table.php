@@ -20,18 +20,18 @@ final class CreatePagesTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('title', 'string', ['limit' => 190])
-            ->addColumn('slug', 'string', ['limit' => 200])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('title', 'string', ['limit' => 190, 'null' => false])
+            ->addColumn('slug', 'string', ['limit' => 200, 'null' => false])
             ->addColumn('excerpt', 'string', ['limit' => 500, 'null' => true])
             ->addColumn('content', 'text', ['null' => true])
             ->addColumn('template', 'string', ['limit' => 60, 'null' => true])
             ->addColumn('meta_title', 'string', ['limit' => 190, 'null' => true])
             ->addColumn('meta_description', 'string', ['limit' => 500, 'null' => true])
-            ->addColumn('status', 'enum', ['values' => ['draft', 'published'], 'default' => 'draft'])
-            ->addColumn('is_footer', 'boolean', ['default' => false])
-            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en'])
+            ->addColumn('status', 'enum', ['values' => ['draft', 'published'], 'default' => 'draft', 'null' => false])
+            ->addColumn('is_footer', 'boolean', ['default' => false, 'null' => false])
+            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en', 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
             ->addColumn('deleted_at', 'datetime', ['null' => true]);

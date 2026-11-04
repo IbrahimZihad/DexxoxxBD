@@ -20,17 +20,17 @@ final class CreateCategoriesTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
             ->addColumn('parent_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('name', 'string', ['limit' => 120])
-            ->addColumn('slug', 'string', ['limit' => 140])
+            ->addColumn('name', 'string', ['limit' => 120, 'null' => false])
+            ->addColumn('slug', 'string', ['limit' => 140, 'null' => false])
             ->addColumn('description', 'text', ['null' => true])
             ->addColumn('image', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('icon', 'string', ['limit' => 60, 'null' => true])
             ->addColumn('color', 'string', ['limit' => 20, 'null' => true])
-            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('is_featured', 'boolean', ['default' => false])
-            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1])
+            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('is_featured', 'boolean', ['default' => false, 'null' => false])
+            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1, 'null' => false])
             ->addColumn('meta_title', 'string', ['limit' => 190, 'null' => true])
             ->addColumn('meta_description', 'string', ['limit' => 500, 'null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])

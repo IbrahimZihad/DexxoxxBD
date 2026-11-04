@@ -20,10 +20,10 @@ final class CreatePermissionsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('name', 'string', ['limit' => 120])
-            ->addColumn('slug', 'string', ['limit' => 120])
-            ->addColumn('module', 'string', ['limit' => 60])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('name', 'string', ['limit' => 120, 'null' => false])
+            ->addColumn('slug', 'string', ['limit' => 120, 'null' => false])
+            ->addColumn('module', 'string', ['limit' => 60, 'null' => false])
             ->addColumn('description', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);

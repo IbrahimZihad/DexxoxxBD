@@ -20,18 +20,18 @@ final class CreateTestimonialsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('customer_name', 'string', ['limit' => 120])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('customer_name', 'string', ['limit' => 120, 'null' => false])
             ->addColumn('customer_title', 'string', ['limit' => 120, 'null' => true])
             ->addColumn('customer_location', 'string', ['limit' => 120, 'null' => true])
-            ->addColumn('quote', 'text', [])
-            ->addColumn('rating', 'tinyinteger', ['signed' => false, 'default' => 5])
+            ->addColumn('quote', 'text', ['null' => false])
+            ->addColumn('rating', 'tinyinteger', ['signed' => false, 'default' => 5, 'null' => false])
             ->addColumn('avatar', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('product_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 0])
-            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en'])
+            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en', 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
 

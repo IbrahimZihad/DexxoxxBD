@@ -20,11 +20,11 @@ final class CreateNewsletterSubscribersTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('email', 'string', ['limit' => 190])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('email', 'string', ['limit' => 190, 'null' => false])
             ->addColumn('name', 'string', ['limit' => 120, 'null' => true])
-            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en'])
-            ->addColumn('status', 'enum', ['values' => ['pending', 'subscribed', 'unsubscribed'], 'default' => 'pending'])
+            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en', 'null' => false])
+            ->addColumn('status', 'enum', ['values' => ['pending', 'subscribed', 'unsubscribed'], 'default' => 'pending', 'null' => false])
             ->addColumn('token_hash', 'char', ['limit' => 64, 'null' => true])
             ->addColumn('subscribed_at', 'datetime', ['null' => true])
             ->addColumn('unsubscribed_at', 'datetime', ['null' => true])

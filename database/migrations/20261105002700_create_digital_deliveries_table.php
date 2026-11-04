@@ -20,18 +20,18 @@ final class CreateDigitalDeliveriesTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('order_id', 'biginteger', ['signed' => false])
-            ->addColumn('order_item_id', 'biginteger', ['signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('order_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('order_item_id', 'biginteger', ['signed' => false, 'null' => false])
             ->addColumn('digital_inventory_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('method', 'string', ['limit' => 30, 'default' => 'auto_key'])
-            ->addColumn('status', 'enum', ['values' => ['pending', 'delivered', 'failed', 'revoked'], 'default' => 'pending'])
+            ->addColumn('method', 'string', ['limit' => 30, 'default' => 'auto_key', 'null' => false])
+            ->addColumn('status', 'enum', ['values' => ['pending', 'delivered', 'failed', 'revoked'], 'default' => 'pending', 'null' => false])
             ->addColumn('delivered_at', 'datetime', ['null' => true])
             ->addColumn('emailed_at', 'datetime', ['null' => true])
             ->addColumn('viewed_at', 'datetime', ['null' => true])
-            ->addColumn('view_count', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('attempts', 'smallinteger', ['signed' => false, 'default' => 0])
+            ->addColumn('view_count', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('attempts', 'smallinteger', ['signed' => false, 'default' => 0, 'null' => false])
             ->addColumn('note', 'string', ['limit' => 500, 'null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);

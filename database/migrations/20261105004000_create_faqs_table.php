@@ -20,14 +20,14 @@ final class CreateFaqsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('question', 'string', ['limit' => 255])
-            ->addColumn('answer', 'text', [])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('question', 'string', ['limit' => 255, 'null' => false])
+            ->addColumn('answer', 'text', ['null' => false])
             ->addColumn('category', 'string', ['limit' => 80, 'null' => true])
-            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('show_on_home', 'boolean', ['default' => false])
-            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1])
-            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en'])
+            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('show_on_home', 'boolean', ['default' => false, 'null' => false])
+            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1, 'null' => false])
+            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en', 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
 

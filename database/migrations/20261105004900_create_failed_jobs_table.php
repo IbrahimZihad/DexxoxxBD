@@ -20,12 +20,12 @@ final class CreateFailedJobsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
             ->addColumn('job_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('queue', 'string', ['limit' => 40, 'default' => 'default'])
-            ->addColumn('job', 'string', ['limit' => 120])
+            ->addColumn('queue', 'string', ['limit' => 40, 'default' => 'default', 'null' => false])
+            ->addColumn('job', 'string', ['limit' => 120, 'null' => false])
             ->addColumn('payload', 'text', ['null' => true])
-            ->addColumn('attempts', 'tinyinteger', ['signed' => false, 'default' => 0])
+            ->addColumn('attempts', 'tinyinteger', ['signed' => false, 'default' => 0, 'null' => false])
             ->addColumn('exception', 'text', ['null' => true])
             ->addColumn('failed_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP']);

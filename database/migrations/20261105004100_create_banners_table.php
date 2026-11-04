@@ -20,9 +20,13 @@ final class CreateBannersTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('placement', 'enum', ['values' => ['announcement', 'home_hero', 'home_promo', 'category', 'sidebar'], 'default' => 'home_hero'])
-            ->addColumn('title', 'string', ['limit' => 190])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('placement', 'enum', [
+            'values' => ['announcement', 'home_hero', 'home_promo', 'category', 'sidebar'],
+            'default' => 'home_hero',
+            'null' => false,
+        ])
+            ->addColumn('title', 'string', ['limit' => 190, 'null' => false])
             ->addColumn('subtitle', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('description', 'text', ['null' => true])
             ->addColumn('badge', 'string', ['limit' => 60, 'null' => true])
@@ -30,12 +34,12 @@ final class CreateBannersTable extends AbstractMigration
             ->addColumn('image_alt', 'string', ['limit' => 190, 'null' => true])
             ->addColumn('link', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('button_text', 'string', ['limit' => 60, 'null' => true])
-            ->addColumn('button_style', 'string', ['limit' => 30, 'default' => 'primary'])
+            ->addColumn('button_style', 'string', ['limit' => 30, 'default' => 'primary', 'null' => false])
             ->addColumn('starts_at', 'datetime', ['null' => true])
             ->addColumn('ends_at', 'datetime', ['null' => true])
-            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1])
-            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en'])
+            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1, 'null' => false])
+            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en', 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
 

@@ -20,17 +20,22 @@ final class CreateUsersTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('name', 'string', ['limit' => 120])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('name', 'string', ['limit' => 120, 'null' => false])
             ->addColumn('username', 'string', ['limit' => 60, 'null' => true])
-            ->addColumn('email', 'string', ['limit' => 190])
+            ->addColumn('email', 'string', ['limit' => 190, 'null' => false])
             ->addColumn('phone', 'string', ['limit' => 20, 'null' => true])
-            ->addColumn('password', 'string', ['limit' => 255])
-            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 2, 'comment' => '0 suspended, 1 active, 2 awaiting verification'])
+            ->addColumn('password', 'string', ['limit' => 255, 'null' => false])
+            ->addColumn('status', 'tinyinteger', [
+            'signed' => false,
+            'default' => 2,
+            'comment' => '0 suspended, 1 active, 2 awaiting verification',
+            'null' => false,
+        ])
             ->addColumn('email_verified_at', 'datetime', ['null' => true])
-            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en'])
+            ->addColumn('locale', 'string', ['limit' => 5, 'default' => 'en', 'null' => false])
             ->addColumn('avatar', 'string', ['limit' => 255, 'null' => true])
-            ->addColumn('must_change_password', 'boolean', ['default' => false])
+            ->addColumn('must_change_password', 'boolean', ['default' => false, 'null' => false])
             ->addColumn('last_login_at', 'datetime', ['null' => true])
             ->addColumn('last_login_ip', 'string', ['limit' => 45, 'null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])

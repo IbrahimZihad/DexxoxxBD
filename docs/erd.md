@@ -133,14 +133,14 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
-    USERS |o--o{ EMAIL_VERIFICATION_TOKENS : "user_id (cascade)"
+    USERS ||--o{ EMAIL_VERIFICATION_TOKENS : "user_id (cascade)"
     USERS |o--o{ PASSWORD_RESET_TOKENS : "user_id (cascade)"
-    PERMISSIONS |o--o{ ROLE_PERMISSIONS : "permission_id (cascade)"
-    ROLES |o--o{ ROLE_PERMISSIONS : "role_id (cascade)"
+    PERMISSIONS ||--o{ ROLE_PERMISSIONS : "permission_id (cascade)"
+    ROLES ||--o{ ROLE_PERMISSIONS : "role_id (cascade)"
     USERS |o--o{ USER_ROLES : "assigned_by (set null)"
-    ROLES |o--o{ USER_ROLES : "role_id (cascade)"
-    USERS |o--o{ USER_ROLES : "user_id (cascade)"
-    USERS |o--o{ USER_SESSIONS : "user_id (cascade)"
+    ROLES ||--o{ USER_ROLES : "role_id (cascade)"
+    USERS ||--o{ USER_ROLES : "user_id (cascade)"
+    USERS ||--o{ USER_SESSIONS : "user_id (cascade)"
 ```
 
 ## Catalogue: categories, brands, products and variations
@@ -283,13 +283,13 @@ erDiagram
     }
     CATEGORIES |o--o{ CATEGORIES : "parent_id (set null)"
     BRANDS |o--o{ PRODUCTS : "brand_id (set null)"
-    CATEGORIES |o--o{ PRODUCTS : "category_id (restrict)"
-    PRODUCTS |o--o{ PRODUCT_FAQS : "product_id (cascade)"
-    PRODUCTS |o--o{ PRODUCT_FEATURES : "product_id (cascade)"
-    PRODUCTS |o--o{ PRODUCT_IMAGES : "product_id (cascade)"
-    PRODUCTS |o--o{ PRODUCT_RELATED_ITEMS : "product_id (cascade)"
-    PRODUCTS |o--o{ PRODUCT_RELATED_ITEMS : "related_product_id (cascade)"
-    PRODUCTS |o--o{ PRODUCT_VARIATIONS : "product_id (cascade)"
+    CATEGORIES ||--o{ PRODUCTS : "category_id (restrict)"
+    PRODUCTS ||--o{ PRODUCT_FAQS : "product_id (cascade)"
+    PRODUCTS ||--o{ PRODUCT_FEATURES : "product_id (cascade)"
+    PRODUCTS ||--o{ PRODUCT_IMAGES : "product_id (cascade)"
+    PRODUCTS ||--o{ PRODUCT_RELATED_ITEMS : "product_id (cascade)"
+    PRODUCTS ||--o{ PRODUCT_RELATED_ITEMS : "related_product_id (cascade)"
+    PRODUCTS ||--o{ PRODUCT_VARIATIONS : "product_id (cascade)"
 ```
 
 ## Shopping: cart and wishlist
@@ -414,12 +414,12 @@ erDiagram
         datetime deleted_at
     }
     USERS |o--o{ CARTS : "user_id (cascade)"
-    CARTS |o--o{ CART_ITEMS : "cart_id (cascade)"
-    PRODUCTS |o--o{ CART_ITEMS : "product_id (cascade)"
-    PRODUCT_VARIATIONS |o--o{ CART_ITEMS : "variation_id (cascade)"
-    USERS |o--o{ WISHLISTS : "user_id (cascade)"
-    WISHLISTS |o--o{ WISHLIST_ITEMS : "wishlist_id (cascade)"
-    PRODUCTS |o--o{ WISHLIST_ITEMS : "product_id (cascade)"
+    CARTS ||--o{ CART_ITEMS : "cart_id (cascade)"
+    PRODUCTS ||--o{ CART_ITEMS : "product_id (cascade)"
+    PRODUCT_VARIATIONS ||--o{ CART_ITEMS : "variation_id (cascade)"
+    USERS ||--o{ WISHLISTS : "user_id (cascade)"
+    WISHLISTS ||--o{ WISHLIST_ITEMS : "wishlist_id (cascade)"
+    PRODUCTS ||--o{ WISHLIST_ITEMS : "product_id (cascade)"
 ```
 
 ## Orders, payments, delivery and subscriptions
@@ -679,29 +679,29 @@ erDiagram
     }
     ORDERS |o--o{ CUSTOMER_SUBSCRIPTIONS : "order_id (set null)"
     ORDER_ITEMS |o--o{ CUSTOMER_SUBSCRIPTIONS : "order_item_id (set null)"
-    PRODUCTS |o--o{ CUSTOMER_SUBSCRIPTIONS : "product_id (cascade)"
-    USERS |o--o{ CUSTOMER_SUBSCRIPTIONS : "user_id (cascade)"
-    PRODUCT_VARIATIONS |o--o{ CUSTOMER_SUBSCRIPTIONS : "variation_id (cascade)"
+    PRODUCTS ||--o{ CUSTOMER_SUBSCRIPTIONS : "product_id (cascade)"
+    USERS ||--o{ CUSTOMER_SUBSCRIPTIONS : "user_id (cascade)"
+    PRODUCT_VARIATIONS ||--o{ CUSTOMER_SUBSCRIPTIONS : "variation_id (cascade)"
     DIGITAL_INVENTORY |o--o{ DIGITAL_DELIVERIES : "digital_inventory_id (set null)"
-    ORDERS |o--o{ DIGITAL_DELIVERIES : "order_id (cascade)"
-    ORDER_ITEMS |o--o{ DIGITAL_DELIVERIES : "order_item_id (cascade)"
+    ORDERS ||--o{ DIGITAL_DELIVERIES : "order_id (cascade)"
+    ORDER_ITEMS ||--o{ DIGITAL_DELIVERIES : "order_item_id (cascade)"
     USERS |o--o{ DIGITAL_DELIVERIES : "user_id (set null)"
     USERS |o--o{ DIGITAL_INVENTORY : "assigned_to (set null)"
     ORDERS |o--o{ DIGITAL_INVENTORY : "order_id (set null)"
     ORDER_ITEMS |o--o{ DIGITAL_INVENTORY : "order_item_id (set null)"
-    PRODUCTS |o--o{ DIGITAL_INVENTORY : "product_id (cascade)"
-    PRODUCT_VARIATIONS |o--o{ DIGITAL_INVENTORY : "variation_id (cascade)"
+    PRODUCTS ||--o{ DIGITAL_INVENTORY : "product_id (cascade)"
+    PRODUCT_VARIATIONS ||--o{ DIGITAL_INVENTORY : "variation_id (cascade)"
     USERS |o--o{ ORDERS : "user_id (set null)"
-    ORDERS |o--o{ ORDER_ITEMS : "order_id (cascade)"
+    ORDERS ||--o{ ORDER_ITEMS : "order_id (cascade)"
     PRODUCTS |o--o{ ORDER_ITEMS : "product_id (set null)"
     PRODUCT_VARIATIONS |o--o{ ORDER_ITEMS : "variation_id (set null)"
-    ORDERS |o--o{ ORDER_STATUS_HISTORY : "order_id (cascade)"
+    ORDERS ||--o{ ORDER_STATUS_HISTORY : "order_id (cascade)"
     USERS |o--o{ ORDER_STATUS_HISTORY : "user_id (set null)"
-    ORDERS |o--o{ PAYMENTS : "order_id (cascade)"
+    ORDERS ||--o{ PAYMENTS : "order_id (cascade)"
     USERS |o--o{ PAYMENTS : "verified_by (set null)"
-    ORDERS |o--o{ PAYMENT_TRANSACTIONS : "order_id (cascade)"
+    ORDERS ||--o{ PAYMENT_TRANSACTIONS : "order_id (cascade)"
     PAYMENTS |o--o{ PAYMENT_TRANSACTIONS : "payment_id (cascade)"
-    CUSTOMER_SUBSCRIPTIONS |o--o{ SUBSCRIPTION_EVENTS : "subscription_id (cascade)"
+    CUSTOMER_SUBSCRIPTIONS ||--o{ SUBSCRIPTION_EVENTS : "subscription_id (cascade)"
     USERS |o--o{ SUBSCRIPTION_EVENTS : "user_id (set null)"
 ```
 
@@ -872,12 +872,12 @@ erDiagram
         datetime deleted_at
     }
     USERS |o--o{ COUPONS : "created_by (set null)"
-    CATEGORIES |o--o{ COUPON_CATEGORIES : "category_id (cascade)"
-    COUPONS |o--o{ COUPON_CATEGORIES : "coupon_id (cascade)"
-    COUPONS |o--o{ COUPON_PRODUCTS : "coupon_id (cascade)"
-    PRODUCTS |o--o{ COUPON_PRODUCTS : "product_id (cascade)"
+    CATEGORIES ||--o{ COUPON_CATEGORIES : "category_id (cascade)"
+    COUPONS ||--o{ COUPON_CATEGORIES : "coupon_id (cascade)"
+    COUPONS ||--o{ COUPON_PRODUCTS : "coupon_id (cascade)"
+    PRODUCTS ||--o{ COUPON_PRODUCTS : "product_id (cascade)"
     CARTS |o--o{ COUPON_USAGES : "cart_id (set null)"
-    COUPONS |o--o{ COUPON_USAGES : "coupon_id (cascade)"
+    COUPONS ||--o{ COUPON_USAGES : "coupon_id (cascade)"
     ORDERS |o--o{ COUPON_USAGES : "order_id (set null)"
     USERS |o--o{ COUPON_USAGES : "user_id (set null)"
 ```
@@ -1047,15 +1047,15 @@ erDiagram
         datetime updated_at
         datetime deleted_at
     }
-    USERS |o--o{ NOTIFICATIONS : "user_id (cascade)"
+    USERS ||--o{ NOTIFICATIONS : "user_id (cascade)"
     ORDERS |o--o{ REVIEWS : "order_id (set null)"
-    PRODUCTS |o--o{ REVIEWS : "product_id (cascade)"
+    PRODUCTS ||--o{ REVIEWS : "product_id (cascade)"
     USERS |o--o{ REVIEWS : "user_id (set null)"
-    SUPPORT_TICKETS |o--o{ SUPPORT_MESSAGES : "ticket_id (cascade)"
+    SUPPORT_TICKETS ||--o{ SUPPORT_MESSAGES : "ticket_id (cascade)"
     USERS |o--o{ SUPPORT_MESSAGES : "user_id (set null)"
     USERS |o--o{ SUPPORT_TICKETS : "assigned_to (set null)"
     ORDERS |o--o{ SUPPORT_TICKETS : "order_id (set null)"
-    USERS |o--o{ SUPPORT_TICKETS : "user_id (cascade)"
+    USERS ||--o{ SUPPORT_TICKETS : "user_id (cascade)"
 ```
 
 ## CMS: pages, FAQs, banners, testimonials, settings, menus
@@ -1338,9 +1338,9 @@ Hashed email-verification tokens; the raw token never lands in MySQL.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `token_hash` | char(64) | yes | UNI | NULL |
-| `expires_at` | datetime | yes |  | NULL |
+| `user_id` | bigint(20) unsigned | no | MUL | - |
+| `token_hash` | char(64) | no | UNI | - |
+| `expires_at` | datetime | no |  | - |
 | `consumed_at` | datetime | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
 
@@ -1356,9 +1356,9 @@ Single-use hashed password-reset tokens.
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `email` | varchar(190) | yes | MUL | NULL |
-| `token_hash` | char(64) | yes | UNI | NULL |
-| `expires_at` | datetime | yes |  | NULL |
+| `email` | varchar(190) | no | MUL | - |
+| `token_hash` | char(64) | no | UNI | - |
+| `expires_at` | datetime | no |  | - |
 | `consumed_at` | datetime | yes |  | NULL |
 | `ip_address` | varchar(45) | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
@@ -1374,9 +1374,9 @@ Individual abilities checked server-side, grouped by module.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `name` | varchar(120) | yes |  | NULL |
-| `slug` | varchar(120) | yes | UNI | NULL |
-| `module` | varchar(60) | yes | MUL | NULL |
+| `name` | varchar(120) | no |  | - |
+| `slug` | varchar(120) | no | UNI | - |
+| `module` | varchar(60) | no | MUL | - |
 | `description` | varchar(255) | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
@@ -1390,13 +1390,13 @@ RBAC roles; level 1 is the most privileged.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `name` | varchar(80) | yes | UNI | NULL |
-| `slug` | varchar(80) | yes | UNI | NULL |
+| `name` | varchar(80) | no | UNI | - |
+| `slug` | varchar(80) | no | UNI | - |
 | `description` | varchar(255) | yes |  | NULL |
-| `level` | smallint(6) unsigned | yes | MUL | 100 |
-| `staff` | tinyint(1) | yes | MUL | 0 |
-| `is_system` | tinyint(1) | yes |  | 0 |
-| `status` | tinyint(4) unsigned | yes |  | 1 |
+| `level` | smallint(6) unsigned | no | MUL | 100 |
+| `staff` | tinyint(1) | no | MUL | 0 |
+| `is_system` | tinyint(1) | no |  | 0 |
+| `status` | tinyint(4) unsigned | no |  | 1 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -1409,8 +1409,8 @@ Permissions granted to each role.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `role_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `permission_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `role_id` | bigint(20) unsigned | no | MUL | - |
+| `permission_id` | bigint(20) unsigned | no | MUL | - |
 | `created_at` | datetime | yes |  | current_timestamp() |
 
 Indexes: role_permissions_permission_index (permission_id); UNIQUE role_permissions_role_permission_unique (role_id, permission_id).
@@ -1424,16 +1424,16 @@ Customer and staff accounts.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `name` | varchar(120) | yes |  | NULL |
+| `name` | varchar(120) | no |  | - |
 | `username` | varchar(60) | yes | UNI | NULL |
-| `email` | varchar(190) | yes | UNI | NULL |
+| `email` | varchar(190) | no | UNI | - |
 | `phone` | varchar(20) | yes | MUL | NULL |
-| `password` | varchar(255) | yes |  | NULL |
-| `status` | tinyint(4) unsigned | yes | MUL | 2 |
+| `password` | varchar(255) | no |  | - |
+| `status` | tinyint(4) unsigned | no | MUL | 2 |
 | `email_verified_at` | datetime | yes |  | NULL |
-| `locale` | varchar(5) | yes |  | 'en' |
+| `locale` | varchar(5) | no |  | 'en' |
 | `avatar` | varchar(255) | yes |  | NULL |
-| `must_change_password` | tinyint(1) | yes |  | 0 |
+| `must_change_password` | tinyint(1) | no |  | 0 |
 | `last_login_at` | datetime | yes |  | NULL |
 | `last_login_ip` | varchar(45) | yes |  | NULL |
 | `created_at` | datetime | yes | MUL | current_timestamp() |
@@ -1449,8 +1449,8 @@ Role assignments (a user may hold several roles).
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `role_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `user_id` | bigint(20) unsigned | no | MUL | - |
+| `role_id` | bigint(20) unsigned | no | MUL | - |
 | `assigned_by` | bigint(20) unsigned | yes | MUL | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
@@ -1466,9 +1466,9 @@ Ledger of live sessions so a customer can revoke devices.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `guard` | varchar(20) | yes |  | 'web' |
-| `session_hash` | char(64) | yes | MUL | NULL |
+| `user_id` | bigint(20) unsigned | no | MUL | - |
+| `guard` | varchar(20) | no |  | 'web' |
+| `session_hash` | char(64) | no | MUL | - |
 | `ip_address` | varchar(45) | yes |  | NULL |
 | `user_agent` | varchar(512) | yes |  | NULL |
 | `last_activity` | datetime | yes |  | NULL |
@@ -1490,14 +1490,14 @@ Service brands (AI, streaming, VPN vendors and so on).
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `name` | varchar(120) | yes | MUL | NULL |
-| `slug` | varchar(140) | yes | UNI | NULL |
+| `name` | varchar(120) | no | MUL | - |
+| `slug` | varchar(140) | no | UNI | - |
 | `logo` | varchar(255) | yes |  | NULL |
 | `description` | text | yes |  | NULL |
 | `website` | varchar(255) | yes |  | NULL |
 | `country` | varchar(60) | yes |  | NULL |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
-| `status` | tinyint(4) unsigned | yes | MUL | 1 |
+| `sort_order` | int(11) unsigned | no |  | 0 |
+| `status` | tinyint(4) unsigned | no | MUL | 1 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 | `deleted_at` | datetime | yes |  | NULL |
@@ -1512,15 +1512,15 @@ Two-level category tree for the storefront.
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
 | `parent_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `name` | varchar(120) | yes |  | NULL |
-| `slug` | varchar(140) | yes | UNI | NULL |
+| `name` | varchar(120) | no |  | - |
+| `slug` | varchar(140) | no | UNI | - |
 | `description` | text | yes |  | NULL |
 | `image` | varchar(255) | yes |  | NULL |
 | `icon` | varchar(60) | yes |  | NULL |
 | `color` | varchar(20) | yes |  | NULL |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
-| `is_featured` | tinyint(1) | yes |  | 0 |
-| `status` | tinyint(4) unsigned | yes | MUL | 1 |
+| `sort_order` | int(11) unsigned | no |  | 0 |
+| `is_featured` | tinyint(1) | no |  | 0 |
+| `status` | tinyint(4) unsigned | no | MUL | 1 |
 | `meta_title` | varchar(190) | yes |  | NULL |
 | `meta_description` | varchar(500) | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
@@ -1538,28 +1538,28 @@ Sellable subscriptions; pricing lives on product_variations.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `category_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `category_id` | bigint(20) unsigned | no | MUL | - |
 | `brand_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `name` | varchar(190) | yes | MUL | NULL |
-| `slug` | varchar(200) | yes | UNI | NULL |
+| `name` | varchar(190) | no | MUL | - |
+| `slug` | varchar(200) | no | UNI | - |
 | `short_description` | varchar(500) | yes |  | NULL |
 | `description` | text | yes |  | NULL |
 | `image` | varchar(255) | yes |  | NULL |
 | `badge` | varchar(50) | yes |  | NULL |
 | `account_type` | varchar(60) | yes |  | NULL |
-| `delivery_method` | varchar(30) | yes |  | 'manual' |
+| `delivery_method` | varchar(30) | no |  | 'manual' |
 | `warranty_info` | varchar(255) | yes |  | NULL |
 | `support_info` | text | yes |  | NULL |
 | `activation_instructions` | text | yes |  | NULL |
-| `is_featured` | tinyint(1) | yes | MUL | 0 |
-| `is_bestseller` | tinyint(1) | yes | MUL | 0 |
-| `is_new_arrival` | tinyint(1) | yes | MUL | 0 |
-| `status` | enum('draft','published','archived') | yes | MUL | 'draft' |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
-| `view_count` | int(11) unsigned | yes |  | 0 |
-| `sales_count` | int(11) unsigned | yes | MUL | 0 |
-| `rating_avg` | decimal(3,2) | yes | MUL | 0.00 |
-| `rating_count` | int(11) unsigned | yes |  | 0 |
+| `is_featured` | tinyint(1) | no | MUL | 0 |
+| `is_bestseller` | tinyint(1) | no | MUL | 0 |
+| `is_new_arrival` | tinyint(1) | no | MUL | 0 |
+| `status` | enum('draft','published','archived') | no | MUL | 'draft' |
+| `sort_order` | int(11) unsigned | no |  | 0 |
+| `view_count` | int(11) unsigned | no |  | 0 |
+| `sales_count` | int(11) unsigned | no | MUL | 0 |
+| `rating_avg` | decimal(3,2) | no | MUL | 0.00 |
+| `rating_count` | int(11) unsigned | no |  | 0 |
 | `meta_title` | varchar(190) | yes |  | NULL |
 | `meta_description` | varchar(500) | yes |  | NULL |
 | `created_at` | datetime | yes | MUL | current_timestamp() |
@@ -1577,11 +1577,11 @@ Per-product questions and answers.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `question` | varchar(255) | yes |  | NULL |
-| `answer` | text | yes |  | NULL |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
-| `status` | tinyint(4) unsigned | yes |  | 1 |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
+| `question` | varchar(255) | no |  | - |
+| `answer` | text | no |  | - |
+| `sort_order` | int(11) unsigned | no |  | 0 |
+| `status` | tinyint(4) unsigned | no |  | 1 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -1596,10 +1596,10 @@ Bullet-point feature list shown on the product page.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `label` | varchar(190) | yes |  | NULL |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
+| `label` | varchar(190) | no |  | - |
 | `icon` | varchar(60) | yes |  | NULL |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
+| `sort_order` | int(11) unsigned | no |  | 0 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -1614,11 +1614,11 @@ Gallery images per product.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `path` | varchar(255) | yes |  | NULL |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
+| `path` | varchar(255) | no |  | - |
 | `alt` | varchar(190) | yes |  | NULL |
-| `is_primary` | tinyint(1) | yes |  | 0 |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
+| `is_primary` | tinyint(1) | no |  | 0 |
+| `sort_order` | int(11) unsigned | no |  | 0 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -1633,9 +1633,9 @@ Curated cross-sells; falls back to category/brand matches.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `related_product_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
+| `related_product_id` | bigint(20) unsigned | no | MUL | - |
+| `sort_order` | int(11) unsigned | no |  | 0 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 
 Indexes: UNIQUE related_pair_unique (product_id, related_product_id); related_reverse_index (related_product_id).
@@ -1649,25 +1649,25 @@ One plan per row: SKU, price, duration, stock and delivery.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `label` | varchar(120) | yes |  | NULL |
-| `sku` | varchar(80) | yes | UNI | NULL |
-| `price` | decimal(12,2) | yes | MUL | NULL |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
+| `label` | varchar(120) | no |  | - |
+| `sku` | varchar(80) | no | UNI | - |
+| `price` | decimal(12,2) | no | MUL | - |
 | `compare_price` | decimal(12,2) | yes |  | NULL |
 | `cost_price` | decimal(12,2) | yes |  | NULL |
-| `duration_days` | int(11) unsigned | yes | MUL | 30 |
+| `duration_days` | int(11) unsigned | no | MUL | 30 |
 | `duration_label` | varchar(60) | yes |  | NULL |
 | `device_limit` | smallint(6) unsigned | yes |  | NULL |
 | `account_type` | varchar(60) | yes |  | NULL |
-| `delivery_method` | enum('auto_key','auto_code','manual','account_transfer') | yes | MUL | 'manual' |
-| `stock` | int(11) | yes | MUL | -1 |
-| `min_quantity` | smallint(6) unsigned | yes |  | 1 |
-| `max_quantity` | smallint(6) unsigned | yes |  | 10 |
+| `delivery_method` | enum('auto_key','auto_code','manual','account_transfer') | no | MUL | 'manual' |
+| `stock` | int(11) | no | MUL | -1 |
+| `min_quantity` | smallint(6) unsigned | no |  | 1 |
+| `max_quantity` | smallint(6) unsigned | no |  | 10 |
 | `warranty_days` | smallint(6) unsigned | yes |  | NULL |
 | `notes` | text | yes |  | NULL |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
-| `sales_count` | int(11) unsigned | yes |  | 0 |
-| `status` | tinyint(4) unsigned | yes |  | 1 |
+| `sort_order` | int(11) unsigned | no |  | 0 |
+| `sales_count` | int(11) unsigned | no |  | 0 |
+| `status` | tinyint(4) unsigned | no |  | 1 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 | `deleted_at` | datetime | yes |  | NULL |
@@ -1703,14 +1703,14 @@ Cart lines with server-side priced snapshots.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `cart_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `variation_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `quantity` | int(11) unsigned | yes |  | 1 |
-| `unit_price` | decimal(12,2) | yes |  | NULL |
-| `product_name` | varchar(190) | yes |  | NULL |
+| `cart_id` | bigint(20) unsigned | no | MUL | - |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
+| `variation_id` | bigint(20) unsigned | no | MUL | - |
+| `quantity` | int(11) unsigned | no |  | 1 |
+| `unit_price` | decimal(12,2) | no |  | - |
+| `product_name` | varchar(190) | no |  | - |
 | `variation_label` | varchar(120) | yes |  | NULL |
-| `sku` | varchar(80) | yes |  | NULL |
+| `sku` | varchar(80) | no |  | - |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -1725,9 +1725,9 @@ Saved-for-later lists (one default list per customer).
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `name` | varchar(80) | yes |  | 'default' |
-| `is_public` | tinyint(1) | yes |  | 0 |
+| `user_id` | bigint(20) unsigned | no | MUL | - |
+| `name` | varchar(80) | no |  | 'default' |
+| `is_public` | tinyint(1) | no |  | 0 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -1742,8 +1742,8 @@ Products saved by a customer.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `wishlist_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `wishlist_id` | bigint(20) unsigned | no | MUL | - |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
 | `note` | varchar(255) | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
 
@@ -1760,17 +1760,17 @@ Active and expired entitlements shown in the customer dashboard.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `user_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `user_id` | bigint(20) unsigned | no | MUL | - |
 | `order_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `order_item_id` | bigint(20) unsigned | yes | UNI | NULL |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `variation_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `status` | enum('pending','active','expired','cancelled','suspended') | yes |  | 'pending' |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
+| `variation_id` | bigint(20) unsigned | no | MUL | - |
+| `status` | enum('pending','active','expired','cancelled','suspended') | no |  | 'pending' |
 | `starts_at` | datetime | yes |  | NULL |
 | `expires_at` | datetime | yes | MUL | NULL |
 | `activated_at` | datetime | yes |  | NULL |
 | `reminder_sent_at` | datetime | yes |  | NULL |
-| `auto_renew` | tinyint(1) | yes |  | 0 |
+| `auto_renew` | tinyint(1) | no |  | 0 |
 | `device_limit` | smallint(6) unsigned | yes |  | NULL |
 | `notes` | text | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
@@ -1787,17 +1787,17 @@ Delivery of one inventory item against one order line.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `order_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `order_item_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `order_id` | bigint(20) unsigned | no | MUL | - |
+| `order_item_id` | bigint(20) unsigned | no | MUL | - |
 | `digital_inventory_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `method` | varchar(30) | yes |  | 'auto_key' |
-| `status` | enum('pending','delivered','failed','revoked') | yes |  | 'pending' |
+| `method` | varchar(30) | no |  | 'auto_key' |
+| `status` | enum('pending','delivered','failed','revoked') | no |  | 'pending' |
 | `delivered_at` | datetime | yes |  | NULL |
 | `emailed_at` | datetime | yes |  | NULL |
 | `viewed_at` | datetime | yes |  | NULL |
-| `view_count` | int(11) unsigned | yes |  | 0 |
-| `attempts` | smallint(6) unsigned | yes |  | 0 |
+| `view_count` | int(11) unsigned | no |  | 0 |
+| `attempts` | smallint(6) unsigned | no |  | 0 |
 | `note` | varchar(500) | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
@@ -1813,16 +1813,16 @@ Encrypted license keys and credentials (AES-256-GCM ciphertext only).
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `variation_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `type` | enum('license_key','code','credential','account') | yes |  | 'license_key' |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
+| `variation_id` | bigint(20) unsigned | no | MUL | - |
+| `type` | enum('license_key','code','credential','account') | no |  | 'license_key' |
 | `encrypted_payload` | text | no |  | - |
-| `encryption_iv` | varchar(44) | yes |  | NULL |
-| `auth_tag` | varchar(44) | yes |  | NULL |
-| `key_version` | smallint(6) unsigned | yes |  | 1 |
-| `dedupe_hash` | char(64) | yes | UNI | NULL |
+| `encryption_iv` | varchar(44) | no |  | - |
+| `auth_tag` | varchar(44) | no |  | - |
+| `key_version` | smallint(6) unsigned | no |  | 1 |
+| `dedupe_hash` | char(64) | no | UNI | - |
 | `code_hint` | varchar(12) | yes |  | NULL |
-| `status` | enum('available','reserved','assigned','delivered','expired','revoked','invalid') | yes |  | 'available' |
+| `status` | enum('available','reserved','assigned','delivered','expired','revoked','invalid') | no |  | 'available' |
 | `order_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `order_item_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `assigned_to` | bigint(20) unsigned | yes | MUL | NULL |
@@ -1844,21 +1844,21 @@ Customer orders with server-side totals and status timeline.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `order_number` | varchar(32) | yes | UNI | NULL |
+| `order_number` | varchar(32) | no | UNI | - |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `status` | enum('pending','awaiting_payment','processing','paid','delivered','completed','cancelled','refunded','failed') | yes | MUL | 'pending' |
-| `subtotal` | decimal(12,2) | yes |  | 0.00 |
-| `discount` | decimal(12,2) | yes |  | 0.00 |
+| `status` | enum('pending','awaiting_payment','processing','paid','delivered','completed','cancelled','refunded','failed') | no | MUL | 'pending' |
+| `subtotal` | decimal(12,2) | no |  | 0.00 |
+| `discount` | decimal(12,2) | no |  | 0.00 |
 | `coupon_code` | varchar(60) | yes |  | NULL |
-| `total` | decimal(12,2) | yes |  | 0.00 |
-| `grand_total` | decimal(12,2) | yes | MUL | 0.00 |
-| `refunded_amount` | decimal(12,2) | yes |  | 0.00 |
-| `currency` | varchar(3) | yes |  | 'BDT' |
+| `total` | decimal(12,2) | no |  | 0.00 |
+| `grand_total` | decimal(12,2) | no | MUL | 0.00 |
+| `refunded_amount` | decimal(12,2) | no |  | 0.00 |
+| `currency` | varchar(3) | no |  | 'BDT' |
 | `payment_method` | varchar(40) | yes | MUL | NULL |
-| `payment_status` | enum('unpaid','pending','paid','failed','cancelled','refunded','partially_refunded') | yes | MUL | 'unpaid' |
+| `payment_status` | enum('unpaid','pending','paid','failed','cancelled','refunded','partially_refunded') | no | MUL | 'unpaid' |
 | `payment_reference` | varchar(120) | yes |  | NULL |
-| `customer_name` | varchar(120) | yes |  | NULL |
-| `customer_email` | varchar(190) | yes | MUL | NULL |
+| `customer_name` | varchar(120) | no |  | - |
+| `customer_email` | varchar(190) | no | MUL | - |
 | `customer_phone` | varchar(20) | yes |  | NULL |
 | `billing_address` | varchar(255) | yes |  | NULL |
 | `billing_city` | varchar(80) | yes |  | NULL |
@@ -1887,18 +1887,18 @@ Immutable purchase snapshot: name, plan, SKU and price at purchase time.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `order_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `order_id` | bigint(20) unsigned | no | MUL | - |
 | `product_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `variation_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `product_name` | varchar(190) | yes |  | NULL |
+| `product_name` | varchar(190) | no |  | - |
 | `variation_label` | varchar(120) | yes |  | NULL |
-| `sku` | varchar(80) | yes |  | NULL |
-| `unit_price` | decimal(12,2) | yes |  | NULL |
-| `quantity` | int(11) unsigned | yes |  | 1 |
-| `discount` | decimal(12,2) | yes |  | 0.00 |
-| `line_total` | decimal(12,2) | yes |  | NULL |
-| `duration_days` | int(11) unsigned | yes |  | 0 |
-| `delivery_method` | varchar(30) | yes |  | 'manual' |
+| `sku` | varchar(80) | no |  | - |
+| `unit_price` | decimal(12,2) | no |  | - |
+| `quantity` | int(11) unsigned | no |  | 1 |
+| `discount` | decimal(12,2) | no |  | 0.00 |
+| `line_total` | decimal(12,2) | no |  | - |
+| `duration_days` | int(11) unsigned | no |  | 0 |
+| `delivery_method` | varchar(30) | no |  | 'manual' |
 | `warranty_info` | varchar(255) | yes |  | NULL |
 | `details` | longtext | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
@@ -1915,12 +1915,12 @@ Every status transition, including staff notes.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `order_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `order_id` | bigint(20) unsigned | no | MUL | - |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `from_status` | varchar(30) | yes |  | NULL |
-| `to_status` | varchar(30) | yes |  | NULL |
+| `to_status` | varchar(30) | no |  | - |
 | `note` | varchar(500) | yes |  | NULL |
-| `is_customer_visible` | tinyint(1) | yes |  | 0 |
+| `is_customer_visible` | tinyint(1) | no |  | 0 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 
 Indexes: order_status_history_order_index (order_id, created_at); order_status_history_user_index (user_id).
@@ -1934,12 +1934,12 @@ Payment attempts per order; card data is never stored.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `order_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `method` | varchar(40) | yes |  | NULL |
-| `gateway` | varchar(40) | yes | MUL | NULL |
-| `status` | enum('pending','completed','failed','cancelled','refunded') | yes | MUL | 'pending' |
-| `amount` | decimal(12,2) | yes |  | NULL |
-| `currency` | varchar(3) | yes |  | 'BDT' |
+| `order_id` | bigint(20) unsigned | no | MUL | - |
+| `method` | varchar(40) | no |  | - |
+| `gateway` | varchar(40) | no | MUL | - |
+| `status` | enum('pending','completed','failed','cancelled','refunded') | no | MUL | 'pending' |
+| `amount` | decimal(12,2) | no |  | - |
+| `currency` | varchar(3) | no |  | 'BDT' |
 | `transaction_reference` | varchar(120) | yes | MUL | NULL |
 | `gateway_payment_id` | varchar(190) | yes |  | NULL |
 | `gateway_track_id` | varchar(190) | yes |  | NULL |
@@ -1965,14 +1965,14 @@ Append-only gateway event log used to block duplicate callbacks.
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
 | `payment_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `order_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `event` | varchar(60) | yes |  | NULL |
-| `status` | varchar(30) | yes |  | NULL |
+| `order_id` | bigint(20) unsigned | no | MUL | - |
+| `event` | varchar(60) | no |  | - |
+| `status` | varchar(30) | no |  | - |
 | `amount` | decimal(12,2) | yes |  | NULL |
 | `currency` | varchar(3) | yes |  | NULL |
 | `reference` | varchar(190) | yes | MUL | NULL |
 | `idempotency_key` | varchar(190) | yes | UNI | NULL |
-| `signature_valid` | tinyint(4) unsigned | yes |  | 0 |
+| `signature_valid` | tinyint(4) unsigned | no |  | 0 |
 | `source_ip` | varchar(45) | yes |  | NULL |
 | `raw_payload` | longtext | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
@@ -1988,9 +1988,9 @@ Activation, renewal and expiry trail per subscription.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `subscription_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `subscription_id` | bigint(20) unsigned | no | MUL | - |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `event` | varchar(60) | yes |  | NULL |
+| `event` | varchar(60) | no |  | - |
 | `from_status` | varchar(30) | yes |  | NULL |
 | `to_status` | varchar(30) | yes |  | NULL |
 | `note` | varchar(500) | yes |  | NULL |
@@ -2009,23 +2009,23 @@ Percentage or fixed-amount discount codes.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `code` | varchar(60) | yes | UNI | NULL |
-| `name` | varchar(120) | yes |  | NULL |
+| `code` | varchar(60) | no | UNI | - |
+| `name` | varchar(120) | no |  | - |
 | `description` | varchar(500) | yes |  | NULL |
-| `type` | enum('percent','fixed') | yes |  | 'percent' |
-| `value` | decimal(12,2) | yes |  | NULL |
-| `min_order_amount` | decimal(12,2) | yes |  | 0.00 |
+| `type` | enum('percent','fixed') | no |  | 'percent' |
+| `value` | decimal(12,2) | no |  | - |
+| `min_order_amount` | decimal(12,2) | no |  | 0.00 |
 | `max_discount` | decimal(12,2) | yes |  | NULL |
-| `restriction_mode` | enum('all','products','categories') | yes |  | 'all' |
+| `restriction_mode` | enum('all','products','categories') | no |  | 'all' |
 | `usage_limit` | int(11) unsigned | yes |  | NULL |
 | `usage_limit_per_user` | smallint(6) unsigned | yes |  | NULL |
-| `usage_count` | int(11) unsigned | yes |  | 0 |
-| `first_order_only` | tinyint(1) | yes |  | 0 |
-| `auto_apply` | tinyint(1) | yes | MUL | 0 |
-| `stackable` | tinyint(1) | yes |  | 0 |
+| `usage_count` | int(11) unsigned | no |  | 0 |
+| `first_order_only` | tinyint(1) | no |  | 0 |
+| `auto_apply` | tinyint(1) | no | MUL | 0 |
+| `stackable` | tinyint(1) | no |  | 0 |
 | `starts_at` | datetime | yes |  | NULL |
 | `expires_at` | datetime | yes |  | NULL |
-| `status` | tinyint(4) unsigned | yes | MUL | 1 |
+| `status` | tinyint(4) unsigned | no | MUL | 1 |
 | `created_by` | bigint(20) unsigned | yes | MUL | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
@@ -2042,8 +2042,8 @@ Categories a coupon is restricted to.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `coupon_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `category_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `coupon_id` | bigint(20) unsigned | no | MUL | - |
+| `category_id` | bigint(20) unsigned | no | MUL | - |
 | `created_at` | datetime | yes |  | current_timestamp() |
 
 Indexes: coupon_categories_category_index (category_id); UNIQUE coupon_categories_pair_unique (coupon_id, category_id).
@@ -2057,8 +2057,8 @@ Products a coupon is restricted to.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `coupon_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `coupon_id` | bigint(20) unsigned | no | MUL | - |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
 | `created_at` | datetime | yes |  | current_timestamp() |
 
 Indexes: UNIQUE coupon_products_pair_unique (coupon_id, product_id); coupon_products_product_index (product_id).
@@ -2072,11 +2072,11 @@ One row per redeemed coupon, the basis for usage limits.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `coupon_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `coupon_id` | bigint(20) unsigned | no | MUL | - |
 | `order_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `cart_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `discount_amount` | decimal(12,2) | yes |  | 0.00 |
+| `discount_amount` | decimal(12,2) | no |  | 0.00 |
 | `used_at` | datetime | yes |  | current_timestamp() |
 | `created_at` | datetime | yes |  | current_timestamp() |
 
@@ -2093,10 +2093,10 @@ Double opt-in newsletter list.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `email` | varchar(190) | yes | UNI | NULL |
+| `email` | varchar(190) | no | UNI | - |
 | `name` | varchar(120) | yes |  | NULL |
-| `locale` | varchar(5) | yes |  | 'en' |
-| `status` | enum('pending','subscribed','unsubscribed') | yes | MUL | 'pending' |
+| `locale` | varchar(5) | no |  | 'en' |
+| `status` | enum('pending','subscribed','unsubscribed') | no | MUL | 'pending' |
 | `token_hash` | char(64) | yes |  | NULL |
 | `subscribed_at` | datetime | yes |  | NULL |
 | `unsubscribed_at` | datetime | yes |  | NULL |
@@ -2113,13 +2113,13 @@ In-app notification inbox.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `type` | varchar(60) | yes | MUL | NULL |
-| `title` | varchar(190) | yes |  | NULL |
+| `user_id` | bigint(20) unsigned | no | MUL | - |
+| `type` | varchar(60) | no | MUL | - |
+| `title` | varchar(190) | no |  | - |
 | `message` | text | yes |  | NULL |
 | `link` | varchar(255) | yes |  | NULL |
 | `icon` | varchar(60) | yes |  | NULL |
-| `is_read` | tinyint(1) | yes |  | 0 |
+| `is_read` | tinyint(1) | no |  | 0 |
 | `read_at` | datetime | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
@@ -2135,16 +2135,16 @@ Moderated product reviews; ratings are rolled up onto products.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `product_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `product_id` | bigint(20) unsigned | no | MUL | - |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `order_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `author_name` | varchar(120) | yes |  | NULL |
-| `rating` | tinyint(4) unsigned | yes | MUL | 5 |
+| `author_name` | varchar(120) | no |  | - |
+| `rating` | tinyint(4) unsigned | no | MUL | 5 |
 | `title` | varchar(190) | yes |  | NULL |
-| `body` | text | yes |  | NULL |
-| `status` | enum('pending','approved','rejected') | yes |  | 'pending' |
-| `is_verified_purchase` | tinyint(1) | yes |  | 0 |
-| `helpful_count` | int(11) unsigned | yes |  | 0 |
+| `body` | text | no |  | - |
+| `status` | enum('pending','approved','rejected') | no |  | 'pending' |
+| `is_verified_purchase` | tinyint(1) | no |  | 0 |
+| `helpful_count` | int(11) unsigned | no |  | 0 |
 | `owner_response` | text | yes |  | NULL |
 | `responded_at` | datetime | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
@@ -2162,10 +2162,10 @@ Replies inside a ticket, from customer or staff.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `ticket_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `ticket_id` | bigint(20) unsigned | no | MUL | - |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `is_staff` | tinyint(1) | yes |  | 0 |
-| `body` | text | yes |  | NULL |
+| `is_staff` | tinyint(1) | no |  | 0 |
+| `body` | text | no |  | - |
 | `attachment` | varchar(255) | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
@@ -2181,14 +2181,14 @@ Customer support conversations.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `ticket_number` | varchar(24) | yes | UNI | NULL |
-| `user_id` | bigint(20) unsigned | yes | MUL | NULL |
+| `ticket_number` | varchar(24) | no | UNI | - |
+| `user_id` | bigint(20) unsigned | no | MUL | - |
 | `order_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `department` | enum('general','order','payment','delivery','technical') | yes |  | 'general' |
-| `subject` | varchar(190) | yes |  | NULL |
-| `body` | text | yes |  | NULL |
-| `priority` | enum('low','normal','high','urgent') | yes |  | 'normal' |
-| `status` | enum('open','answered','customer_reply','in_progress','resolved','closed') | yes | MUL | 'open' |
+| `department` | enum('general','order','payment','delivery','technical') | no |  | 'general' |
+| `subject` | varchar(190) | no |  | - |
+| `body` | text | no |  | - |
+| `priority` | enum('low','normal','high','urgent') | no |  | 'normal' |
+| `status` | enum('open','answered','customer_reply','in_progress','resolved','closed') | no | MUL | 'open' |
 | `assigned_to` | bigint(20) unsigned | yes | MUL | NULL |
 | `last_reply_at` | datetime | yes |  | NULL |
 | `closed_at` | datetime | yes |  | NULL |
@@ -2209,8 +2209,8 @@ Hero, promotional and announcement banners by placement.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `placement` | enum('announcement','home_hero','home_promo','category','sidebar') | yes | MUL | 'home_hero' |
-| `title` | varchar(190) | yes |  | NULL |
+| `placement` | enum('announcement','home_hero','home_promo','category','sidebar') | no | MUL | 'home_hero' |
+| `title` | varchar(190) | no |  | - |
 | `subtitle` | varchar(255) | yes |  | NULL |
 | `description` | text | yes |  | NULL |
 | `badge` | varchar(60) | yes |  | NULL |
@@ -2218,12 +2218,12 @@ Hero, promotional and announcement banners by placement.
 | `image_alt` | varchar(190) | yes |  | NULL |
 | `link` | varchar(255) | yes |  | NULL |
 | `button_text` | varchar(60) | yes |  | NULL |
-| `button_style` | varchar(30) | yes |  | 'primary' |
+| `button_style` | varchar(30) | no |  | 'primary' |
 | `starts_at` | datetime | yes | MUL | NULL |
 | `ends_at` | datetime | yes |  | NULL |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
-| `status` | tinyint(4) unsigned | yes |  | 1 |
-| `locale` | varchar(5) | yes |  | 'en' |
+| `sort_order` | int(11) unsigned | no |  | 0 |
+| `status` | tinyint(4) unsigned | no |  | 1 |
+| `locale` | varchar(5) | no |  | 'en' |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -2236,13 +2236,13 @@ Site-wide frequently asked questions.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `question` | varchar(255) | yes |  | NULL |
-| `answer` | text | yes |  | NULL |
+| `question` | varchar(255) | no |  | - |
+| `answer` | text | no |  | - |
 | `category` | varchar(80) | yes |  | NULL |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
-| `show_on_home` | tinyint(1) | yes | MUL | 0 |
-| `status` | tinyint(4) unsigned | yes | MUL | 1 |
-| `locale` | varchar(5) | yes | MUL | 'en' |
+| `sort_order` | int(11) unsigned | no |  | 0 |
+| `show_on_home` | tinyint(1) | no | MUL | 0 |
+| `status` | tinyint(4) unsigned | no | MUL | 1 |
+| `locale` | varchar(5) | no | MUL | 'en' |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -2255,16 +2255,16 @@ Header, mobile and footer navigation items.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `location` | enum('header','mobile','footer') | yes | MUL | 'header' |
+| `location` | enum('header','mobile','footer') | no | MUL | 'header' |
 | `parent_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `label` | varchar(120) | yes |  | NULL |
-| `target_type` | enum('url','page','category','product') | yes |  | 'url' |
+| `label` | varchar(120) | no |  | - |
+| `target_type` | enum('url','page','category','product') | no |  | 'url' |
 | `target_id` | bigint(20) unsigned | yes |  | NULL |
 | `url` | varchar(255) | yes |  | NULL |
 | `icon` | varchar(60) | yes |  | NULL |
-| `open_in_new_tab` | tinyint(1) | yes |  | 0 |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
-| `status` | tinyint(4) unsigned | yes |  | 1 |
+| `open_in_new_tab` | tinyint(1) | no |  | 0 |
+| `sort_order` | int(11) unsigned | no |  | 0 |
+| `status` | tinyint(4) unsigned | no |  | 1 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -2279,17 +2279,17 @@ Static content pages (about, terms, privacy, delivery, refund).
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `title` | varchar(190) | yes |  | NULL |
-| `slug` | varchar(200) | yes | MUL | NULL |
+| `title` | varchar(190) | no |  | - |
+| `slug` | varchar(200) | no | MUL | - |
 | `excerpt` | varchar(500) | yes |  | NULL |
 | `content` | text | yes |  | NULL |
 | `template` | varchar(60) | yes |  | NULL |
 | `meta_title` | varchar(190) | yes |  | NULL |
 | `meta_description` | varchar(500) | yes |  | NULL |
-| `status` | enum('draft','published') | yes | MUL | 'draft' |
-| `is_footer` | tinyint(1) | yes |  | 0 |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
-| `locale` | varchar(5) | yes |  | 'en' |
+| `status` | enum('draft','published') | no | MUL | 'draft' |
+| `is_footer` | tinyint(1) | no |  | 0 |
+| `sort_order` | int(11) unsigned | no |  | 0 |
+| `locale` | varchar(5) | no |  | 'en' |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 | `deleted_at` | datetime | yes |  | NULL |
@@ -2303,14 +2303,14 @@ Key/value website settings grouped for the admin CMS screen.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `key` | varchar(140) | yes | UNI | NULL |
+| `key` | varchar(140) | no | UNI | - |
 | `value` | text | yes |  | NULL |
-| `type` | enum('string','text','number','boolean','json','image','color') | yes |  | 'string' |
-| `group_name` | varchar(60) | yes | MUL | 'general' |
+| `type` | enum('string','text','number','boolean','json','image','color') | no |  | 'string' |
+| `group_name` | varchar(60) | no | MUL | 'general' |
 | `label` | varchar(190) | yes |  | NULL |
 | `description` | varchar(255) | yes |  | NULL |
-| `is_public` | tinyint(1) | yes |  | 1 |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
+| `is_public` | tinyint(1) | no |  | 1 |
+| `sort_order` | int(11) unsigned | no |  | 0 |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -2323,17 +2323,17 @@ Curated customer testimonials for the homepage.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `customer_name` | varchar(120) | yes |  | NULL |
+| `customer_name` | varchar(120) | no |  | - |
 | `customer_title` | varchar(120) | yes |  | NULL |
 | `customer_location` | varchar(120) | yes |  | NULL |
-| `quote` | text | yes |  | NULL |
-| `rating` | tinyint(4) unsigned | yes |  | 5 |
+| `quote` | text | no |  | - |
+| `rating` | tinyint(4) unsigned | no |  | 5 |
 | `avatar` | varchar(255) | yes |  | NULL |
 | `product_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `status` | tinyint(4) unsigned | yes | MUL | 0 |
-| `sort_order` | int(11) unsigned | yes |  | 0 |
-| `locale` | varchar(5) | yes |  | 'en' |
+| `status` | tinyint(4) unsigned | no | MUL | 0 |
+| `sort_order` | int(11) unsigned | no |  | 0 |
+| `locale` | varchar(5) | no |  | 'en' |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
 
@@ -2351,7 +2351,7 @@ Append-only record of privileged actions.
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `action` | varchar(100) | yes | MUL | NULL |
+| `action` | varchar(100) | no | MUL | - |
 | `description` | varchar(500) | yes |  | NULL |
 | `subject_type` | varchar(80) | yes | MUL | NULL |
 | `subject_id` | bigint(20) unsigned | yes |  | NULL |
@@ -2373,14 +2373,14 @@ Database-backed job queue drained by scripts/cron/worker.php.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `queue` | varchar(40) | yes | MUL | 'default' |
-| `job` | varchar(120) | yes | MUL | NULL |
+| `queue` | varchar(40) | no | MUL | 'default' |
+| `job` | varchar(120) | no | MUL | - |
 | `payload` | text | yes |  | NULL |
-| `attempts` | tinyint(4) unsigned | yes |  | 0 |
+| `attempts` | tinyint(4) unsigned | no |  | 0 |
 | `available_at` | datetime | yes |  | current_timestamp() |
 | `reserved_at` | datetime | yes |  | NULL |
 | `executed_at` | datetime | yes |  | NULL |
-| `status` | enum('pending','processing','completed','failed','cancelled') | yes | MUL | 'pending' |
+| `status` | enum('pending','processing','completed','failed','cancelled') | no | MUL | 'pending' |
 | `last_error` | text | yes |  | NULL |
 | `created_at` | datetime | yes |  | current_timestamp() |
 | `updated_at` | datetime | yes |  | current_timestamp() _( on update current_timestamp() )_ |
@@ -2395,10 +2395,10 @@ Jobs that exhausted their retries, kept for inspection and replay.
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
 | `job_id` | bigint(20) unsigned | yes |  | NULL |
-| `queue` | varchar(40) | yes |  | 'default' |
-| `job` | varchar(120) | yes | MUL | NULL |
+| `queue` | varchar(40) | no |  | 'default' |
+| `job` | varchar(120) | no | MUL | - |
 | `payload` | text | yes |  | NULL |
-| `attempts` | tinyint(4) unsigned | yes |  | 0 |
+| `attempts` | tinyint(4) unsigned | no |  | 0 |
 | `exception` | text | yes |  | NULL |
 | `failed_at` | datetime | yes | MUL | current_timestamp() |
 | `created_at` | datetime | yes |  | current_timestamp() |
@@ -2412,11 +2412,11 @@ Replay protection for checkout, webhooks and job dispatch.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `key` | varchar(190) | yes |  | NULL |
-| `scope` | varchar(80) | yes | MUL | NULL |
+| `key` | varchar(190) | no |  | - |
+| `scope` | varchar(80) | no | MUL | - |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `request_hash` | char(64) | yes |  | NULL |
-| `status` | enum('in_progress','completed','failed') | yes | MUL | 'in_progress' |
+| `status` | enum('in_progress','completed','failed') | no | MUL | 'in_progress' |
 | `response_code` | smallint(6) unsigned | yes |  | NULL |
 | `response_body` | text | yes |  | NULL |
 | `resource_type` | varchar(60) | yes |  | NULL |
@@ -2437,11 +2437,11 @@ Hashed-identifier login throttle log; raw emails are never stored.
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
-| `identifier` | char(64) | yes | MUL | NULL |
-| `ip` | varchar(45) | yes | MUL | NULL |
+| `identifier` | char(64) | no | MUL | - |
+| `ip` | varchar(45) | no | MUL | - |
 | `user_agent` | varchar(512) | yes |  | NULL |
-| `successful` | tinyint(1) | yes |  | 0 |
-| `attempted_at` | datetime | yes | MUL | NULL |
+| `successful` | tinyint(1) | no |  | 0 |
+| `attempted_at` | datetime | no | MUL | - |
 
 Indexes: login_attempts_identifier_index (identifier, successful, attempted_at); login_attempts_ip_index (ip, successful, attempted_at); login_attempts_time_index (attempted_at); login_attempts_user_index (user_id).
 
@@ -2454,9 +2454,9 @@ Database mirror of the log stream for the admin log viewer.
 | Column | Type | Null | Key | Default |
 |---|---|---|---|---|
 | `id` | bigint(20) unsigned | no | PRI | - _( auto_increment )_ |
-| `level` | varchar(16) | yes | MUL | NULL |
-| `channel` | varchar(40) | yes | MUL | 'app' |
-| `message` | text | yes |  | NULL |
+| `level` | varchar(16) | no | MUL | - |
+| `channel` | varchar(40) | no | MUL | 'app' |
+| `message` | text | no |  | - |
 | `context` | text | yes |  | NULL |
 | `user_id` | bigint(20) unsigned | yes | MUL | NULL |
 | `ip_address` | varchar(45) | yes |  | NULL |

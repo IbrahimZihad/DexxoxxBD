@@ -20,18 +20,22 @@ final class CreateCustomerSubscriptionsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('user_id', 'biginteger', ['signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => false])
             ->addColumn('order_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('order_item_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('product_id', 'biginteger', ['signed' => false])
-            ->addColumn('variation_id', 'biginteger', ['signed' => false])
-            ->addColumn('status', 'enum', ['values' => ['pending', 'active', 'expired', 'cancelled', 'suspended'], 'default' => 'pending'])
+            ->addColumn('product_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('variation_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('status', 'enum', [
+            'values' => ['pending', 'active', 'expired', 'cancelled', 'suspended'],
+            'default' => 'pending',
+            'null' => false,
+        ])
             ->addColumn('starts_at', 'datetime', ['null' => true])
             ->addColumn('expires_at', 'datetime', ['null' => true])
             ->addColumn('activated_at', 'datetime', ['null' => true])
             ->addColumn('reminder_sent_at', 'datetime', ['null' => true])
-            ->addColumn('auto_renew', 'boolean', ['default' => false, 'comment' => 'Recurring billing is opt-in, never assumed'])
+            ->addColumn('auto_renew', 'boolean', ['default' => false, 'comment' => 'Recurring billing is opt-in, never assumed', 'null' => false])
             ->addColumn('device_limit', 'smallinteger', ['signed' => false, 'null' => true])
             ->addColumn('notes', 'text', ['null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])

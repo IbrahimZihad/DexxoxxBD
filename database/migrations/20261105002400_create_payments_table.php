@@ -20,13 +20,17 @@ final class CreatePaymentsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('order_id', 'biginteger', ['signed' => false])
-            ->addColumn('method', 'string', ['limit' => 40])
-            ->addColumn('gateway', 'string', ['limit' => 40])
-            ->addColumn('status', 'enum', ['values' => ['pending', 'completed', 'failed', 'cancelled', 'refunded'], 'default' => 'pending'])
-            ->addColumn('amount', 'decimal', ['precision' => 12, 'scale' => 2])
-            ->addColumn('currency', 'string', ['limit' => 3, 'default' => 'BDT'])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('order_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('method', 'string', ['limit' => 40, 'null' => false])
+            ->addColumn('gateway', 'string', ['limit' => 40, 'null' => false])
+            ->addColumn('status', 'enum', [
+            'values' => ['pending', 'completed', 'failed', 'cancelled', 'refunded'],
+            'default' => 'pending',
+            'null' => false,
+        ])
+            ->addColumn('amount', 'decimal', ['precision' => 12, 'scale' => 2, 'null' => false])
+            ->addColumn('currency', 'string', ['limit' => 3, 'default' => 'BDT', 'null' => false])
             ->addColumn('transaction_reference', 'string', ['limit' => 120, 'null' => true])
             ->addColumn('gateway_payment_id', 'string', ['limit' => 190, 'null' => true])
             ->addColumn('gateway_track_id', 'string', ['limit' => 190, 'null' => true])

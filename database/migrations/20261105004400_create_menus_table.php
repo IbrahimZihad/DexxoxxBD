@@ -20,17 +20,17 @@ final class CreateMenusTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('location', 'enum', ['values' => ['header', 'mobile', 'footer'], 'default' => 'header'])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('location', 'enum', ['values' => ['header', 'mobile', 'footer'], 'default' => 'header', 'null' => false])
             ->addColumn('parent_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('label', 'string', ['limit' => 120])
-            ->addColumn('target_type', 'enum', ['values' => ['url', 'page', 'category', 'product'], 'default' => 'url'])
+            ->addColumn('label', 'string', ['limit' => 120, 'null' => false])
+            ->addColumn('target_type', 'enum', ['values' => ['url', 'page', 'category', 'product'], 'default' => 'url', 'null' => false])
             ->addColumn('target_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('url', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('icon', 'string', ['limit' => 60, 'null' => true])
-            ->addColumn('open_in_new_tab', 'boolean', ['default' => false])
-            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0])
-            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1])
+            ->addColumn('open_in_new_tab', 'boolean', ['default' => false, 'null' => false])
+            ->addColumn('sort_order', 'integer', ['signed' => false, 'default' => 0, 'null' => false])
+            ->addColumn('status', 'tinyinteger', ['signed' => false, 'default' => 1, 'null' => false])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
 

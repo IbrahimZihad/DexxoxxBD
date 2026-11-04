@@ -20,12 +20,12 @@ final class CreateCouponUsagesTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('coupon_id', 'biginteger', ['signed' => false])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('coupon_id', 'biginteger', ['signed' => false, 'null' => false])
             ->addColumn('order_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => true])
             ->addColumn('cart_id', 'biginteger', ['signed' => false, 'null' => true])
-            ->addColumn('discount_amount', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00'])
+            ->addColumn('discount_amount', 'decimal', ['precision' => 12, 'scale' => 2, 'default' => '0.00', 'null' => false])
             ->addColumn('used_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP']);
 

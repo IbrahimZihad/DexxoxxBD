@@ -20,14 +20,14 @@ final class CreateNotificationsTable extends AbstractMigration
         ]);
 
         $table
-            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false])
-            ->addColumn('user_id', 'biginteger', ['signed' => false])
-            ->addColumn('type', 'string', ['limit' => 60])
-            ->addColumn('title', 'string', ['limit' => 190])
+            ->addColumn('id', 'biginteger', ['identity' => true, 'signed' => false, 'null' => false])
+            ->addColumn('user_id', 'biginteger', ['signed' => false, 'null' => false])
+            ->addColumn('type', 'string', ['limit' => 60, 'null' => false])
+            ->addColumn('title', 'string', ['limit' => 190, 'null' => false])
             ->addColumn('message', 'text', ['null' => true])
             ->addColumn('link', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('icon', 'string', ['limit' => 60, 'null' => true])
-            ->addColumn('is_read', 'boolean', ['default' => false])
+            ->addColumn('is_read', 'boolean', ['default' => false, 'null' => false])
             ->addColumn('read_at', 'datetime', ['null' => true])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
