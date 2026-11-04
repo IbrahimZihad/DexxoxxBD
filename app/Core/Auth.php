@@ -9,6 +9,7 @@ use App\Services\AuditService;
 use App\Services\LoginRateLimiter;
 use App\Services\RbacService;
 use App\Services\UserSessionRecorder;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -239,14 +240,21 @@ final class Auth
         $algorithm = LoginRateLimiter::preferredAlgorithm();
         $hash = password_hash($password, $algorithm, LoginRateLimiter::hashOptions());
         if ($hash === false) {
-            throw new Throwable('Password hashing failed.');
+            throw new RuntimeException('Password hashing failed.');
         }
         return $hash;
     }
 
-    /** True when the signed-in user owns the given resource. */
-    public function owns(string $table, int $resourceId, int $ownerColumnValue): bool
+    /**
+     * A valid Argon2id hash of a throwaway value, generated once per process,
+     * used to equalise login timing for unknown accounts.
+     */
+    private static function dummyHash(): string
     {
-        return $this->id() !== null && $this->id() === $ownerColumnValue;
+        static $hash = null;
+        if ($hash === null) {
+            $hash = password_hash(bin2hex(random_bytes(16)), LoginRateLimiter::preferredAlgorithm(), LoginRateLimiter::hashOptions());
+        }
+        return (string) $hash;
     }
 }
