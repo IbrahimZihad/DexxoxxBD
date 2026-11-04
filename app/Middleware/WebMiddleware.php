@@ -22,7 +22,9 @@ final class WebMiddleware
 
             // Remember where a guest was heading so login can send them back.
             if (!$request->wantsJson() && $request->is('GET') && $request->path() !== '') {
-                $publicPaths = ['/', 'login', 'register', 'password/forgot', 'products', 'categories', 'search'];
+                // 'api' keeps the AJAX type-ahead from becoming someone's login
+                // destination.
+                $publicPaths = ['/', 'api', 'login', 'register', 'password/forgot', 'products', 'categories', 'search'];
                 $first = explode('/', $request->path())[0];
                 if (!in_array($request->path(), $publicPaths, true) && !in_array($first, $publicPaths, true)) {
                     if (!Session::has('intended_url')) {
