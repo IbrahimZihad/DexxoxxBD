@@ -59,6 +59,8 @@ return [
     'any_duration' => 'Any duration',
     'any_availability' => 'Any availability',
     'delivery' => 'Delivery',
+    'category' => 'Category',
+    'brand' => 'Brand',
     'language' => 'Language',
     'english' => 'English',
     'bengali' => 'Bangla',

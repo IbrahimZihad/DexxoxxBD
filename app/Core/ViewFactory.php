@@ -139,6 +139,15 @@ final class ViewFactory
         return $this->sections[$name] ?? $default;
     }
 
+    /**
+     * Set a whole section from a value instead of an output buffer, which is how
+     * page views hand the layout their title, meta and JSON-LD.
+     */
+    public function setSection(string $name, string $value): void
+    {
+        $this->sections[$name] = $value;
+    }
+
     public function hasSection(string $name): bool
     {
         return isset($this->sections[$name]) && trim($this->sections[$name]) !== '';

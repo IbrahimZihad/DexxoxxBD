@@ -253,6 +253,25 @@ if (!function_exists('percent_off')) {
     }
 }
 
+if (!function_exists('html_clean')) {
+    /**
+     * Sanitised HTML from a CMS column. Escaping would show the shopper the tags,
+     * so markup is filtered to a whitelist instead - see App\Helpers\HtmlSanitizer.
+     */
+    function html_clean(?string $html): string
+    {
+        return \App\Helpers\HtmlSanitizer::sanitize($html);
+    }
+}
+
+if (!function_exists('html_excerpt')) {
+    /** Plain-text excerpt of CMS HTML, for meta descriptions and cards. */
+    function html_excerpt(?string $html, int $limit = 160): string
+    {
+        return \App\Helpers\HtmlSanitizer::text($html, $limit);
+    }
+}
+
 if (!function_exists('t')) {
     /** Translate a message key through the active locale. */
     function t(string $key, array $replace = []): string
@@ -265,6 +284,19 @@ if (!function_exists('current_locale')) {
     function current_locale(): string
     {
         return App::translator()->locale();
+    }
+}
+
+if (!function_exists('t_list')) {
+    /**
+     * A translation group as an array - option labels a view iterates over
+     * instead of a single line.
+     *
+     * @return array<string, mixed>
+     */
+    function t_list(string $key): array
+    {
+        return App::translator()->group($key);
     }
 }
 

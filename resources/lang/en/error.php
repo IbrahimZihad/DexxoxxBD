@@ -39,4 +39,6 @@ return [
         'cta' => 'Try again',
     ],
     'reference' => 'Reference: :id',
+    'allowed' => 'Allowed methods',
+    'actions' => 'Where to go next',
 ];

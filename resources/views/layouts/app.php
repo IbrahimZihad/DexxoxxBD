@@ -48,7 +48,7 @@ $localeTag = current_locale() === 'bn' ? 'bn_BD' : 'en_BD';
 
     <link rel="icon" type="image/svg+xml" href="<?= e(asset('img/favicon.svg')) ?>">
     <link rel="apple-touch-icon" href="<?= e(asset('img/og.svg')) ?>">
-    <link rel="stylesheet" href="<?= e(asset('vendor/bootstrap/bootstrap.min.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('vendor/bootstrap/css/bootstrap.min.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('vendor/bootstrap-icons/bootstrap-icons.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
     <?php if ($schema !== ''): ?>

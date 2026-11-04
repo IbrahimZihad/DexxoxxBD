@@ -86,6 +86,24 @@ final class Translator
         return $this->interpolate($line, $replace);
     }
 
+    /**
+     * A whole translation group as an array, for option lists and label maps
+     * that a view iterates instead of printing as one line.
+     *
+     * @return array<string, mixed>
+     */
+    public function group(string $key): array
+    {
+        foreach ([$this->locale, $this->fallback] as $locale) {
+            $value = $this->find($locale, $key);
+            if (is_array($value)) {
+                return $value;
+            }
+        }
+
+        return [];
+    }
+
     /** @return mixed */
     private function find(string $locale, string $key): mixed
     {

@@ -49,14 +49,14 @@ $schema = json_encode([
     ],
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 ?>
-<?php $view->startSection('title', (string) setting('brand.name', config('app.name')) . ' - '
-    . (string) setting('brand.tagline', config('app.brand.tagline', ''))); ?>
-<?php $view->startSection('meta_description', $heroText); ?>
-<?php $view->startSection('canonical', url('/')); ?>
-<?php $view->startSection('json_ld', $schema === false ? '' : $schema); ?>
-<?php $view->startSection('og_type', 'website'); ?>
-<?php $view->endSection(); ?>
-<?php $view->startSection('content'); ?>
+$view->extend('layouts.app');
+$view->setSection('title', (string) setting('brand.name', config('app.name')) . ' - '
+    . (string) setting('brand.tagline', config('app.brand.tagline', '')));
+$view->setSection('meta_description', $heroText);
+$view->setSection('canonical', url('/'));
+$view->setSection('json_ld', $schema === false ? '' : $schema);
+$view->setSection('og_type', 'website');
+?>
 
 <?php /* 1. Hero */ ?>
 <section class="dx-hero">
@@ -470,6 +470,3 @@ $schema = json_encode([
         </div>
     </div>
 </section>
-
-<?php $view->stopSection(); ?>
-<?= $view->partial('layouts.app') ?>
