@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Catalog schema: categories, brands, products and the purchasable variations
  * that carry SKU, price, duration and delivery configuration.
  */
+
+declare(strict_types=1);
 
 return [
     [

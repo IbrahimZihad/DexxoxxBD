@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Global helper functions. Everything here is a thin, escaping-safe shortcut
+ * over the core classes so that views and controllers stay readable.
+ */
+
 declare(strict_types=1);
 
 use App\Core\App;
@@ -7,11 +12,6 @@ use App\Core\Config;
 use App\Core\Database;
 use App\Core\Request;
 use App\Core\Session;
-
-/**
- * Global helper functions. Everything here is a thin, escaping-safe shortcut
- * over the core classes so that views and controllers stay readable.
- */
 
 if (!function_exists('app')) {
     /** Access the application container. */

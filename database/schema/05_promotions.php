@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Promotion schema: coupons with usage limits, per-product/category scope and
  * an auditable usage ledger.
  */
+
+declare(strict_types=1);
 
 return [
     [

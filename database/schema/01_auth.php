@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Authentication and authorisation schema: accounts, RBAC, verification
  * tokens and the recorded session ledger.
  */
+
+declare(strict_types=1);
 
 return [
     [

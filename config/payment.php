@@ -15,7 +15,8 @@ return [
             'label' => 'Demo Gateway (sandbox)',
             'description' => 'Simulates a full hosted-checkout flow for local testing.',
             'enabled' => filter_var(env('PAYMENT_MOCK_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
-            'instructions' => 'A fake payment page opens after you place the order. Choose success, failure or pending to test each path.',
+            'instructions' => 'A fake payment page opens after you place the order. '
+                . 'Choose success, failure or pending to test each path.',
             'icon' => 'credit-card',
             'sort' => 1,
             'fee_type' => 'flat',

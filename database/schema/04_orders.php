@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Order, payment and digital-fulfilment schema. Order lines and payments keep
  * their own snapshots so later catalog or gateway changes never rewrite the
  * history of a completed sale.
  */
+
+declare(strict_types=1);
 
 return [
     [

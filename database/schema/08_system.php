@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Security and system schema: audit trail, login throttle, idempotency keys
  * and the queue tables behind background jobs and cron maintenance.
  */
+
+declare(strict_types=1);
 
 return [
     [

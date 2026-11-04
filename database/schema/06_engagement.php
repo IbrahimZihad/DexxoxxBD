@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Customer engagement schema: reviews, support tickets, in-app notifications
  * and the newsletter list.
  */
+
+declare(strict_types=1);
 
 return [
     [

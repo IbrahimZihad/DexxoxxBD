@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Demo CMS and promotion content: settings, policy pages, FAQs, banners,
  * testimonials, menus and coupons. Staff can change every value afterwards from
@@ -9,6 +7,8 @@ declare(strict_types=1);
  *
  * @return array<string, list<array<string, mixed>>|array<string, mixed>>
  */
+
+declare(strict_types=1);
 
 return [
     'settings' => [

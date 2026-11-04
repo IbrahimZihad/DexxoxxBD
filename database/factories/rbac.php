@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * The RBAC definition used by both the seeders and the admin screens: the
  * permission catalogue and the role -> permission map. Slugs here are the exact
@@ -10,6 +8,8 @@ declare(strict_types=1);
  *
  * @return array{permissions: list<array{slug: string, name: string, description: string, module: string}>, roles: list<array<string, mixed>>}
  */
+
+declare(strict_types=1);
 
 $catalogue = [
     'dashboard' => [

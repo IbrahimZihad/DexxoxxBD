@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!--
+    PHP_CodeSniffer ruleset for DexxoxxBD (`composer lint`).
+
+    PSR-12 is the baseline. The deviations below are deliberate and each one is
+    a consequence of how Phinx, the front controller and the CLI scripts work;
+    they are not licences to write loosely.
+-->
+<ruleset name="DexxoxxBD">
+    <description>PSR-12 with the documented Phinx and CLI exceptions.</description>
+
+    <arg name="colors"/>
+    <arg value="sp"/>
+    <arg name="basepath" value="."/>
+    <arg name="parallel" value="4"/>
+    <arg name="cache" value=".phpcs-cache"/>
+
+    <file>app</file>
+    <file>bootstrap</file>
+    <file>config</file>
+    <file>database</file>
+    <file>public</file>
+    <file>resources</file>
+    <file>routes</file>
+    <file>scripts</file>
+    <file>tests</file>
+
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>storage/*</exclude-pattern>
+    <exclude-pattern>public/assets/*</exclude-pattern>
+    <exclude-pattern>public/uploads/*</exclude-pattern>
+
+    <rule ref="PSR12"/>
+
+    <!-- Phinx loads a seeder by requiring the file and instantiating the class
+         named after it, so seeders must stay in the global namespace. -->
+    <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
+        <exclude-pattern>database/seeders/*</exclude-pattern>
+    </rule>
+
+    <!-- Migrations, config, routes and CLI scripts are declarations plus the
+         side effects they exist to perform. -->
+    <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
+        <exclude-pattern>scripts/*</exclude-pattern>
+        <exclude-pattern>config/*</exclude-pattern>
+        <exclude-pattern>routes/*</exclude-pattern>
+        <exclude-pattern>bootstrap/*</exclude-pattern>
+        <exclude-pattern>database/*</exclude-pattern>
+        <exclude-pattern>public/index.php</exclude-pattern>
+    </rule>
+
+    <!-- Long SQL, CSP headers and translation strings read better on one line
+         than split, so the 120-column rule warns instead of failing; 160 is the
+         hard error. -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="160"/>
+        </properties>
+    </rule>
+
+</ruleset>

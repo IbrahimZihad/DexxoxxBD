@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * The only PHP entry point exposed to the web server. Everything above this
  * directory (app code, config, .env, storage, vendor) stays outside the docroot.
  */
+
+declare(strict_types=1);
 
 use App\Core\App;
 

@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Shopping schema: guest and member carts plus wishlists. Cart lines snapshot
  * name, plan, SKU and unit price so catalog edits cannot rewrite history.
  */
+
+declare(strict_types=1);
 
 return [
     [

@@ -107,28 +107,61 @@ foreach ([$appDatabase, $testDatabase] as $database) {
 }
 
 $pdo->exec('FLUSH PRIVILEGES');
-echo "Least-privilege account ready: {$appUser} (localhost + 127.0.0.1)\n";
+echo "Least-privilege account ready: {$appUser} (localhost, 127.0.0.1)\n";
 
 if ($writeEnv) {
     $example = (string) file_get_contents($basePath . '/.env.example');
 
-    $replacements = [
-        'APP_NAME="Digital Subscription Marketplace"' => 'APP_NAME="DexxoxxBD Digital Subscriptions"',
-        'APP_URL=http://localhost/digital-subscription-marketplace/public' => 'APP_URL=http://localhost/DexxoxxBD/public',
-        'APP_KEY=' => 'APP_KEY=base64:' . base64_encode(random_bytes(32)),
-        'DB_PORT=3306' => 'DB_PORT=' . $port,
-        'DB_DATABASE=digital_subscription_marketplace' => 'DB_DATABASE=' . $appDatabase,
-        'DB_TEST_DATABASE=digital_subscription_marketplace_test' => 'DB_TEST_DATABASE=' . $testDatabase,
-        'DB_USERNAME=root' => 'DB_USERNAME=' . $appUser,
-        'DB_PASSWORD=' => 'DB_PASSWORD=' . $appPassword,
-        'INVENTORY_ENCRYPTION_KEY=' => 'INVENTORY_ENCRYPTION_KEY=' . base64_encode(random_bytes(32)),
-        'ADMIN_EMAIL=' => 'ADMIN_EMAIL=admin@dexxoxxbd.test',
-        'ADMIN_PASSWORD=' => 'ADMIN_PASSWORD=ChangeMe-' . bin2hex(random_bytes(4)),
-        'MAIL_FROM_ADDRESS=support@example.com' => 'MAIL_FROM_ADDRESS=no-reply@dexxoxxbd.test',
+    // Each key is replaced on its own line, so a value mentioned in a comment
+    // can never be rewritten by mistake.
+    $values = [
+        'APP_KEY' => bin2hex(random_bytes(32)),
+        'DB_PORT' => (string) $port,
+        'DB_DATABASE' => $appDatabase,
+        'DB_TEST_DATABASE' => $testDatabase,
+        'DB_USERNAME' => $appUser,
+        'DB_PASSWORD' => $appPassword,
+        'PAYMENT_WEBHOOK_TOKEN' => bin2hex(random_bytes(32)),
+        'ADMIN_EMAIL' => 'admin@dexxoxxbd.test',
+        'ADMIN_PASSWORD' => 'ChangeMe-' . bin2hex(random_bytes(8)),
+        'DEMO_USER_PASSWORD' => 'ChangeMe-Demo-' . bin2hex(random_bytes(6)),
     ];
 
-    foreach ($replacements as $search => $replacement) {
-        $example = str_replace($search, $replacement, $example);
+    $missing = [];
+    foreach ($values as $key => $value) {
+        $pattern = '/^' . preg_quote($key, '/') . '=.*$/m';
+        // A callback keeps the replacement literal: generated secrets may
+        // contain characters that a plain replacement string would interpret.
+        $replaced = preg_replace_callback(
+            $pattern,
+            fn (array $matches): string => $key . '=' . $value,
+            $example,
+            1,
+            $count
+        );
+        if ($count !== 1 || !is_string($replaced)) {
+            $missing[] = $key;
+            continue;
+        }
+        $example = $replaced;
+    }
+
+    if ($missing !== []) {
+        fwrite(STDERR, 'These keys are not in .env.example, so .env was not written: ' . implode(', ', $missing) . ".\n");
+        exit(1);
+    }
+
+    // The AES key for digital inventory belongs to a file outside the web root,
+    // not to .env, so a copied .env never carries credential-decrypting material.
+    $keyDir = $basePath . '/storage/private';
+    if (!is_dir($keyDir)) {
+        mkdir($keyDir, 0700, true);
+    }
+    $keyFile = $keyDir . '/encryption.key';
+    if (!is_file($keyFile) || $forceEnv) {
+        file_put_contents($keyFile, base64_encode(random_bytes(32)));
+        @chmod($keyFile, 0600);
+        echo "Wrote {$keyFile}\n";
     }
 
     $target = $basePath . '/.env';
@@ -138,10 +171,11 @@ if ($writeEnv) {
         file_put_contents($target, $example);
         @chmod($target, 0600);
         echo "Wrote {$target}\n";
+        echo "Admin sign-in: read ADMIN_EMAIL and ADMIN_PASSWORD back from the file just written.\n";
     }
 }
 
 echo "\nNext steps:\n";
 echo "  vendor/bin/phinx migrate -e development\n";
-echo "  vendor/bin/phinx seed:run -e development\n";
+echo "  vendor/bin/phinx seed:run -e development -s DatabaseSeeder\n";
 exit(0);

@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Database bootstrap for CLI entry points (phinx, cron scripts, tests).
  * Returns the shared connection without starting a session or routing.
  */
+
+declare(strict_types=1);
 
 use App\Core\Config;
 use App\Core\Database;

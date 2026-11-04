@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * CMS schema: editable pages, FAQs, banners, testimonials, settings and menus.
  * Everything the homepage and footer render comes from here.
  */
+
+declare(strict_types=1);
 
 return [
     [

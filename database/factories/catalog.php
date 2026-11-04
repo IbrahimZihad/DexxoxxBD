@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Demo catalog content for the seeders: category tree, fictional service brands
  * and products with their plans. All prices are illustrative BDT amounts and
@@ -12,6 +10,8 @@ declare(strict_types=1);
  *
  * @return array{categories: list<array<string, mixed>>, brands: list<array<string, mixed>>, products: list<array<string, mixed>>}
  */
+
+declare(strict_types=1);
 
 return [
     'categories' => [

@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Application bootstrap. Required by public/index.php, the CLI tools and the
  * test suite so all three share one wiring path.
  */
+
+declare(strict_types=1);
 
 use App\Core\App;
 use App\Core\Config;
