@@ -233,11 +233,8 @@ function render_migration(array $spec): string
         $type = (string) $column[1];
         $options = (array) ($column[2] ?? []);
         $call = '->addColumn(' . php_scalar($name) . ', ' . php_scalar($type) . ', ' . php_array($options) . ')';
-        $prefix = $index === 0 ? '        ' : '            ';
-        $lines[] = $prefix . $call . ($index === $last ? ';' : '');
+        $lines[] = '            ' . $call . ($index === $last ? ';' : '');
     }
-
-    $lines[] = '        ;';
     $lines[] = '';
 
     foreach ((array) ($spec['indexes'] ?? []) as $index) {
