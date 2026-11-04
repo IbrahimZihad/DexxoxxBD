@@ -110,8 +110,13 @@ final class User extends Model
         $bindings = [];
 
         if (!empty($filters['search'])) {
-            $where[] = '(u.name LIKE :search OR u.email LIKE :search OR u.phone LIKE :search)';
-            $bindings['search'] = '%' . $filters['search'] . '%';
+            // Three bindings, not one: an emulated-free prepare cannot reuse a
+            // named placeholder, so the same term is passed once per column.
+            $like = '%' . trim((string) $filters['search']) . '%';
+            $where[] = '(u.name LIKE :search_name OR u.email LIKE :search_email OR u.phone LIKE :search_phone)';
+            $bindings['search_name'] = $like;
+            $bindings['search_email'] = $like;
+            $bindings['search_phone'] = $like;
         }
         if (isset($filters['status']) && $filters['status'] !== '') {
             $where[] = 'u.status = :status';

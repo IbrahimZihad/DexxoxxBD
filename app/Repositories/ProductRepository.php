@@ -122,6 +122,28 @@ final class ProductRepository
     }
 
     /**
+     * One search term matched against several columns. MySQL prepares
+     * statements without emulation, and a named placeholder may not appear more
+     * than once in such a statement, so every column gets its own binding.
+     *
+     * @param list<string>         $columns
+     * @param array<string, mixed> $bindings
+     */
+    private function likeClause(array $columns, string $value, array &$bindings): string
+    {
+        $like = '%' . trim($value) . '%';
+        $terms = [];
+
+        foreach (array_values($columns) as $index => $column) {
+            $key = 'search_' . $index;
+            $terms[] = $column . ' LIKE :' . $key;
+            $bindings[$key] = $like;
+        }
+
+        return '(' . implode(' OR ', $terms) . ')';
+    }
+
+    /**
      * @param array<string, mixed> $filters
      * @return array{list<string>, array<string, mixed>}
      */
@@ -131,9 +153,11 @@ final class ProductRepository
         $bindings = [];
 
         if (!empty($filters['search'])) {
-            $where[] = '(p.name LIKE :search OR p.short_description LIKE :search
-                        OR b.name LIKE :search OR c.name LIKE :search)';
-            $bindings['search'] = '%' . trim((string) $filters['search']) . '%';
+            $where[] = $this->likeClause(
+                ['p.name', 'p.short_description', 'b.name', 'c.name'],
+                (string) $filters['search'],
+                $bindings
+            );
         }
 
         if (!empty($filters['category'])) {
@@ -524,8 +548,7 @@ final class ProductRepository
         $bindings = [];
 
         if (!empty($filters['search'])) {
-            $where[] = '(p.name LIKE :search OR p.slug LIKE :search OR v.sku LIKE :search)';
-            $bindings['search'] = '%' . $filters['search'] . '%';
+            $where[] = $this->likeClause(['p.name', 'p.slug', 'v.sku'], (string) $filters['search'], $bindings);
         }
         if (!empty($filters['status']) && $filters['status'] !== 'all') {
             $where[] = 'p.status = :status';

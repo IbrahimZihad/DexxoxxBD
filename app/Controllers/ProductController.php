@@ -73,7 +73,7 @@ final class ProductController extends Controller
      *
      * @return array<string, mixed>
      */
-    public function quickView(string $slug): array
+    public function quickView(Request $request, string $slug): array
     {
         $product = $this->products->findBySlug($slug);
         if ($product === null) {

@@ -42,7 +42,10 @@ $router->group([
     $router->get('page/{slug:[a-z0-9-]+}', 'PageController@show')->name('pages.show');
 
     /* Locale + newsletter ------------------------------------------------ */
-    $router->get('locale/{code:[a-z]{2}}', 'LocaleController@set')->name('locale.set');
+    // The pattern stops at [a-z]+ because the router compiles {name:regex} by
+    // scanning to the first "}"; LocaleController then matches the value against
+    // the configured locale list, so an unknown code is still a 404.
+    $router->get('locale/{code:[a-z]+}', 'LocaleController@set')->name('locale.set');
     $router->post('newsletter', 'NewsletterController@store')
         ->middleware('throttle:5,120')
         ->name('newsletter.store');
