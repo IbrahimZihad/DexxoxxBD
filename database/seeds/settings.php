@@ -21,7 +21,6 @@ return [
     ['key' => 'support_email', 'value' => 'support@dexxoxxbd.test', 'type' => 'string', 'group' => 'contact', 'label' => 'Support email', 'public' => 1],
     ['key' => 'support_hours', 'value' => 'Every day, 10:00 to 22:00 (GMT+6)', 'type' => 'string', 'group' => 'contact', 'label' => 'Support hours', 'public' => 1],
 
-    ['key' => 'site_currency', 'value' => 'BDT', 'type' => 'string', 'group' => 'general', 'label' => 'Currency code', 'public' => 1],
     ['key' => 'site_tagline', 'value' => 'Digital subscriptions, delivered in minutes.', 'type' => 'string', 'group' => 'general', 'label' => 'Homepage tagline', 'public' => 1],
     ['key' => 'announcement_bar', 'value' => '', 'type' => 'string', 'group' => 'general', 'label' => 'Announcement banner (leave empty to hide)', 'public' => 1],
     ['key' => 'min_order_amount', 'value' => '99', 'type' => 'number', 'group' => 'general', 'label' => 'Minimum order total', 'public' => 0],

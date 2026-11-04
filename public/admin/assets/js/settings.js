@@ -6,15 +6,15 @@
   const GROUPS = {
     general: {
       title: 'General',
-      note: 'Currency code and tagline feed the price format and the homepage intro.',
+      note: 'The tagline and announcement bar are storefront copy. The minimum order total is enforced when an order is created, and pass expiry runs whenever a passes list or the housekeeping sweep loads.',
     },
     payments: {
       title: 'Manual payment channels',
-      note: 'Customers send money to these numbers. Checkout shows them exactly as typed, so verify against your own statement before saving.',
+      note: 'Customers send money to these numbers. Checkout shows them exactly as typed, so verify against your own statement before saving. Card payments use the SSLCommerz credentials in the .env file, not this table.',
     },
     contact: {
       title: 'Support',
-      note: 'Displayed in the footer and on the order-confirmation page.',
+      note: 'Shown on the customer dashboard so a buyer knows who to reach when a payment needs checking.',
     },
   };
 
@@ -65,7 +65,7 @@
     const id = 'field-' + item.key;
 
     if (item.type === 'bool') {
-      const input = Dx.h('input', { type: 'checkbox', name: item.key, checked: !!item.value });
+      const input = Dx.h('input', { id: id, type: 'checkbox', name: item.key, checked: !!item.value });
       const state = Dx.h('span', { class: 'faint', text: item.value ? 'On' : 'Off' });
       input.addEventListener('change', function () { state.textContent = this.checked ? 'On' : 'Off'; refreshDirty(); });
 
@@ -78,15 +78,16 @@
       );
     }
 
-    const long = item.type === 'string' && String(item.value || '').length > 60;
-    const input = Dx.h(long ? 'textarea' : 'input', {
-      class: long ? 'textarea' : 'input',
+    // The API flattens newlines and caps every string at 200 characters, so one
+    // honest input per key beats a textarea that silently rewrites what you typed.
+    const input = Dx.h('input', {
+      class: 'input',
       id: id,
       name: item.key,
       type: item.type === 'number' ? 'number' : 'text',
       inputmode: item.type === 'number' ? 'decimal' : null,
-      value: String(item.value === null ? '' : item.value),
-      maxlength: long ? null : '200',
+      value: norm(item.value),
+      maxlength: '200',
     });
     input.addEventListener('input', refreshDirty);
 

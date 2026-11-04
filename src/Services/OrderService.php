@@ -9,6 +9,7 @@ use App\Exceptions\HttpException;
 use App\Repositories\CartRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
+use App\Repositories\SettingRepository;
 use App\Support\OrderNumber;
 
 final class OrderService
@@ -102,6 +103,12 @@ final class OrderService
             $subtotal = round($subtotal, 2);
             $discount = 0.0;
             $total = round(max(0, $subtotal - $discount), 2);
+
+            $minimum = (float) SettingRepository::get('min_order_amount', 0);
+
+            if ($minimum > 0 && $total < $minimum) {
+                throw new HttpException(422, sprintf('The smallest order we can take is %s. Yours totals %s.', number_format($minimum, 2), number_format($total, 2)));
+            }
 
             $orderId = OrderRepository::create([
                 'order_number' => OrderNumber::generate(),

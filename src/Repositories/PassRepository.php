@@ -83,6 +83,10 @@ final class PassRepository
 
     public static function expireDue(?int $userId = null): int
     {
+        if (!(bool) SettingRepository::get('auto_expire_passes', true)) {
+            return 0; // grace period: the admin is holding expiry manually
+        }
+
         $sql = "UPDATE user_subscriptions SET status = 'expired' WHERE status = 'active' AND ends_at < CURDATE()";
         $bindings = [];
 
