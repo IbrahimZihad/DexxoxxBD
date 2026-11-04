@@ -162,6 +162,7 @@ return [
         ['name' => 'Reachly', 'slug' => 'reachly', 'country' => 'United States', 'description' => 'Campaign, CRM and analytics tooling for growth teams.'],
         ['name' => 'Playvault', 'slug' => 'playvault', 'country' => 'Japan', 'description' => 'Game libraries and cloud play memberships.'],
         ['name' => 'Beacon Press', 'slug' => 'beacon-press', 'country' => 'United Kingdom', 'description' => 'Digital newspapers, magazines and audiobook shelves.'],
+        ['name' => 'Fitwave', 'slug' => 'fitwave', 'country' => 'Bangladesh', 'description' => 'Structured training plans and live coaching classes.'],
     ],
 
     'products' => [
@@ -880,7 +881,7 @@ return [
             'name' => 'Fitwave Coaching',
             'slug' => 'fitwave-coaching',
             'category' => 'health-fitness',
-            'brand' => 'studybeam',
+            'brand' => 'fitwave',
             'short' => 'Structured training plans, live classes and progress tracking.',
             'description' => 'Twelve-week plans built around your equipment, a live class calendar, and form checks from a coach twice a month. Works on phone, tablet and TV.',
             'account_type' => 'Individual seat',
