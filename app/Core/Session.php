@@ -159,6 +159,16 @@ final class Session
         return hash_equals((string) $_SESSION['_csrf_token'], $token);
     }
 
+    /**
+     * A failed token usually means a stale or forged form: issue a fresh token
+     * so the next legitimate submission cannot replay the bad one.
+     */
+    public static function rotateCsrfOnFailure(): void
+    {
+        self::start();
+        $_SESSION['_csrf_token'] = bin2hex(random_bytes(32));
+    }
+
     public static function flash(string $key, mixed $value): void
     {
         self::start();
