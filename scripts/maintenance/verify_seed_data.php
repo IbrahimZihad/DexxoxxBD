@@ -176,14 +176,14 @@ if ($deadMenuTargets > 0) {
 }
 
 // Accounts and access control.
-$expect('roles', (int) $scalar('SELECT COUNT(*) FROM roles WHERE deleted_at IS NULL'), 5);
+$expect('roles', (int) $scalar('SELECT COUNT(*) FROM roles WHERE status = 1'), 5);
 $expect('permissions', (int) $scalar('SELECT COUNT(*) FROM permissions'), 40);
 $expect('role-permission grants', (int) $scalar('SELECT COUNT(*) FROM role_permissions'), 100);
 
 $admins = $one("SELECT COUNT(*) AS total FROM users u
     INNER JOIN user_roles ur ON ur.user_id = u.id
     INNER JOIN roles r ON r.id = ur.role_id
-    WHERE r.slug = 'super_admin'");
+    WHERE r.slug = 'super-admin'");
 if ((int) ($admins['total'] ?? 0) < 1) {
     $failures[] = 'no user holds the super_admin role, so the admin dashboard is unreachable';
 }

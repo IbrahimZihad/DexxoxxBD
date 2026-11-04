@@ -105,4 +105,8 @@ if ($run([$basePath . '/scripts/maintenance/verify_schema.php', '--env=' . $envi
     exit(1);
 }
 
+if ($run([$basePath . '/scripts/maintenance/verify_seed_data.php', '--env=' . $environment]) !== 0) {
+    exit(1);
+}
+
 echo "\nReset complete. Migrations applied and demo data seeded in " . $environment . ".\n";
