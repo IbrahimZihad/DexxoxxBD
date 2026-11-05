@@ -1,0 +1,430 @@
+/* =============================================================================
+   ZapSub — Tailwind v4 entry point
+   Build:  npm run build:css
+   Input:  resources/css/input.css
+   Output: public/assets/css/app.css  (committed on purpose: no Node needed on prod)
+   Native PHP micro-MVC + Tailwind CLI. No framework, no bundler, no JS libs.
+   ========================================================================== */
+
+@import "tailwindcss";
+
+/* -----------------------------------------------------------------------------
+   1. Sources
+   The markup lives in PHP views (created by other agents) and in the vanilla
+   JS bundle. Pointed at with paths relative to THIS file, so the compiler sees
+   every class name they use. Missing folders are tolerated by the build.
+   -------------------------------------------------------------------------- */
+@source "../../resources/views";
+@source "../../public/assets/js";
+
+/* -----------------------------------------------------------------------------
+   2. Design tokens (@theme) — vivid reseller brand palette
+   Every token below becomes a real utility: bg-brand-500, text-accent-300,
+   rounded-brand, shadow-glow, animate-*, font-sans, ...
+   Default Tailwind colours stay available (we never reset `--color-*`).
+   -------------------------------------------------------------------------- */
+@theme {
+  /* brand — violet/indigo family (primary) */
+  --color-brand-50: #f4f4ff;
+  --color-brand-100: #eaeaff;
+  --color-brand-200: #d7d6fe;
+  --color-brand-300: #bcb3fd;
+  --color-brand-400: #9c86fa;
+  --color-brand-500: #7c50f2;
+  --color-brand-600: #6a31e0;
+  --color-brand-700: #5823c0;
+  --color-brand-800: #47209a;
+  --color-brand-900: #2f1670;
+  --color-brand-950: #1c0b47;
+
+  /* accent — cyan (CTA / highlights) */
+  --color-accent-50: #ecfeff;
+  --color-accent-100: #cffafe;
+  --color-accent-200: #a5f3fc;
+  --color-accent-300: #67e8f9;
+  --color-accent-400: #22d3ee;
+  --color-accent-500: #06b6d4;
+  --color-accent-600: #0891b2;
+  --color-accent-700: #0e7490;
+  --color-accent-800: #155e75;
+  --color-accent-900: #164e63;
+  --color-accent-950: #083344;
+
+  /* lime / amber / rose — plan tiers, badges, danger states */
+  --color-lime-50: #f7fee7;
+  --color-lime-100: #ecfccb;
+  --color-lime-200: #d9f99d;
+  --color-lime-300: #bef264;
+  --color-lime-400: #a3e635;
+  --color-lime-500: #84cc16;
+  --color-lime-600: #65a30d;
+  --color-lime-700: #4d7c0f;
+  --color-lime-800: #3f6212;
+  --color-lime-900: #365314;
+  --color-lime-950: #1a2e05;
+
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  --color-amber-700: #b45309;
+  --color-amber-800: #92400e;
+  --color-amber-900: #78350f;
+  --color-amber-950: #451a03;
+
+  --color-rose-50: #fff1f2;
+  --color-rose-100: #ffe4e6;
+  --color-rose-200: #fecdd3;
+  --color-rose-300: #fda4af;
+  --color-rose-400: #fb7185;
+  --color-rose-500: #f43f5e;
+  --color-rose-600: #e11d48;
+  --color-rose-700: #be123c;
+  --color-rose-800: #9f1239;
+  --color-rose-900: #881337;
+  --color-rose-950: #4c0519;
+
+  /* ink — near-black navy used for all body text */
+  --color-ink: #0b1020;
+  --color-ink-700: #283055;
+  --color-ink-400: #6b7399;
+
+  /* typography — Inter with Bengali fallback (Bangla copy in the storefront) */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Noto Sans Bengali", "Hind Siliguri", "Nirmala UI", Arial,
+    sans-serif;
+  --font-display: "Inter", ui-sans-serif, system-ui, "Noto Sans Bengali",
+    sans-serif;
+
+  /* radii */
+  --radius-brand: 1.25rem;
+  --radius-card: 1.75rem;
+  --radius-pill: 999px;
+  --radius-blob: 62% 38% 55% 45% / 55% 45% 60% 40%;
+
+  /* shadows */
+  --shadow-soft: 0 10px 30px -12px rgb(11 16 32 / 0.28);
+  --shadow-card: 0 24px 60px -24px rgb(11 16 32 / 0.35);
+  --shadow-pop: 0 18px 45px -18px rgb(124 80 242 / 0.55);
+  --shadow-glow: 0 0 0 1px rgb(124 80 242 / 0.22),
+    0 12px 40px -12px rgb(108 49 224 / 0.55);
+
+  /* motion tokens (usable as duration/easing utilities) */
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* -----------------------------------------------------------------------------
+   3. Base touches
+   -------------------------------------------------------------------------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background-color: #ffffff;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-200);
+    color: var(--color-ink);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   4. Keyframes (top level so they are always emitted, even before the views
+   that use them land). Paired with the .animate-* classes in section 5.
+   -------------------------------------------------------------------------- */
+@keyframes zs-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes zs-blob {
+  0%,
+  100% {
+    border-radius: 62% 38% 55% 45% / 55% 45% 60% 40%;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    border-radius: 44% 56% 39% 61% / 60% 39% 61% 40%;
+    transform: translate3d(22px, -18px, 0) scale(1.06);
+  }
+  66% {
+    border-radius: 55% 45% 62% 38% / 40% 62% 38% 60%;
+    transform: translate3d(-18px, 14px, 0) scale(0.96);
+  }
+}
+
+@keyframes zs-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes zs-shimmer {
+  from {
+    background-position: -160% 0;
+  }
+  to {
+    background-position: 260% 0;
+  }
+}
+
+@keyframes zs-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes zs-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(124 80 242 / 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgb(124 80 242 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(124 80 242 / 0);
+  }
+}
+
+@keyframes zs-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   5. Component classes the view agents code against.
+   Written as plain rules (always shipped) inside @layer components so any
+   Tailwind utility can still override them on a per-element basis.
+   -------------------------------------------------------------------------- */
+@layer components {
+  /* animation helpers */
+  .animate-float {
+    animation: zs-float 6s var(--ease-soft) infinite;
+  }
+  .animate-blob {
+    animation: zs-blob 14s var(--ease-soft) infinite;
+  }
+  .animate-marquee {
+    animation: zs-marquee 30s linear infinite;
+  }
+  .animate-shimmer {
+    background-size: 220% 100%;
+    animation: zs-shimmer 1.8s linear infinite;
+  }
+  .animate-pop {
+    animation: zs-pop 0.34s var(--ease-bounce) both;
+  }
+  .animate-pulse-ring {
+    animation: zs-pulse-ring 2.4s var(--ease-soft) infinite;
+  }
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: zs-gradient 7s ease infinite;
+  }
+
+  /* gradient headline text */
+  .text-gradient {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-brand-500),
+      var(--color-accent-400) 48%,
+      var(--color-brand-600)
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* frosted panel for headers, cards over blobs */
+  .glass {
+    background-color: rgb(255 255 255 / 0.72);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    border: 1px solid rgb(11 16 32 / 0.07);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* decorative blurred colour blob sitting behind a section */
+  .blob {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    width: 22rem;
+    height: 22rem;
+    border-radius: var(--radius-blob);
+    filter: blur(56px);
+    opacity: 0.55;
+    background-image: linear-gradient(
+      135deg,
+      var(--color-brand-400),
+      var(--color-accent-300)
+    );
+    animation: zs-blob 14s var(--ease-soft) infinite;
+  }
+
+  /* scroll reveal — JS adds .is-revealed; stagger with --reveal-delay */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition-property: opacity, transform;
+    transition-duration: 0.65s;
+    transition-timing-function: var(--ease-soft);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal.is-revealed,
+  .is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* card hover lift */
+  .hover-lift {
+    transition-property: transform, box-shadow, border-color;
+    transition-duration: 0.28s;
+    transition-timing-function: var(--ease-soft);
+    will-change: transform;
+  }
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* hide native scrollbars on horizontal scroll rows */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* admin tables */
+  .a-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  .a-table > thead > tr > th {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: left;
+    color: var(--color-ink-400);
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid rgb(11 16 32 / 0.1);
+    white-space: nowrap;
+    background-color: var(--color-brand-50);
+  }
+  .a-table > tbody > tr {
+    border-bottom: 1px solid rgb(11 16 32 / 0.07);
+    transition: background-color 0.18s var(--ease-soft);
+  }
+  .a-table > tbody > tr:hover {
+    background-color: var(--color-brand-50);
+  }
+  .a-table > tbody > tr > td {
+    padding: 0.8rem 0.85rem;
+    vertical-align: middle;
+    color: var(--color-ink);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   6. Safelisted brand utilities.
+   The views are generated in parallel with this build, so pin the palette
+   ramps that the storefront + admin shell are contracted to use. Cheap
+   (~a few KB minified) and guarantees a first render before views exist.
+   -------------------------------------------------------------------------- */
+@source inline("bg-brand-{50,100,200,300,400,500,600,700,800,900,950}");
+@source inline("text-brand-{50,100,200,300,400,500,600,700,800,900,950}");
+@source inline("border-brand-{100,200,300,400,500,600,700}");
+@source inline("ring-brand-{200,300,400,500}");
+@source inline("bg-accent-{50,100,200,300,400,500,600,700,800,900,950}");
+@source inline("text-accent-{50,100,200,300,400,500,600,700,800,900,950}");
+@source inline("border-accent-{200,300,400,500}");
+@source inline("bg-lime-{50,100,200,300,400,500,600,700}");
+@source inline("text-lime-{50,100,200,300,400,500,600,700}");
+@source inline("bg-amber-{50,100,200,300,400,500,600,700}");
+@source inline("text-amber-{50,100,200,300,400,500,600,700}");
+@source inline("bg-rose-{50,100,200,300,400,500,600,700}");
+@source inline("text-rose-{50,100,200,300,400,500,600,700}");
+@source inline("bg-ink text-ink hover:bg-brand-{400,500,600,700}");
+@source inline("from-brand-{400,500,600} via-brand-{500,600} to-accent-{400,500}");
+
+/* -----------------------------------------------------------------------------
+   7. Accessibility — honour reduced motion for everything above.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .animate-float,
+  .animate-blob,
+  .animate-marquee,
+  .animate-shimmer,
+  .animate-pop,
+  .animate-pulse-ring,
+  .animate-gradient,
+  .blob {
+    animation: none !important;
+  }
+
+  .hover-lift:hover {
+    transform: none;
+  }
+}
