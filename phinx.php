@@ -22,7 +22,8 @@ Env::load($root . '/.env');
 $env = strtolower((string) Env::get('APP_ENV', 'local'));
 
 $connection = static fn (string $suffix): array => [
-    'adapter'    => 'Mysql',
+    // Adapter names are matched case-sensitively by Phinx: it is "mysql".
+    'adapter'    => 'mysql',
     'host'       => Env::get('DB_HOST', '127.0.0.1'),
     'name'       => Env::get('DB_NAME', 'zapsub') . $suffix,
     'user'       => Env::get('DB_USER', 'root'),
@@ -30,7 +31,6 @@ $connection = static fn (string $suffix): array => [
     'port'       => (int) Env::get('DB_PORT', '3307'),
     'charset'    => Env::get('DB_CHARSET', 'utf8mb4'),
     'collation'  => 'utf8mb4_unicode_ci',
-    'migration_table' => 'phinxlog',
 ];
 
 return [
