@@ -21,9 +21,17 @@ final class PaymentService
 
         return array_filter(
             $methods,
-            static fn (array $method): bool => (bool) ($method['available'] ?? false)
-                && self::numberFor((string) ($method['number_key'] ?? '')) !== ''
-                || (bool) ($method['available'] ?? false) && (string) ($method['kind'] ?? '') !== 'wallet' && (string) ($method['kind'] ?? '') !== 'bank'
+            static function (array $method): bool {
+                if (!(bool) ($method['available'] ?? false)) {
+                    return false;
+                }
+
+                // A wallet or bank rail is only advertised once the shop has
+                // actually entered the number to send money to.
+                $settingKey = (string) ($method['number_key'] ?? '');
+
+                return $settingKey === '' || self::numberFor($settingKey) !== '';
+            }
         );
     }
 
