@@ -7,14 +7,16 @@ declare(strict_types=1);
  *
  * @var string|null $title
  * @var string|null $text
- * @var string|null $actionUrl
- * @var string|null $actionLabel
+ * @var string|null $action_url
+ * @var string|null $action_label
  * @var string|null $icon
  */
 $title = trim((string) ($title ?? 'Nothing here yet'));
 $text = trim((string) ($text ?? ''));
-$actionUrl = trim((string) ($actionUrl ?? ''));
-$actionLabel = trim((string) ($actionLabel ?? ''));
+// The contract keys are snake_case; camelCase is accepted as a convenience so
+// callers from either convention light up the action button.
+$actionUrl = trim((string) ($action_url ?? $actionUrl ?? ''));
+$actionLabel = trim((string) ($action_label ?? $actionLabel ?? ''));
 $iconKey = (string) ($icon ?? 'search');
 
 /** @var array<string, string> $paths */
