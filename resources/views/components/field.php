@@ -30,6 +30,7 @@ $required = (bool) ($required ?? false);
 $hint = (string) ($hint ?? '');
 $options = (array) ($options ?? []);
 $rows = max(2, (int) ($rows ?? 4));
+$autocomplete = (string) ($autocomplete ?? '');
 $inputmode = (string) ($inputmode ?? ($type === 'number' || $type === 'tel' ? 'numeric' : ''));
 $messages = field_errors($name);
 $invalid = $messages !== [];
@@ -37,21 +38,17 @@ $invalid = $messages !== [];
 // ids cannot carry the brackets a array-style field name uses (items[0][plan]).
 $id = ($name === '' ? 'field' : (preg_replace('/[^a-zA-Z0-9_-]+/', '-', $name) ?? 'field')) . '-' . substr(md5($name), 0, 6);
 
-if ($autocomplete === null || $autocomplete === '') {
+if ($autocomplete === '') {
     $autocomplete = match ($type) {
         'email' => 'email',
         'password' => 'current-password',
         'tel' => 'tel',
         default => '',
     };
-} else {
-    $autocomplete = (string) $autocomplete;
 }
 
 $control = 'w-full rounded-brand border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition duration-200 placeholder:text-ink-400 focus:ring-2';
-$control .= $invalid
-    ? ' border-rose-300 ring-2 ring-rose-200 ' . error_class($name)
-    : ' border-brand-200 focus:border-brand-400 focus:ring-brand-300';
+$control .= error_class($name, $invalid ? ' border-rose-300' : ' border-brand-200 focus:border-brand-400 focus:ring-brand-300');
 ?>
 <div class="space-y-1.5">
     <?php if ($type !== 'checkbox' && $label !== ''): ?>
@@ -93,12 +90,13 @@ $control .= $invalid
             <?php endforeach; ?>
         </select>
     <?php elseif ($type === 'checkbox'): ?>
+        <?php $boxValue = ($value === null || $value === false || $value === '' || $value === 0 || $value === '0') ? '1' : (string) $value; ?>
         <label for="<?= e($id) ?>" class="flex cursor-pointer items-start gap-3 rounded-brand border border-brand-100 bg-brand-50/50 p-3">
             <input
                 type="checkbox"
                 id="<?= e($id) ?>"
                 name="<?= e($name) ?>"
-                value="<?= e((string) ($value === '' || $value === null ? '1' : $value)) ?>"
+                value="<?= e($boxValue) ?>"
                 class="mt-0.5 h-4 w-4 shrink-0 rounded accent-brand-600"
                 <?php if ($required): ?> required<?php endif; ?>
                 <?php if ($invalid): ?> aria-invalid="true"<?php endif; ?>
