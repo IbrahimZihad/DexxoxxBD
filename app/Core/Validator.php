@@ -237,11 +237,6 @@ final class Validator
         }
     }
 
-    private function extractColumn(string $argument): string
-    {
-        return '';
-    }
-
     /** argument is "table,column[,ignoreId]" */
     private function checkUnique(string $field, string $label, string $value, string $argument): bool
     {
