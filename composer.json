@@ -1,0 +1,48 @@
+{
+    "name": "zapsub/storefront",
+    "description": "ZapSub - a colourful subscription storefront with a smooth checkout, floating WhatsApp chat head and an admin panel.",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "ext-pdo": "*",
+        "robmorgan/phinx": "^0.16.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "files": [
+            "app/Helpers/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "migrate": "phinx migrate",
+        "seed": "phinx seed:run",
+        "status": "phinx status",
+        "css": "npx @tailwindcss/cli -i resources/css/input.css -o public/assets/css/app.css",
+        "key": "@php scripts/key.php"
+    },
+    "scripts-descriptions": {
+        "migrate": "Apply every outstanding database migration.",
+        "seed": "Populate settings, services, plans and admin users (repeatable).",
+        "status": "Show which migrations have run.",
+        "css": "Compile the Tailwind stylesheet into public/assets/css/app.css.",
+        "key": "Print a fresh APP_KEY for .env (needed by credential encryption)."
+    }
+}

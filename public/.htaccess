@@ -1,0 +1,33 @@
+# This directory is the only web-exposed part of the application. The parent
+# .htaccess denies everything, so the grant below has to live here.
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+<IfModule mod_php.c>
+    php_flag display_errors off
+</IfModule>
+
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # No RewriteBase on purpose: the app is written to run at any mount point
+    # (http://localhost/zapsub/public/ as well as https://example.com/), and a
+    # hardcoded "/" resolves every clean URL against the server root, which
+    # silently hands unknown paths to whatever owns that document root.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    <FilesMatch "\.(css|js|svg|png|jpg|webp|woff2)$">
+        Header always set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+    <Files index.php>
+        Header always set Cache-Control "no-store"
+    </Files>
+</IfModule>
