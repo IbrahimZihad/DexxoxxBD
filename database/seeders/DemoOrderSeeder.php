@@ -69,7 +69,13 @@ final class DemoOrderSeeder extends AbstractSeed
         foreach ($this->couponUsage as $code => $extra) {
             $current = (int) ($this->coupons[$code]['used_count'] ?? 0);
 
-            $this->table('coupons')->update(['used_count' => $current + $extra], ['code' => $code])->saveData();
+            // Bound parameters, because AbstractSeed::execute() has no bind API.
+            $statement = $this->getAdapter()->getConnection()->prepare(
+                'update coupons set used_count = :total where code = :code'
+            );
+            $statement->bindValue(':total', $current + $extra, PDO::PARAM_INT);
+            $statement->bindValue(':code', $code, PDO::PARAM_STR);
+            $statement->execute();
         }
     }
 
