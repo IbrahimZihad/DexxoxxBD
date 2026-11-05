@@ -336,6 +336,13 @@
     display: none;
   }
 
+  /* WhatsApp bubble: app.js sets .is-wa-seen from localStorage `zapsub_wa_seen`,
+     so returning customers never see the bubble bounce again. */
+  .is-wa-seen [data-wa-toggle],
+  [data-wa-toggle].is-wa-seen {
+    animation: none;
+  }
+
   /* admin tables */
   .a-table {
     width: 100%;
