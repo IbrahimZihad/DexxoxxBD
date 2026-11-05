@@ -96,6 +96,26 @@ final class SettingsSaveTest extends TestCase
         self::assertSame('img/dexxoxxbd.jpeg', Settings::get('brand.logo'));
     }
 
+    public function test_the_names_a_browser_actually_sends_are_understood(): void
+    {
+        // PHP rewrites dots in incoming field names to underscores, so an input
+        // rendered as name="brand.name" arrives as brand_name. This is the
+        // regression: reading the dotted name off the request found nothing,
+        // and the save then wrote that nothing back over every setting.
+        (new SettingController())->update($this->request('POST', 'admin/settings', [
+            '_token' => 'a-real-csrf-token-in-production',
+            'brand_name' => 'From The Browser',
+            'whatsapp_number' => '8801712340000',
+            'announcement_active' => '1',
+        ]));
+
+        Settings::forgetCache();
+        self::assertSame('From The Browser', Settings::get('brand.name'));
+        self::assertSame('8801712340000', Settings::get('whatsapp.number'));
+        self::assertTrue(Settings::bool('announcement.active'));
+        self::assertNull(Database::selectOne('select `key` from settings where `key` = :k', [':k' => 'brand_name']));
+    }
+
     public function test_an_unknown_field_is_refused_rather_than_stored(): void
     {
         (new SettingController())->update($this->request('POST', 'admin/settings', ['app_key' => 'stolen', 'brand.name' => 'Shop']));

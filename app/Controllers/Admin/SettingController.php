@@ -84,30 +84,27 @@ final class SettingController extends Controller
     public function update(Request $request): Response
     {
         $allowed = $this->allowedKeys();
+        $payload = $this->normalize($request->all(), $allowed);
 
-        $this->validate($request, $this->rulesFor($allowed), $this->labelsFor($allowed));
+        $this->validate($request, $this->rulesFor($allowed), $this->labelsFor($allowed), $payload);
 
         $before = Settings::all();
         // Key presence, not value presence: a field submitted empty is the admin
         // deliberately clearing it, and that must still be written.
-        $submitted = $request->all();
         $changed = [];
         $absent = [];
 
         foreach ($allowed as $key) {
             // A key the payload never mentions is left exactly as it stands.
-            // Writing '' for it instead lets one partial submit - a hand-built
-            // form, a request trimmed by PHP's max_input_vars - erase the site
-            // copy field by field, which is how a bare POST came to blank 29 of
-            // the 32 settings rows. The real form renders every allowed key
-            // (booleans as hidden-0 plus checkbox), so a genuine save always
-            // carries all of them and is unaffected by this guard.
-            if (!array_key_exists($key, $submitted)) {
+            // Writing '' for it instead lets one submit erase the site copy
+            // field by field - which is how the settings screen came to blank
+            // 29 of the 32 rows and hide the brand logo.
+            if (!array_key_exists($key, $payload)) {
                 $absent[] = $key;
                 continue;
             }
 
-            $value = $this->coerce($key, (string) $request->input($key, ''));
+            $value = $this->coerce($key, (string) $payload[$key]);
 
             if (($before[$key] ?? '') !== $value) {
                 $changed[] = $key;
@@ -140,6 +137,45 @@ final class SettingController extends Controller
                 : sprintf('Saved %d field(s). %d setting(s) were not submitted and were left unchanged - reload the page and save again to edit those.',
                     count($changed), count($absent))
         );
+    }
+
+    /**
+     * Put the field names back the way the form spelled them.
+     *
+     * PHP rewrites every dot in an incoming parameter name to an underscore, so
+     * an input named `brand.tagline` reaches the app as `brand_tagline`. Reading
+     * the dotted name straight off the request therefore always returned
+     * nothing, and the old code wrote that nothing back over the row: one press
+     * of "Save all settings" blanked the brand, the WhatsApp copy and the
+     * payment numbers site-wide, which is how the logo disappeared.
+     *
+     * Only names built from a known key are mapped, so a submitted field can
+     * never alias onto a different setting.
+     *
+     * @param array<string, mixed> $submitted
+     * @param list<string>         $allowed
+     * @return array<string, string>
+     */
+    private function normalize(array $submitted, array $allowed): array
+    {
+        $formNames = [];
+
+        foreach ($allowed as $key) {
+            $formNames[str_replace('.', '_', $key)] = $key;
+        }
+
+        $clean = [];
+
+        foreach ($submitted as $name => $value) {
+            if (!is_scalar($value)) {
+                continue;
+            }
+
+            $key = (string) $name;
+            $clean[$formNames[$key] ?? $key] = trim((string) $value);
+        }
+
+        return $clean;
     }
 
     /**

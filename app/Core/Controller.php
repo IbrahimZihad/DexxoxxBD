@@ -72,25 +72,33 @@ abstract class Controller
      * Validate and return only the fields the rule list mentions, so a mass
      * assignment can never come from an unexpected form input.
      *
+     * Pass $data when the field names the form used are not the names the rules
+     * are keyed by - PHP rewrites dots in incoming keys to underscores, so a
+     * settings input named `brand.tagline` arrives as `brand_tagline` and has to
+     * be mapped before it can be checked.
+     *
      * @param array<string, string> $rules
      * @param array<string, string> $labels
+     * @param array<string, mixed>|null $data
      * @return array<string, mixed>
      */
-    protected function validate(Request $request, array $rules, array $labels = []): array
+    protected function validate(Request $request, array $rules, array $labels = [], ?array $data = null): array
     {
-        $validator = new Validator($request->all(), $rules, $labels);
+        $data ??= $request->all();
+
+        $validator = new Validator($data, $rules, $labels);
 
         if ($validator->fails()) {
             $errors = $validator->errors();
 
             if ($request->wantsJson()) {
-                throw new ValidationException($errors, $request->all());
+                throw new ValidationException($errors, $data);
             }
 
-            Session::flashInput($request->all());
+            Session::flashInput($data);
             Session::flash('error', $validator->firstMessage());
 
-            throw new ValidationException($errors, $request->all());
+            throw new ValidationException($errors, $data);
         }
 
         return $validator->validated();

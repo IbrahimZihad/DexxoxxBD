@@ -162,6 +162,15 @@ counts and no fix-it hints unless `APP_DEBUG` is on.
   the favicon and `og:image`/`twitter:image` all read. If the file is not on disk
   every one of those falls back to the drawn bolt, so a renamed upload never
   shows as a broken image. `asset()` stamps the URL with the file's mtime.
+- Settings save: `SettingController::update()` maps the posted field names back
+  to their dotted keys first, because PHP rewrites every `.` in an incoming
+  parameter name to `_` — an input rendered as `brand.tagline` arrives as
+  `brand_tagline`. Reading the dotted name straight off the request finds
+  nothing, so the form must never do that. A key the payload does not mention is
+  left untouched rather than written as empty; that guard exists because the old
+  code wrote its own empty default back over every row and one press of "Save all
+  settings" blanked 29 of the 32, which is what makes `brand_logo()` return `''`
+  and the logo vanish. `tests/Mysql/SettingsSaveTest.php` pins both behaviours.
 - The three HTML shells (`layouts/app`, `layouts/admin`, `admin/login`) also load
   `partials/tailwind-cdn.php`, which boots the Tailwind Play CDN and mirrors the
   same `@theme` tokens into `tailwind.config`. The compiled `app.css` stays
