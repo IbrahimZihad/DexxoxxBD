@@ -35,11 +35,7 @@ $phoneDigits = preg_replace('/[^\d+]/', '', setting('contact.phone')) ?? '';
         <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
             <div>
                 <a href="<?= e(route('home')) ?>" class="flex items-center gap-2.5">
-                    <span class="grid h-10 w-10 place-items-center rounded-brand bg-gradient-to-br from-brand-500 to-accent-400">
-                        <svg class="h-5 w-5 text-ink" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M13.1 2 4.6 13.2h5.2L8.4 22l9.6-11.9h-5.4L13.1 2Z"/>
-                        </svg>
-                    </span>
+                    <?= $view->component('brand-mark', ['size' => 'h-10 w-10', 'radius' => 'rounded-brand']) ?>
                     <span class="text-lg font-black tracking-tight text-white"><?= e($brandName) ?></span>
                 </a>
                 <p class="mt-4 text-sm leading-relaxed"><?= e(setting('brand.tagline', 'Premium subscriptions, delivered in minutes.')) ?></p>

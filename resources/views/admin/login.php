@@ -39,7 +39,6 @@ $favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
     <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
-    <?= $view->partial('tailwind-cdn', ['nonce' => (string) ($cspNonce ?? App::cspNonce())]) ?>
 </head>
 <body class="min-h-screen bg-ink font-sans text-white antialiased">
     <a href="#main" class="sr-only rounded-brand bg-brand-600 px-4 py-2 font-semibold text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[9999]">Skip to the form</a>
@@ -52,11 +51,7 @@ $favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox
 
         <main id="main" class="relative w-full max-w-md">
             <div class="reveal mb-7 flex flex-col items-center text-center" data-reveal>
-                <span class="animate-float grid h-14 w-14 place-items-center rounded-brand bg-gradient-to-br from-brand-600 to-accent-500 shadow-glow">
-                    <svg class="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M13.1 2 4.6 13.2h5.2L8.4 22l9.6-11.9h-5.4L13.1 2Z"/>
-                    </svg>
-                </span>
+                <?= $view->component('brand-mark', ['size' => 'h-16 w-16', 'radius' => 'rounded-card']) ?>
                 <h1 class="mt-4 text-2xl font-black tracking-tight">
                     <span class="animate-gradient bg-gradient-to-r from-white via-accent-200 to-white bg-clip-text text-transparent">
                         <?= e($brandName) ?> order desk

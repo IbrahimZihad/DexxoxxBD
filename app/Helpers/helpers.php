@@ -52,6 +52,27 @@ if (!function_exists('asset')) {
     }
 }
 
+if (!function_exists('brand_logo')) {
+    /**
+     * Public URL for the logo named by the `brand.logo` setting, or an empty
+     * string when the file is not actually on disk. Every caller is expected to
+     * have a drawn fallback, because a missing image in the header reads as a
+     * broken site.
+     */
+    function brand_logo(): string
+    {
+        $path = trim((string) setting('brand.logo', ''));
+
+        if ($path === '') {
+            return '';
+        }
+
+        $file = dirname(__DIR__, 2) . '/public/assets/' . ltrim($path, '/');
+
+        return is_file($file) ? asset($path) : '';
+    }
+}
+
 if (!function_exists('route')) {
     /**
      * @param array<string, scalar> $params

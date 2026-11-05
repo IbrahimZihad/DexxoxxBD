@@ -37,11 +37,7 @@ $perks = [
                 <span class="animate-pulse-ring absolute -bottom-10 -right-10 h-36 w-36 rounded-full bg-brand-400/30 blur-2xl" aria-hidden="true"></span>
 
                 <a href="<?= e(route('home')) ?>" class="relative inline-flex items-center gap-2.5">
-                    <span class="grid h-10 w-10 place-items-center rounded-brand bg-white/15 ring-1 ring-white/30">
-                        <svg class="h-5 w-5 animate-pop text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M13.1 2 4.6 13.2h5.2L8.4 22l9.6-11.9h-5.4L13.1 2Z"/>
-                        </svg>
-                    </span>
+                    <?= $view->component('brand-mark', ['size' => 'h-10 w-10', 'radius' => 'rounded-brand']) ?>
                     <span class="text-lg font-black tracking-tight"><?= e($brandName) ?></span>
                 </a>
 

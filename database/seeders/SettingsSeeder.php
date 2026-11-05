@@ -20,6 +20,7 @@ final class SettingsSeeder extends AbstractSeed
         $settings = [
             ['general', 'brand.name', 'DexxozzBD'],
             ['general', 'brand.tagline', 'Premium subscriptions, delivered in minutes.'],
+            ['general', 'brand.logo', 'img/dexxoxxbd.jpeg'],
             ['general', 'meta.description', 'Netflix, Spotify, YouTube Premium, ChatGPT Plus and more at Bangladeshi prices, delivered on WhatsApp in minutes.'],
             ['general', 'hero.badge', '12,400+ orders delivered across Bangladesh'],
             ['general', 'hero.title', 'Every premium app you actually use, at a Bangladeshi price.'],
@@ -43,7 +44,7 @@ final class SettingsSeeder extends AbstractSeed
             ['payment', 'payment.bank_account', 'City Bank Ltd, Dhaka branch - Account 1234 5678 9012 (DexxozzBD)'],
             ['payment', 'payment.instruction', 'Send the exact total, then paste the transaction ID. A person checks it against our statement before anything is marked paid.'],
 
-            ['contact', 'contact.email', 'support@zapsub.test'],
+            ['contact', 'contact.email', 'support@dexxozzbd.test'],
             ['contact', 'contact.phone', '+880 1712-345678'],
             ['contact', 'contact.address', 'Level 4, Banani, Dhaka 1213'],
 

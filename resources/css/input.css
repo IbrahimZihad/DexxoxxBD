@@ -9,6 +9,36 @@
 @import "tailwindcss";
 
 /* -----------------------------------------------------------------------------
+   1a. Gradient property override (must stay ABOVE the @import's own
+   registrations: when two @property rules name the same custom property, the
+   first one parsed wins and later ones are ignored).
+
+   Tailwind v4 registers --tw-gradient-from/via/to with syntax "<color>", but
+   the Play CDN (v3) writes them as "<color> <position>" pairs
+   (--tw-gradient-from: #10b981 var(--tw-gradient-from-position)). A two-token
+   value fails the "<color>" check, so the property falls back to its
+   initial-value (#0000) and every gradient on the site paints transparent.
+
+   Re-registering with syntax "*" accepts both dialects, so gradients work
+   whether the CDN renders them or this file does.
+   -------------------------------------------------------------------------- */
+@property --tw-gradient-from {
+  syntax: "*";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-via {
+  syntax: "*";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-to {
+  syntax: "*";
+  inherits: false;
+  initial-value: #0000;
+}
+
+/* -----------------------------------------------------------------------------
    1. Sources
    The markup lives in PHP views (created by other agents) and in the vanilla
    JS bundle. Pointed at with paths relative to THIS file, so the compiler sees

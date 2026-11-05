@@ -16,6 +16,7 @@ final class Settings
     private const DEFAULTS = [
         'brand.name' => 'DexxozzBD',
         'brand.tagline' => 'Premium subscriptions, delivered in minutes.',
+        'brand.logo' => 'img/dexxoxxbd.jpeg',
         'meta.description' => 'Buy Netflix, Spotify, YouTube Premium, ChatGPT and more at Bangladeshi prices with instant WhatsApp support.',
         'whatsapp.enabled' => '1',
         'whatsapp.number' => '8801700000000',

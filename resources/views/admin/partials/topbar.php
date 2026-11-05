@@ -36,11 +36,7 @@ $initials = $words === []
     </button>
 
     <a href="<?= e(route('admin.dashboard')) ?>" class="flex min-w-0 items-center gap-2.5">
-        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-brand bg-gradient-to-br from-brand-600 to-accent-500 shadow-glow">
-            <svg class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M13.1 2 4.6 13.2h5.2L8.4 22l9.6-11.9h-5.4L13.1 2Z"/>
-            </svg>
-        </span>
+        <?= $view->component('brand-mark', ['size' => 'h-10 w-10', 'radius' => 'rounded-brand']) ?>
         <span class="min-w-0">
             <span class="block truncate text-sm font-black tracking-tight text-ink">
                 <?= e(setting('brand.name', 'DexxozzBD')) ?>
