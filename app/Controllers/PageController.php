@@ -118,6 +118,7 @@ final class PageController extends Controller
             'search' => $search,
             'whatsappUrl' => wa_link('Hi ' . setting('brand.name', 'ZapSub') . ', I have a question about ordering.'),
             'deliveryMinutes' => max(1, Settings::int('trust.delivery_minutes', 10)),
+            'jsonLd' => $this->faqJsonLd($groups),
         ]);
     }
 
@@ -261,6 +262,50 @@ final class PageController extends Controller
             . 'Subject: ' . ($subject === '' ? '(none given)' : $subject) . "\n\n"
             . "Message\n-------\n" . wordwrap((string) $data['message'], 74, "\n", true) . "\n\n"
             . 'Open the inbox to answer it. Unread threads in the queue right now: ' . $unread . ".\n\n-- " . $brand;
+    }
+
+    /**
+     * FAQPage markup for the answers that are actually on the page. JSON_HEX_TAG
+     * is what lets layouts/app.php print this inside a script tag unescaped.
+     *
+     * @param array<string, list<array{question: string, answer: string}>> $groups
+     */
+    private function faqJsonLd(array $groups): string
+    {
+        $questions = [];
+
+        foreach ($groups as $rows) {
+            foreach ($rows as $row) {
+                $question = trim($row['question']);
+                $answer = trim($row['answer']);
+
+                if ($question === '' || $answer === '') {
+                    continue;
+                }
+
+                $questions[] = [
+                    '@type' => 'Question',
+                    'name' => $question,
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => $answer],
+                ];
+            }
+        }
+
+        if ($questions === []) {
+            return '{}';
+        }
+
+        $encoded = json_encode(
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'publisher' => ['@type' => 'Organization', 'name' => Settings::get('brand.name', 'ZapSub')],
+                'mainEntity' => $questions,
+            ],
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP
+        );
+
+        return $encoded === false ? '{}' : $encoded;
     }
 
     /**
