@@ -59,8 +59,8 @@ $favicon = brand_logo() !== '' ? brand_logo() : "data:image/svg+xml,%3Csvg xmlns
 
     <?= $view->partial('flash') ?>
 
-    <div class="mx-auto flex w-full max-w-[110rem] flex-col gap-6 px-4 py-6 lg:flex-row lg:px-6">
-        <aside data-mobile-nav-panel hidden class="rounded-card border border-brand-100 bg-white p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:w-64 lg:shrink-0 lg:self-start">
+    <div class="mx-auto flex w-full max-w-[110rem] flex-col gap-6 px-4 py-6 md:flex-row md:px-6">
+        <aside id="admin-nav-panel" data-mobile-nav-panel hidden class="rounded-card border border-brand-100 bg-white p-3 shadow-soft md:sticky md:top-24 md:block md:w-64 md:shrink-0 md:self-start">
             <?php include $view->path('admin.partials.sidebar'); ?>
         </aside>
 

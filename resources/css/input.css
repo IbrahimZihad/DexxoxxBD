@@ -412,6 +412,28 @@
 }
 
 /* -----------------------------------------------------------------------------
+   5a. Admin nav panel.
+   Preflight ships `[hidden]:where(:not([hidden="until-found"]))` as
+   `display: none !important`, and for !important declarations cascade layers
+   run in REVERSE, so a later layer - and an unlayered rule, which counts as the
+   last one - loses to it. Measured in the browser: `@layer utilities` and
+   unlayered both lose; `@layer theme` and a later rule in `@layer base` win.
+   That is why the sidebar's own `md:block` utility never applied and the whole
+   admin menu was unreachable at every width until JavaScript removed the
+   attribute.
+
+   Scoped to #admin-nav-panel on purpose: the storefront header uses the same
+   drawer mechanism and genuinely wants to stay hidden on desktop.
+   -------------------------------------------------------------------------- */
+@layer base {
+  @media (min-width: 768px) {
+    #admin-nav-panel[hidden] {
+      display: block !important;
+    }
+  }
+}
+
+/* -----------------------------------------------------------------------------
    6. Safelisted brand utilities.
    The views are generated in parallel with this build, so pin the palette
    ramps that the storefront + admin shell are contracted to use. Cheap

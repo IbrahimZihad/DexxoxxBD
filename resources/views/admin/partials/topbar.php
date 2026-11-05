@@ -27,12 +27,14 @@ $initials = $words === []
     <button
         type="button"
         data-mobile-nav-btn
-        class="grid h-10 w-10 shrink-0 place-items-center rounded-brand border border-brand-200 bg-white text-brand-700 transition-colors duration-200 hover:bg-brand-50 lg:hidden"
+        class="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-brand border border-brand-200 bg-white px-3 text-xs font-black uppercase tracking-wide text-brand-700 transition-colors duration-200 hover:bg-brand-50 md:hidden"
         aria-label="Show admin menu"
+        aria-controls="admin-nav-panel"
     >
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
             <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/>
         </svg>
+        Menu
     </button>
 
     <a href="<?= e(route('admin.dashboard')) ?>" class="flex min-w-0 items-center gap-2.5">
