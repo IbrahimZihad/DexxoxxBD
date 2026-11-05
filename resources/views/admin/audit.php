@@ -95,9 +95,9 @@ $view->setSection('page_actions', '<a href="' . e(route('admin.dashboard')) . '"
                         ?>
                         <tr>
                             <td class="whitespace-nowrap text-xs font-semibold text-ink-400" title="<?= e($createdAt) ?>"><?= e($createdAt === '' ? '—' : time_ago($createdAt)) ?></td>
-                            <td class="whitespace-nowrap"><span class="inline-flex items-center rounded-pill px-2.5 py-1 text-xs font-black <?= e($toneFor($action)) ?>"><?= e(status_label($action)) ?></span></td>
+                            <td class="whitespace-nowrap"><span class="inline-flex items-center rounded-pill px-2.5 py-1 text-xs font-black <?= e($toneFor($action)) ?>"><?= e($pretty($action)) ?></span></td>
                             <td class="whitespace-nowrap text-sm font-bold text-ink">
-                                <?= $entity === '' ? '<span class="text-ink-300">—</span>' : e(status_label($entity)) ?>
+                                <?= $entity === '' ? '<span class="text-ink-300">—</span>' : e($pretty($entity)) ?>
                                 <?php if ($entityId > 0): ?>
                                     <span class="ml-1 font-mono text-xs text-ink-400">#<?= e((string) $entityId) ?></span>
                                 <?php endif; ?>
