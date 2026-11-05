@@ -25,7 +25,7 @@ final class Settings
         'whatsapp.default_message' => 'Hello DexxozzBD, I would like to order a subscription.',
         'whatsapp.hours' => 'Open 9:00 AM - 11:00 PM (Dhaka time), every day',
         'whatsapp.quick_replies' => 'Which plan suits me?|How long does delivery take?|Do you offer a replacement if the account stops working?',
-        'contact.email' => 'hello@zapsub.example',
+        'contact.email' => 'hello@dexxozzbd.example',
         'contact.phone' => '+880 1700-000000',
         'contact.address' => 'Dhaka, Bangladesh',
         'payment.bkash_number' => '01700-000000',
