@@ -115,6 +115,17 @@
   /* motion tokens (usable as duration/easing utilities) */
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* named animations — registered here as well as in section 5 so that
+     variants work (hover:animate-float, md:animate-pop, ...). The keyframes
+     live at top level in section 4, so they are always shipped. */
+  --animate-float: zs-float 6s var(--ease-soft) infinite;
+  --animate-blob: zs-blob 14s var(--ease-soft) infinite;
+  --animate-marquee: zs-marquee 30s linear infinite;
+  --animate-shimmer: zs-shimmer 1.8s linear infinite;
+  --animate-pop: zs-pop 0.34s var(--ease-bounce) both;
+  --animate-pulse-ring: zs-pulse-ring 2.4s var(--ease-soft) infinite;
+  --animate-gradient: zs-gradient 7s ease infinite;
 }
 
 /* -----------------------------------------------------------------------------
