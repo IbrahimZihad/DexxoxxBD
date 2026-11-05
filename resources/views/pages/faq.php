@@ -67,7 +67,7 @@ foreach ($groups as $category => $rows) {
                 </p>
             </div>
 
-            {{-- ------------------------------ search ------------------------------ --}}
+            <?php /* ------------------------------ search ------------------------------*/ ?>
             <form method="get" action="<?= e(route('faq')) ?>" class="reveal mt-8" data-reveal style="--reveal-delay:100ms">
                 <div class="mx-auto flex max-w-xl items-center gap-2 rounded-pill border border-brand-200 bg-white p-1.5 shadow-soft focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-200">
                     <span class="pl-3 text-brand-400" aria-hidden="true">
@@ -174,7 +174,7 @@ foreach ($groups as $category => $rows) {
         <?php endif; ?>
     </section>
 
-    {{-- --------------------------- still stuck band --------------------------- --}}
+    <?php /* --------------------------- still stuck band ---------------------------*/ ?>
     <section class="relative overflow-hidden bg-ink">
         <span class="blob -left-16 top-[-4rem] animate-blob bg-brand-600/40"></span>
         <span class="blob -right-12 bottom-[-5rem] animate-blob bg-accent-500/30 [animation-delay:-7s]"></span>

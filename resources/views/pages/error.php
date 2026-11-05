@@ -73,7 +73,7 @@ $links = [
         <span class="blob bottom-[-8rem] left-1/3 animate-blob opacity-25 [animation-delay:-9s]"></span>
 
         <div class="relative mx-auto max-w-3xl px-4 py-16 text-center lg:px-6 lg:py-24">
-            {{-- big status number: pure typography, no script --}}
+            <?php /* big status number: pure typography, no script*/ ?>
             <div class="reveal" data-reveal>
                 <p class="animate-pop select-none text-[7rem] font-black leading-[0.85] tracking-tighter md:text-[11rem]">
                     <span class="animate-gradient bg-gradient-to-br from-brand-600 via-accent-500 to-brand-400 bg-clip-text text-transparent"><?= e((string) $status) ?></span>
@@ -132,7 +132,7 @@ $links = [
                 <?php endif; ?>
             </div>
 
-            {{-- primary actions --}}
+            <?php /* primary actions*/ ?>
             <div class="reveal mt-9 flex flex-wrap items-center justify-center gap-3" data-reveal style="--reveal-delay:120ms">
                 <a href="<?= e(route('home')) ?>" class="group relative inline-flex items-center gap-2 overflow-hidden rounded-brand bg-gradient-to-r from-brand-600 via-brand-500 to-accent-500 px-6 py-3.5 text-sm font-black text-white shadow-glow transition-transform duration-200 hover:-translate-y-0.5">
                     <span class="animate-shimmer absolute inset-0 bg-gradient-to-r from-white/0 via-white/35 to-white/0" aria-hidden="true"></span>
@@ -151,7 +151,7 @@ $links = [
         </div>
     </section>
 
-    {{-- ------------------------------ link grid ------------------------------ --}}
+    <?php /* ------------------------------ link grid ------------------------------*/ ?>
     <section class="mx-auto max-w-5xl px-4 pb-16 lg:px-6">
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <?php foreach ($links as $index => $link): ?>

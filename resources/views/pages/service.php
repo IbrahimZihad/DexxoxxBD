@@ -53,7 +53,7 @@ $view->setSection('canonical', route('service.show', ['slug' => $serviceSlug]));
 $view->setSection('json_ld', $jsonLd);
 ?>
 <div class="bg-white">
-    {{-- ----------------------------- brand hero ---------------------------- --}}
+    <?php /* ----------------------------- brand hero ----------------------------*/ ?>
     <section class="relative overflow-hidden text-white" style="<?= e($heroStyle) ?>">
         <span class="blob -left-16 -top-20 animate-blob bg-white/10 opacity-70"></span>
         <span class="blob right-0 top-10 animate-blob [animation-delay:-5s] bg-white/10 opacity-60"></span>
@@ -140,7 +140,7 @@ $view->setSection('json_ld', $jsonLd);
         </div>
     </section>
 
-    {{-- ------------------------- tier comparison -------------------------- --}}
+    <?php /* ------------------------- tier comparison --------------------------*/ ?>
     <?php if ($comparison !== []): ?>
         <section id="compare" class="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 lg:px-6">
             <?= $view->component('section-heading', [
@@ -243,7 +243,7 @@ $view->setSection('json_ld', $jsonLd);
         </section>
     <?php endif; ?>
 
-    {{-- --------------------------- plan cards ------------------------------ --}}
+    <?php /* --------------------------- plan cards ------------------------------*/ ?>
     <?php if ($plans !== []): ?>
         <section class="bg-gradient-to-b from-white via-brand-50/60 to-white py-16">
             <div class="mx-auto max-w-7xl px-4 lg:px-6">
@@ -262,7 +262,7 @@ $view->setSection('json_ld', $jsonLd);
         </section>
     <?php endif; ?>
 
-    {{-- --------------------------- delivery note --------------------------- --}}
+    <?php /* --------------------------- delivery note ---------------------------*/ ?>
     <section class="mx-auto max-w-7xl px-4 py-16 lg:px-6">
         <div class="reveal overflow-hidden rounded-card border border-brand-100 bg-white shadow-card" data-reveal>
             <div class="grid gap-0 md:grid-cols-[1.05fr_0.95fr]">
@@ -331,7 +331,7 @@ $view->setSection('json_ld', $jsonLd);
         </div>
     </section>
 
-    {{-- ------------------------------- faq --------------------------------- --}}
+    <?php /* ------------------------------- faq ---------------------------------*/ ?>
     <?php if ($faqs !== []): ?>
         <section class="mx-auto max-w-3xl px-4 pb-16 lg:px-6">
             <?= $view->component('section-heading', [
@@ -362,7 +362,7 @@ $view->setSection('json_ld', $jsonLd);
         </section>
     <?php endif; ?>
 
-    {{-- ----------------------------- related ------------------------------- --}}
+    <?php /* ----------------------------- related -------------------------------*/ ?>
     <?php if ($related !== []): ?>
         <section class="border-t border-brand-100 bg-gradient-to-b from-white to-brand-50/60 py-16">
             <div class="mx-auto max-w-7xl px-4 lg:px-6">
@@ -380,7 +380,7 @@ $view->setSection('json_ld', $jsonLd);
         </section>
     <?php endif; ?>
 
-    {{-- ------------------------- whatsapp band ------------------------------ --}}
+    <?php /* ------------------------- whatsapp band ------------------------------*/ ?>
     <section class="relative overflow-hidden">
         <div class="animate-gradient absolute inset-0 bg-gradient-to-r from-brand-700 via-brand-500 to-accent-500"></div>
         <span class="blob -right-14 -top-16 opacity-40"></span>

@@ -97,7 +97,7 @@ $deliveryText = match (true) {
     <span class="blob -right-20 top-72 animate-blob opacity-30 [animation-delay:-6s]" aria-hidden="true"></span>
 
     <div class="relative mx-auto max-w-7xl px-4 py-10 pb-16 lg:px-6 lg:py-14">
-        {{-- ------------------------------ headline ------------------------------ --}}
+        <?php /* ------------------------------ headline ------------------------------*/ ?>
         <div class="flex flex-wrap items-start justify-between gap-5">
             <div class="min-w-0">
                 <p class="flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] text-accent-600">
@@ -144,7 +144,7 @@ $deliveryText = match (true) {
         </div>
 
         <div class="mt-8 grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-start">
-            {{-- ------------------------------- detail ------------------------------ --}}
+            <?php /* ------------------------------- detail ------------------------------*/ ?>
             <div class="space-y-6">
                 <section class="reveal rounded-card border border-brand-100 bg-white p-5 shadow-card print:border-0 print:p-0 print:shadow-none" data-reveal>
                     <h2 class="mb-3 text-sm font-black uppercase tracking-widest text-ink-400">What you ordered</h2>
@@ -193,7 +193,7 @@ $deliveryText = match (true) {
                 </section>
             </div>
 
-            {{-- ------------------------------- summary ------------------------------ --}}
+            <?php /* ------------------------------- summary ------------------------------*/ ?>
             <aside class="space-y-5 lg:sticky lg:top-24">
                 <div class="reveal rounded-card border border-brand-100 bg-white p-5 shadow-card" data-reveal>
                     <h2 class="text-sm font-black uppercase tracking-widest text-ink-400">Amounts</h2>

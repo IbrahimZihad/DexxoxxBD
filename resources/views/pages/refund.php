@@ -77,7 +77,7 @@ $sections = [
             </ol>
         </nav>
 
-        {{-- --------------------------- the short version --------------------------- --}}
+        <?php /* --------------------------- the short version ---------------------------*/ ?>
         <div id="short" class="reveal mt-10 grid gap-4 sm:grid-cols-2" data-reveal>
             <div class="rounded-card border-2 border-emerald-200 bg-emerald-50/70 p-6">
                 <p class="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">Paid, not delivered</p>
@@ -269,7 +269,7 @@ $sections = [
             </article>
         </div>
 
-        {{-- ------------------------------- CTA ------------------------------- --}}
+        <?php /* ------------------------------- CTA -------------------------------*/ ?>
         <div class="reveal mt-10 relative overflow-hidden rounded-card bg-gradient-to-br from-brand-700 via-brand-600 to-accent-600 p-7 text-white shadow-pop" data-reveal>
             <span class="blob -right-10 -top-14 animate-blob bg-white/15" aria-hidden="true"></span>
             <div class="relative grid gap-5 md:grid-cols-[1.5fr_1fr] md:items-center">

@@ -30,7 +30,7 @@ $perks = [
 
     <div class="relative mx-auto max-w-6xl px-4 py-10 lg:px-6 lg:py-16">
         <div class="reveal overflow-hidden rounded-card border border-brand-100 bg-white shadow-card grid lg:grid-cols-[1.05fr_1fr]" data-reveal>
-            {{-- ------------------------- brand panel ------------------------- --}}
+            <?php /* ------------------------- brand panel -------------------------*/ ?>
             <aside class="relative isolate overflow-hidden bg-gradient-to-br from-brand-700 via-brand-600 to-accent-600 px-7 py-10 text-white sm:px-9">
                 <span class="animate-blob absolute -left-12 top-6 h-44 w-44 rounded-full bg-accent-300/30 blur-2xl" aria-hidden="true"></span>
                 <span class="animate-blob absolute right-0 top-40 h-52 w-52 rounded-full bg-white/15 blur-3xl [animation-delay:-6s]" aria-hidden="true"></span>
@@ -79,7 +79,7 @@ $perks = [
                 </p>
             </aside>
 
-            {{-- ---------------------------- form ----------------------------- --}}
+            <?php /* ---------------------------- form -----------------------------*/ ?>
             <div class="px-6 py-9 sm:px-9">
                 <h1 class="text-2xl font-black tracking-tight text-ink">Welcome back</h1>
                 <p class="mt-1.5 text-sm text-ink-400">Sign in with the email you used at checkout.</p>

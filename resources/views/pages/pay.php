@@ -88,7 +88,7 @@ $view->setSection('canonical', route('order.pay', ['orderNo' => $orderNo]));
         </div>
 
         <div class="mt-8 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
-            {{-- ---------------------------- the rails ---------------------------- --}}
+            <?php /* ---------------------------- the rails ----------------------------*/ ?>
             <section aria-label="Payment instructions" class="space-y-5">
                 <div class="reveal relative overflow-hidden rounded-card bg-gradient-to-br from-brand-700 via-brand-600 to-accent-500 p-5 text-white shadow-card" data-reveal>
                     <span class="animate-shimmer absolute inset-0 bg-gradient-to-r from-white/0 via-white/25 to-white/0" aria-hidden="true"></span>
@@ -219,7 +219,7 @@ $view->setSection('canonical', route('order.pay', ['orderNo' => $orderNo]));
                 <?php endif; ?>
             </section>
 
-            {{-- ----------------------------- the recap ---------------------------- --}}
+            <?php /* ----------------------------- the recap ----------------------------*/ ?>
             <aside class="lg:sticky lg:top-24">
                 <div class="reveal space-y-5 rounded-card border border-brand-100 bg-white p-5 shadow-card" data-reveal>
                     <h2 class="text-sm font-black uppercase tracking-widest text-ink-400">Order <?= e($orderNo) ?></h2>

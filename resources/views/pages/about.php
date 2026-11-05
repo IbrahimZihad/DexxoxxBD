@@ -56,7 +56,7 @@ $principles = [
 ];
 ?>
 <div class="bg-white">
-    {{-- ------------------------------- hero ------------------------------- --}}
+    <?php /* ------------------------------- hero -------------------------------*/ ?>
     <section class="relative overflow-hidden bg-gradient-to-b from-brand-50 via-white to-white">
         <span class="blob -left-24 -top-20 animate-blob opacity-40"></span>
         <span class="blob -right-20 top-10 animate-blob opacity-35 [animation-delay:-5s]"></span>
@@ -93,7 +93,7 @@ $principles = [
                 </div>
             </div>
 
-            {{-- photo-free "team of one" illustration, drawn inline --}}
+            <?php /* photo-free "team of one" illustration, drawn inline*/ ?>
             <div class="reveal relative" data-reveal style="--reveal-delay:120ms">
                 <div class="glass animate-float rounded-card p-6 shadow-card">
                     <svg viewBox="0 0 320 220" class="w-full" role="img" aria-label="A single desk with a laptop, a phone showing a delivery message, and a stack of subscription cards.">
@@ -153,7 +153,7 @@ $principles = [
         </div>
     </section>
 
-    {{-- ------------------------------ counters ------------------------------ --}}
+    <?php /* ------------------------------ counters ------------------------------*/ ?>
     <section class="border-y border-brand-100 bg-gradient-to-r from-brand-50 via-white to-accent-50">
         <div class="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-12 md:grid-cols-4 lg:px-6">
             <?php foreach ($stats as $stat): ?>
@@ -170,7 +170,7 @@ $principles = [
         </div>
     </section>
 
-    {{-- ------------------------------ the story ------------------------------ --}}
+    <?php /* ------------------------------ the story ------------------------------*/ ?>
     <section class="mx-auto max-w-5xl px-4 py-16 lg:px-6">
         <?= $view->component('section-heading', [
             'eyebrow' => 'The story',
@@ -193,7 +193,7 @@ $principles = [
         </div>
     </section>
 
-    {{-- ----------------------------- principles ----------------------------- --}}
+    <?php /* ----------------------------- principles -----------------------------*/ ?>
     <section class="relative overflow-hidden bg-ink py-16">
         <span class="blob -left-20 top-[-4rem] animate-blob bg-brand-600/40"></span>
         <span class="blob -right-16 bottom-[-6rem] animate-blob bg-accent-500/30 [animation-delay:-7s]"></span>
@@ -224,7 +224,7 @@ $principles = [
         </div>
     </section>
 
-    {{-- ----------------------------- testimonials ----------------------------- --}}
+    <?php /* ----------------------------- testimonials -----------------------------*/ ?>
     <?php if ($testimonials !== []): ?>
         <section class="mx-auto max-w-7xl px-4 py-16 lg:px-6">
             <?= $view->component('section-heading', [
@@ -260,7 +260,7 @@ $principles = [
         </section>
     <?php endif; ?>
 
-    {{-- ------------------------------ honesty note ------------------------------ --}}
+    <?php /* ------------------------------ honesty note ------------------------------*/ ?>
     <?php if ($note !== ''): ?>
         <section class="mx-auto max-w-5xl px-4 pb-16 lg:px-6">
             <div class="reveal rounded-card border-2 border-dashed border-brand-200 bg-brand-50/60 p-6" data-reveal>
@@ -281,7 +281,7 @@ $principles = [
         </section>
     <?php endif; ?>
 
-    {{-- -------------------------------- CTA -------------------------------- --}}
+    <?php /* -------------------------------- CTA --------------------------------*/ ?>
     <section class="mx-auto max-w-7xl px-4 pb-20 lg:px-6">
         <div class="reveal relative overflow-hidden rounded-card bg-gradient-to-br from-brand-700 via-brand-600 to-accent-600 p-8 text-white shadow-pop md:p-10" data-reveal>
             <span class="blob -right-10 -top-14 animate-blob bg-white/15" aria-hidden="true"></span>

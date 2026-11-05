@@ -53,6 +53,7 @@ $favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
     <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
+    <?= $view->partial('tailwind-cdn', ['nonce' => $nonce]) ?>
 
     <?php if ($view->hasSection('json_ld')): ?>
         <?php /* Raw on purpose: the controller encodes with JSON_HEX_TAG, so the

@@ -85,7 +85,7 @@ $icons = [
 ];
 ?>
 <div class="bg-white">
-    {{-- ------------------------------- hero ------------------------------- --}}
+    <?php /* ------------------------------- hero -------------------------------*/ ?>
     <section class="relative overflow-hidden bg-gradient-to-b from-brand-50 via-white to-white">
         <span class="blob -left-24 -top-20 animate-blob opacity-40"></span>
         <span class="blob -right-20 top-8 animate-blob opacity-35 [animation-delay:-5s]"></span>
@@ -124,7 +124,7 @@ $icons = [
         </div>
     </section>
 
-    {{-- ------------------------------ timeline ------------------------------ --}}
+    <?php /* ------------------------------ timeline ------------------------------*/ ?>
     <section class="mx-auto max-w-5xl px-4 py-16 lg:px-6">
         <?= $view->component('section-heading', [
             'eyebrow' => 'The order, start to finish',
@@ -181,7 +181,7 @@ $icons = [
         </ol>
     </section>
 
-    {{-- ------------------------------ the rails ------------------------------ --}}
+    <?php /* ------------------------------ the rails ------------------------------*/ ?>
     <section class="relative overflow-hidden bg-ink py-16">
         <span class="blob -left-20 top-[-5rem] animate-blob bg-brand-600/40"></span>
         <span class="blob -right-16 bottom-[-6rem] animate-blob bg-accent-500/30 [animation-delay:-7s]"></span>
@@ -255,7 +255,7 @@ $icons = [
         </div>
     </section>
 
-    {{-- ---------------------------- timeline facts ---------------------------- --}}
+    <?php /* ---------------------------- timeline facts ----------------------------*/ ?>
     <section class="mx-auto max-w-7xl px-4 py-16 lg:px-6">
         <div class="grid gap-5 md:grid-cols-3">
             <div class="reveal rounded-card border border-brand-100 bg-brand-50/50 p-6" data-reveal>

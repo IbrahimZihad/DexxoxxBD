@@ -49,7 +49,7 @@ $view->setSection('canonical', route('cart'));
         </div>
 
         <div class="mt-8 grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-start">
-            {{-- ------------------------------ lines ----------------------------- --}}
+            <?php /* ------------------------------ lines -----------------------------*/ ?>
             <section aria-label="Cart items">
                 <p class="mb-3 text-xs font-bold uppercase tracking-widest text-ink-400">
                     <?= $isEmpty ? 'Nothing in the bag yet' : e((string) count($lines)) . ' plan' . (count($lines) === 1 ? '' : 's') . ' &middot; ' . e((string) $unitCount) . ' item' . ($unitCount === 1 ? '' : 's') ?>
@@ -74,7 +74,7 @@ $view->setSection('canonical', route('cart'));
                 <?php endif; ?>
             </section>
 
-            {{-- ----------------------------- summary ---------------------------- --}}
+            <?php /* ----------------------------- summary ----------------------------*/ ?>
             <aside class="lg:sticky lg:top-24">
                 <div class="reveal overflow-hidden rounded-card border border-brand-100 bg-white shadow-card" data-reveal>
                     <div class="relative overflow-hidden bg-gradient-to-r from-brand-600 to-brand-500 px-5 py-4">

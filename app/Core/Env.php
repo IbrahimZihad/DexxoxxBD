@@ -13,7 +13,19 @@ final class Env
     /** @var array<string, string> */
     private static array $vars = [];
 
+    /** @var array<string, string> */
+    private static array $overrides = [];
+
     private static bool $loaded = false;
+
+    /**
+     * Force a value for the current process. The test bootstrap uses this to pin
+     * APP_ENV=testing, so it wins over .env no matter how often load() re-runs.
+     */
+    public static function set(string $key, string $value): void
+    {
+        self::$overrides[strtoupper(trim($key))] = $value;
+    }
 
     public static function load(string $path): void
     {
@@ -61,6 +73,10 @@ final class Env
             // Allow an explicit boot order (App loads the file) while still
             // working when a CLI script forgets to call load().
             self::load(dirname(__DIR__, 2) . '/.env');
+        }
+
+        if (array_key_exists($key, self::$overrides)) {
+            return self::$overrides[$key];
         }
 
         if (array_key_exists($key, self::$vars)) {

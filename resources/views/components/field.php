@@ -90,7 +90,10 @@ $control .= error_class($name, $invalid ? ' border-rose-300' : ' border-brand-20
             <?php endforeach; ?>
         </select>
     <?php elseif ($type === 'checkbox'): ?>
-        <?php $boxValue = ($value === null || $value === false || $value === '' || $value === 0 || $value === '0') ? '1' : (string) $value; ?>
+        <?php
+        $boxValue = ($value === null || $value === false || $value === '' || $value === 0 || $value === '0') ? '1' : (string) $value;
+        $isChecked = $value === true || $value === 1 || (is_string($value) && in_array(strtolower($value), ['1', 'true', 'on', 'yes'], true));
+        ?>
         <label for="<?= e($id) ?>" class="flex cursor-pointer items-start gap-3 rounded-brand border border-brand-100 bg-brand-50/50 p-3">
             <input
                 type="checkbox"
@@ -100,7 +103,7 @@ $control .= error_class($name, $invalid ? ' border-rose-300' : ' border-brand-20
                 class="mt-0.5 h-4 w-4 shrink-0 rounded accent-brand-600"
                 <?php if ($required): ?> required<?php endif; ?>
                 <?php if ($invalid): ?> aria-invalid="true"<?php endif; ?>
-                <?php if (filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_LACK) === true): ?> checked<?php endif; ?>
+                <?php if ($isChecked): ?> checked<?php endif; ?>
             >
             <span class="text-sm text-ink">
                 <?= e($label) ?>

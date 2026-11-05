@@ -64,4 +64,33 @@ final class Payment extends Model
             [':rejected' => 'rejected', ':who' => $staffId, ':note' => $note, ':id' => $paymentId]
         );
     }
+
+    public function forOrderMethod(int $orderId, string $method): ?array
+    {
+        return Database::selectOne(
+            'select * from payments where order_id = :id and method = :method limit 1',
+            [':id' => $orderId, ':method' => $method]
+        );
+    }
+
+    /**
+     * Re-declaring after a rejection rewrites the existing row: the unique
+     * (order_id, method) index means a second insert would fail, and the old
+     * verification must not survive into the new claim.
+     */
+    public function redeclare(int $paymentId, ?string $txnId, float $amount, ?string $sender): void
+    {
+        Database::execute(
+            'update payments set txn_id = :txn, amount = :amount, status = :pending, sender_number = :sender,
+                    admin_note = null, verified_by = null, verified_at = null, updated_at = now()
+              where id = :id',
+            [
+                ':txn' => $txnId,
+                ':amount' => $amount,
+                ':pending' => 'pending',
+                ':sender' => $sender,
+                ':id' => $paymentId,
+            ]
+        );
+    }
 }

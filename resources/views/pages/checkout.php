@@ -56,7 +56,7 @@ $view->setSection('canonical', route('checkout'));
         ]) ?>
 
         <div class="mt-8 grid gap-8 lg:grid-cols-[1.35fr_1fr] lg:items-start">
-            {{-- ------------------------------- tabs ------------------------------- --}}
+            <?php /* ------------------------------- tabs -------------------------------*/ ?>
             <div data-tabs>
                 <div role="tablist" aria-label="Checkout steps" class="no-scrollbar flex gap-2 overflow-x-auto pb-1">
                     <?php foreach ($steps as $index => $step): ?>
@@ -79,7 +79,7 @@ $view->setSection('canonical', route('checkout'));
                 <form method="post" action="<?= e(route('checkout.store')) ?>" data-ajax class="mt-5 space-y-5">
                     <?= csrf_field() ?>
 
-                    {{-- ------------------------ step 1: basket ------------------------ --}}
+                    <?php /* ------------------------ step 1: basket ------------------------*/ ?>
                     <section data-tab-panel="basket"
                              role="tabpanel"
                              aria-label="Your basket"
@@ -118,7 +118,7 @@ $view->setSection('canonical', route('checkout'));
                         </div>
                     </section>
 
-                    {{-- ----------------------- step 2: details ----------------------- --}}
+                    <?php /* ----------------------- step 2: details -----------------------*/ ?>
                     <section data-tab-panel="details"
                              role="tabpanel"
                              aria-label="Your details"
@@ -183,7 +183,7 @@ $view->setSection('canonical', route('checkout'));
                         </p>
                     </section>
 
-                    {{-- ----------------------- step 3: payment ----------------------- --}}
+                    <?php /* ----------------------- step 3: payment -----------------------*/ ?>
                     <section data-tab-panel="payment"
                              role="tabpanel"
                              aria-label="How you pay"
@@ -234,7 +234,7 @@ $view->setSection('canonical', route('checkout'));
                 </form>
             </div>
 
-            {{-- ------------------------------ summary ----------------------------- --}}
+            <?php /* ------------------------------ summary -----------------------------*/ ?>
             <aside class="lg:sticky lg:top-24">
                 <div class="reveal overflow-hidden rounded-card border border-brand-100 bg-white shadow-card" data-reveal>
                     <div class="relative overflow-hidden bg-gradient-to-r from-brand-600 to-brand-500 px-5 py-4">

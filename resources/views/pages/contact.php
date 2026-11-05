@@ -77,7 +77,7 @@ $promises = [
 
     <section class="mx-auto max-w-7xl px-4 pb-16 lg:px-6">
         <div class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
-            {{-- ------------------------------ the form ------------------------------ --}}
+            <?php /* ------------------------------ the form ------------------------------*/ ?>
             <div class="reveal rounded-card border border-brand-100 bg-white p-6 shadow-card sm:p-8" data-reveal style="--reveal-delay:80ms">
                 <h2 class="text-2xl font-black tracking-tight text-ink">Send a message</h2>
                 <p class="mt-2 text-sm leading-relaxed text-ink-400">
@@ -174,7 +174,7 @@ $promises = [
                 </div>
             </div>
 
-            {{-- ------------------------------ the side card ------------------------------ --}}
+            <?php /* ------------------------------ the side card ------------------------------*/ ?>
             <div class="space-y-6">
                 <div class="reveal relative overflow-hidden rounded-card bg-gradient-to-br from-brand-700 via-brand-600 to-accent-600 p-6 text-white shadow-pop" data-reveal style="--reveal-delay:140ms">
                     <span class="blob -right-10 -top-12 animate-blob bg-white/15" aria-hidden="true"></span>

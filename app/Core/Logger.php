@@ -27,15 +27,21 @@ final class Logger
         self::write('ERROR', $message, $context);
     }
 
-    public static function exception(Throwable $exception, array $context = []): void
+    /**
+     * Expected, user-facing failures (validation, 404s) are caller-declared so
+     * they stay out of the ERROR channel; genuine faults keep ERROR and the trace.
+     *
+     * @param 'DEBUG'|'INFO'|'WARNING'|'ERROR' $level
+     */
+    public static function exception(Throwable $exception, array $context = [], string $level = 'ERROR'): void
     {
         $context['exception'] = get_class($exception);
         $context['thrown_at'] = $exception->getFile() . ':' . $exception->getLine();
 
         self::write(
-            'ERROR',
+            $level,
             $exception->getMessage(),
-            $context + ['trace' => self::trace($exception)]
+            $context + ($level === 'ERROR' ? ['trace' => self::trace($exception)] : [])
         );
     }
 

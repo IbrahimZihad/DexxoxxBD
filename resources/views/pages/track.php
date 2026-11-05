@@ -45,7 +45,7 @@ $view->setSection('canonical', route('track'));
         ]) ?>
 
         <div class="mt-8 grid gap-8 lg:grid-cols-[1fr_1.35fr] lg:items-start">
-            {{-- ------------------------------- lookup ------------------------------ --}}
+            <?php /* ------------------------------- lookup ------------------------------*/ ?>
             <section class="reveal rounded-card border border-brand-100 bg-white p-5 shadow-card sm:p-6" data-reveal aria-label="Order lookup">
                 <h2 class="text-base font-black text-ink">Look it up</h2>
                 <p class="mt-1 text-xs leading-relaxed text-ink-400">
@@ -107,7 +107,7 @@ $view->setSection('canonical', route('track'));
                 </ul>
             </section>
 
-            {{-- ------------------------------- result ------------------------------ --}}
+            <?php /* ------------------------------- result ------------------------------*/ ?>
             <section aria-label="Order status" class="space-y-6">
                 <?php if ($order === null): ?>
                     <?= $view->component('empty-state', [

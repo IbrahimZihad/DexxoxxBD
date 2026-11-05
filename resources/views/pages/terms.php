@@ -73,7 +73,7 @@ $sections = [
     </section>
 
     <section class="mx-auto max-w-4xl px-4 pb-20 lg:px-6">
-        {{-- ------------------------------ contents ------------------------------ --}}
+        <?php /* ------------------------------ contents ------------------------------*/ ?>
         <nav aria-label="Contents" class="reveal rounded-card border border-brand-100 bg-brand-50/50 p-6" data-reveal>
             <h2 class="text-xs font-black uppercase tracking-[0.18em] text-brand-700">What is in here</h2>
             <ol class="mt-3 grid gap-2 sm:grid-cols-2">
@@ -88,7 +88,7 @@ $sections = [
             </ol>
         </nav>
 
-        {{-- ------------------------------- body ------------------------------- --}}
+        <?php /* ------------------------------- body -------------------------------*/ ?>
         <div class="mt-10 space-y-8">
             <article id="what-you-buy" class="reveal rounded-card border border-brand-100 bg-white p-6 shadow-card sm:p-8" data-reveal>
                 <h2 class="text-xl font-black tracking-tight text-ink md:text-2xl"><?= e($sections[0]['title']) ?></h2>
@@ -329,7 +329,7 @@ $sections = [
             </article>
         </div>
 
-        {{-- ------------------------------- footer links ------------------------------- --}}
+        <?php /* ------------------------------- footer links -------------------------------*/ ?>
         <div class="reveal mt-10 flex flex-wrap items-center gap-3 rounded-card bg-ink p-6 text-white" data-reveal>
             <p class="grow text-sm leading-relaxed text-white/75">
                 Read the rest before you order: the short refund rules and how we handle your data.

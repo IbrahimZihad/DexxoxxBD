@@ -41,7 +41,7 @@ $stats = [
 ];
 ?>
 <div class="bg-gradient-to-b from-brand-50 via-white to-white">
-    {{-- ------------------------------ header ------------------------------ --}}
+    <?php /* ------------------------------ header ------------------------------*/ ?>
     <section class="relative overflow-hidden">
         <div class="animate-gradient absolute inset-0 bg-gradient-to-r from-brand-700 via-brand-500 to-accent-500" aria-hidden="true"></div>
         <span class="blob -left-16 -top-16 opacity-40" aria-hidden="true"></span>
@@ -83,7 +83,7 @@ $stats = [
     </section>
 
     <div class="mx-auto max-w-6xl px-4 py-10 lg:px-6">
-        {{-- ------------------------------ stats ------------------------------ --}}
+        <?php /* ------------------------------ stats ------------------------------*/ ?>
         <section class="reveal grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal aria-label="Account summary">
             <?php foreach ($stats as $index => $stat): ?>
                 <div class="hover-lift rounded-card border border-brand-100 bg-white p-5 shadow-soft" style="--reveal-delay:<?= e((string) ($index * 80)) ?>ms">
@@ -96,7 +96,7 @@ $stats = [
         </section>
 
         <div class="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
-            {{-- --------------------------- orders --------------------------- --}}
+            <?php /* --------------------------- orders ---------------------------*/ ?>
             <section aria-label="Order history">
                 <?= $view->component('section-heading', [
                     'eyebrow' => 'Order history',
@@ -197,7 +197,7 @@ $stats = [
                 <?php endif; ?>
             </section>
 
-            {{-- --------------------- deliveries + support -------------------- --}}
+            <?php /* --------------------- deliveries + support --------------------*/ ?>
             <aside class="space-y-6">
                 <section class="reveal rounded-card border border-brand-100 bg-white p-5 shadow-soft" data-reveal style="--reveal-delay:120ms" aria-label="Latest deliveries">
                     <p class="text-xs font-black uppercase tracking-widest text-brand-600">Latest delivery states</p>

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Core\App;
+
 /**
  * Staff sign-in. It deliberately does not use layouts/admin: that shell is the
  * chrome for someone already through the door, and it would have to guess what to
@@ -37,6 +39,7 @@ $favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
     <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
+    <?= $view->partial('tailwind-cdn', ['nonce' => (string) ($cspNonce ?? App::cspNonce())]) ?>
 </head>
 <body class="min-h-screen bg-ink font-sans text-white antialiased">
     <a href="#main" class="sr-only rounded-brand bg-brand-600 px-4 py-2 font-semibold text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[9999]">Skip to the form</a>

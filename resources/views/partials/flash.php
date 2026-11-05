@@ -29,10 +29,14 @@ foreach ((array) ($flash ?? []) as $type => $entry) {
 
 $toasts = array_values(array_filter($toasts, static fn (array $toast): bool => $toast[1] !== ''));
 
-$allErrors = array_merge(...array_map(
-    static fn (mixed $messages): array => array_values((array) $messages),
-    (array) ($errors ?? [])
-) ?: [[]]);
+// array_values() is required twice: the error map is keyed by field name, and a
+// string-keyed spread makes array_merge throw "unknown named parameters".
+$allErrors = array_merge(
+    ...array_map(
+        static fn (mixed $messages): array => array_values((array) $messages),
+        array_values((array) ($errors ?? []))
+    )
+);
 
 $toneFor = static fn (string $type): string => match ($type) {
     'success', 'ok' => 'bg-emerald-600',

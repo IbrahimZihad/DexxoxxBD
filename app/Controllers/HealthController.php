@@ -41,10 +41,11 @@ final class HealthController extends Controller
             Logger::error('health_database_check', ['path' => $request->path()]);
         }
 
-        $counts = $databaseUp ? $this->counts() : ['settings' => null, 'services' => null, 'plans' => null];
+        $catalogue = $databaseUp ? $this->catalogueSeeded() : ['services' => false, 'plans' => false];
         $notices = $databaseUp ? App::instance()->bootDiagnostics() : ['Cannot reach MySQL, so no further checks ran.'];
 
-        $healthy = $databaseUp;
+        $healthy = $databaseUp && $catalogue['services'] && $catalogue['plans'];
+        $debug = (bool) app()->config('app.debug', false);
 
         return $this->json([
             'ok' => $healthy,
@@ -58,21 +59,45 @@ final class HealthController extends Controller
                 'database' => $databaseUp,
                 // Boolean only: whether notes can be encrypted, never the key.
                 'app_key' => Crypto::keyPresent(),
+                // Seeded or not - never how many rows, which would price the shop.
+                'catalogue' => $catalogue,
             ],
-            'counts' => $counts,
-            'notices' => $notices,
+            // Fix-it hints name missing config, so they only belong in debug mode.
+            'notices' => $debug ? $notices : [],
             'time' => date(DATE_ATOM),
         ], $healthy ? 200 : 503);
     }
 
     /**
-     * Row counts for the three tables that decide whether the shop has anything
-     * to sell. Each one is read through its model, and a broken table reports
-     * null instead of taking the probe down with a 500.
+     * The two tables that decide whether the shop can sell anything are read as
+     * yes/no. A public probe reporting "52 plans" tells a competitor the size of
+     * the catalogue and an operator their stock levels, so the counts stay here:
+     *
+     * @return array{services: bool, plans: bool}
+     */
+    private function catalogueSeeded(): array
+    {
+        $any = static function (callable $counter): bool {
+            try {
+                return $counter() > 0;
+            } catch (Throwable) {
+                return false;
+            }
+        };
+
+        return [
+            'services' => $any(static fn (): int => (new Service())->countAll()),
+            'plans' => $any(static fn (): int => (new Plan())->countAll()),
+        ];
+    }
+
+    /**
+     * Row counts are kept for the admin dashboard, where they are operator
+     * information rather than something the open internet gets to read.
      *
      * @return array{settings: int|null, services: int|null, plans: int|null}
      */
-    private function counts(): array
+    public function counts(): array
     {
         $read = static function (callable $counter): ?int {
             try {

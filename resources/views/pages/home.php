@@ -34,7 +34,7 @@ $steps = [
 ];
 ?>
 <div class="bg-white">
-    {{-- ------------------------------ hero ------------------------------ --}}
+    <?php /* ------------------------------ hero ------------------------------*/ ?>
     <section class="relative overflow-hidden bg-gradient-to-b from-brand-50 via-white to-white">
         <span class="blob -left-24 -top-24 animate-blob"></span>
         <span class="blob -right-16 top-10 animate-blob [animation-delay:-4s]"></span>
@@ -131,7 +131,7 @@ $steps = [
         <?php endif; ?>
     </section>
 
-    {{-- ---------------------------- trust strip ---------------------------- --}}
+    <?php /* ---------------------------- trust strip ----------------------------*/ ?>
     <section class="border-y border-brand-100 bg-gradient-to-r from-brand-50 via-white to-accent-50">
         <div class="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 md:grid-cols-4 lg:px-6">
             <?php foreach ($stats as $stat): ?>
@@ -148,7 +148,7 @@ $steps = [
         </div>
     </section>
 
-    {{-- --------------------------- how it works --------------------------- --}}
+    <?php /* --------------------------- how it works ---------------------------*/ ?>
     <section class="relative mx-auto max-w-7xl px-4 py-16 lg:px-6">
         <?= $view->component('section-heading', [
             'eyebrow' => 'Three steps',
@@ -174,7 +174,7 @@ $steps = [
         </div>
     </section>
 
-    {{-- ------------------------- featured plans --------------------------- --}}
+    <?php /* ------------------------- featured plans ---------------------------*/ ?>
     <?php if ($featured !== []): ?>
         <section class="relative overflow-hidden bg-gradient-to-b from-white via-brand-50/60 to-white py-16">
             <div class="relative mx-auto max-w-7xl px-4 lg:px-6">
@@ -199,7 +199,7 @@ $steps = [
         </section>
     <?php endif; ?>
 
-    {{-- ------------------------- brand catalogue -------------------------- --}}
+    <?php /* ------------------------- brand catalogue --------------------------*/ ?>
     <?php if ($services !== []): ?>
         <section class="mx-auto max-w-7xl px-4 py-16 lg:px-6">
             <?= $view->component('section-heading', [
@@ -216,7 +216,7 @@ $steps = [
         </section>
     <?php endif; ?>
 
-    {{-- --------------------------- testimonials --------------------------- --}}
+    <?php /* --------------------------- testimonials ---------------------------*/ ?>
     <?php if ($testimonials !== []): ?>
         <section class="overflow-hidden border-y border-brand-100 bg-ink py-16 text-white">
             <div class="mx-auto max-w-7xl px-4 lg:px-6">
@@ -250,7 +250,7 @@ $steps = [
         </section>
     <?php endif; ?>
 
-    {{-- ------------------------------ faq --------------------------------- --}}
+    <?php /* ------------------------------ faq ---------------------------------*/ ?>
     <?php if ($faqs !== []): ?>
         <section class="mx-auto max-w-3xl px-4 py-16 lg:px-6">
             <?= $view->component('section-heading', [
@@ -281,7 +281,7 @@ $steps = [
         </section>
     <?php endif; ?>
 
-    {{-- -------------------------- whatsapp band --------------------------- --}}
+    <?php /* -------------------------- whatsapp band ---------------------------*/ ?>
     <section class="relative overflow-hidden">
         <div class="animate-gradient absolute inset-0 bg-gradient-to-r from-brand-700 via-brand-500 to-accent-500"></div>
         <span class="blob -left-10 -top-16 opacity-40"></span>

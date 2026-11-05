@@ -17,6 +17,14 @@ final class ErrorHandler
     public static function toResponse(Throwable $exception, Request $request): Response
     {
         if ($exception instanceof ValidationException) {
+            // Field names only: the submitted values are often an email or a
+            // phone number and have no business sitting in a log file.
+            Logger::exception(
+                $exception,
+                ['path' => $request->path(), 'fields' => array_keys($exception->errors())],
+                'INFO'
+            );
+
             return self::forValidation($exception, $request);
         }
 

@@ -6,7 +6,6 @@ namespace App\Core;
 
 use App\Exceptions\HttpException;
 use Closure;
-use Throwable;
 
 /**
  * Pattern-matching router with groups, per-route middleware and named routes.
@@ -266,15 +265,7 @@ final class Router
             throw new HttpException(500, $class . '::' . $method . '() is missing.');
         }
 
-        try {
-            return $controller->{$method}($request, ...array_values($parameters));
-        } catch (HttpException $exception) {
-            throw $exception;
-        } catch (Throwable $exception) {
-            Logger::exception($exception, ['route' => $request->path(), 'handler' => $handler]);
-
-            throw $exception;
-        }
+        return $controller->{$method}($request, ...array_values($parameters));
     }
 
     private function toResponse(mixed $result): Response

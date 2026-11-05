@@ -88,7 +88,7 @@ $view->setSection('meta_description', 'Browse every ' . $brandName . ' plan: ' .
 $view->setSection('canonical', route('plans'));
 ?>
 <div class="bg-white">
-    {{-- --------------------------- page header --------------------------- --}}
+    <?php /* --------------------------- page header ---------------------------*/ ?>
     <section class="relative overflow-hidden border-b border-brand-100 bg-gradient-to-br from-brand-50 via-white to-accent-50">
         <span class="blob -left-20 -top-24 animate-blob opacity-50"></span>
         <span class="blob -right-10 top-4 animate-blob [animation-delay:-6s]"></span>
@@ -130,7 +130,7 @@ $view->setSection('canonical', route('plans'));
         </div>
     </section>
 
-    {{-- ----------------------- filters + results -------------------------- --}}
+    <?php /* ----------------------- filters + results --------------------------*/ ?>
     <div class="mx-auto grid max-w-7xl gap-8 px-4 py-10 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-6">
         <aside class="lg:sticky lg:top-24 lg:self-start">
             <form method="get" action="<?= e(route('plans')) ?>" class="space-y-4 rounded-card border border-brand-100 bg-white p-5 shadow-soft">

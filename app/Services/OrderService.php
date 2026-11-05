@@ -184,14 +184,29 @@ final class OrderService
 
         $mismatch = abs($amount - (float) $order['total']) > 0.5;
 
-        $paymentModel->create([
-            'order_id' => $orderId,
-            'method' => $method,
-            'txn_id' => $txnId === '' ? null : mb_strtoupper(mb_substr($txnId, 0, 60)),
-            'amount' => $amount,
-            'status' => 'pending',
-            'sender_number' => $sender === '' ? null : mb_substr($sender, 0, 20),
-        ]);
+        $txn = $txnId === '' ? null : mb_strtoupper(mb_substr($txnId, 0, 60));
+        $senderNumber = $sender === '' ? null : mb_substr($sender, 0, 20);
+
+        // One payment row per rail (payments_order_method_unique), so a second
+        // declaration on the same rail rewrites the first instead of failing.
+        $existing = $paymentModel->forOrderMethod($orderId, $method);
+
+        if ($existing !== null && (string) $existing['status'] === 'verified') {
+            return ['ok' => false, 'message' => 'This rail is already verified for this order.'];
+        }
+
+        if ($existing !== null) {
+            $paymentModel->redeclare((int) $existing['id'], $txn, $amount, $senderNumber);
+        } else {
+            $paymentModel->create([
+                'order_id' => $orderId,
+                'method' => $method,
+                'txn_id' => $txn,
+                'amount' => $amount,
+                'status' => 'pending',
+                'sender_number' => $senderNumber,
+            ]);
+        }
 
         Database::execute(
             "update orders set payment_status = :pending, updated_at = now() where id = :id and payment_status <> :paid",
@@ -240,7 +255,7 @@ final class OrderService
             return ['ok' => false, 'message' => 'Order not found.'];
         }
 
-        Database::transaction(static function () use ($payment, $orderId, $staffId, $note): void {
+        Database::transaction(static function () use ($payment, $order, $orderId, $staffId, $note): void {
             (new Payment())->verify((int) $payment['id'], $staffId, $note);
             (new Order())->markPaymentVerified($orderId, $staffId);
             Database::execute(
@@ -248,6 +263,17 @@ final class OrderService
                 [':processing' => 'processing', ':id' => $orderId, ':pending' => 'pending']
             );
             self::history($orderId, 'paid', 'Payment verified by staff.' . ($note === '' ? '' : ' ' . $note));
+
+            // A line can only be delivered from this screen once it is paid, but
+            // an order verified after that (a batch import, a second rail) must
+            // not sit in "processing" with everything already handed over.
+            if ((string) $order['fulfillment_status'] === 'delivered') {
+                Database::execute(
+                    "update orders set status = :completed where id = :id and status = :processing",
+                    [':completed' => 'completed', ':id' => $orderId, ':processing' => 'processing']
+                );
+                self::history($orderId, 'completed', 'Payment verified after delivery.');
+            }
         });
 
         Logger::info('payment_verified', ['order_id' => $orderId, 'staff' => $staffId]);
