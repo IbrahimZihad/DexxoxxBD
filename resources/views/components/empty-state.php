@@ -29,6 +29,7 @@ $body = $paths[$iconKey] ?? $paths['search'];
 ?>
 <div class="reveal flex flex-col items-center rounded-card border border-dashed border-brand-200 bg-brand-50/50 px-6 py-12 text-center" data-reveal>
     <span class="grid h-16 w-16 place-items-center rounded-full bg-white shadow-soft">
+        <?php /* Markup below is this file's own whitelist, never request input. */ ?>
         <svg class="h-8 w-8 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
             <?= $body ?>
         </svg>
