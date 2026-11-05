@@ -55,8 +55,8 @@ $toneFor = static fn (string $type): string => match ($type) {
 <?php endif; ?>
 
 <?php if (($errors ?? []) !== [] && $allErrors !== []): ?>
-    <div class="mx-auto -mt-2 max-w-7xl px-4 pt-4 lg:px-6">
-        <div role="alert" class="reveal is-revealed rounded-brand border-2 border-rose-300 bg-rose-50 p-4 text-sm text-rose-800">
+    <div class="mx-auto max-w-7xl px-4 pt-4 lg:px-6">
+        <div role="alert" class="rounded-brand border-2 border-rose-300 bg-rose-50 p-4 text-sm text-rose-800">
             <p class="flex items-center gap-2 font-bold">
                 <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/>
