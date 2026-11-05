@@ -17,13 +17,29 @@ use App\Core\App;
  * one. If a token changes there, change it here too.
  *
  * Order matters: the CDN script defines the global, so the config must follow it.
+ * This partial also has to be emitted AFTER the app.css <link>: @property rules
+ * cascade like any other declaration, so the last registration parsed wins - and
+ * app.css ships the strict "<color>" version this file overrides.
  *
  * @var string $nonce
  */
 
 $cspNonce = (string) ($nonce ?? $cspNonce ?? App::cspNonce());
 ?>
+    <style>
+        /* Gradient dialect bridge between the two Tailwinds on this page.
+           v4 (public/assets/css/app.css) registers --tw-gradient-from/via/to
+           with syntax "<color>"; the CDN (v3) writes them as
+           "<color> <position>" pairs. That two-token value fails the "<color>"
+           check, the property falls back to its initial #0000, and every
+           gradient on the site paints transparent - which is what hid the
+           WhatsApp glyph. Registering "*" accepts both dialects. */
+        @property --tw-gradient-from { syntax: "*"; inherits: false; initial-value: #0000; }
+        @property --tw-gradient-via  { syntax: "*"; inherits: false; initial-value: #0000; }
+        @property --tw-gradient-to   { syntax: "*"; inherits: false; initial-value: #0000; }
+    </style>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script nonce="<?= e($cspNonce) ?>">
         tailwind.config = {
             theme: {
@@ -55,6 +71,7 @@ $cspNonce = (string) ($nonce ?? $cspNonce ?? App::cspNonce());
                             800: '#9f1239', 900: '#881337', 950: '#4c0519',
                         },
                         ink: { DEFAULT: '#0b1020', 400: '#6b7399', 700: '#283055' },
+                        wa: { 400: '#25d366', 500: '#00a884', 600: '#128c7e', 700: '#075e54' },
                     },
                     fontFamily: {
                         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI',

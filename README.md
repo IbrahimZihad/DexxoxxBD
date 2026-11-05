@@ -154,14 +154,29 @@ counts and no fix-it hints unless `APP_DEBUG` is on.
   `https://wa.me/<number>?text=<prefilled>` and never needs an account.
 - Rails: `config/payments.php` plus the bKash/Nagad numbers in settings.
 - Look: `resources/css/input.css` holds the `@theme` tokens and keyframes; rebuild
-  with `npm run build:css` (or `composer css`).
+  with `npm run build:css` (or `composer css`). The chat widget uses its own
+  `wa-*` greens rather than the emerald status colours, because the white
+  WhatsApp glyph needs `wa-600`/`wa-700` to stay legible.
+- Logo: `brand.logo` (path relative to `public/assets`, currently
+  `img/dexxoxxbd.jpeg`) feeds `brand_logo()`, which the `brand-mark` component,
+  the favicon and `og:image`/`twitter:image` all read. If the file is not on disk
+  every one of those falls back to the drawn bolt, so a renamed upload never
+  shows as a broken image. `asset()` stamps the URL with the file's mtime.
 - The three HTML shells (`layouts/app`, `layouts/admin`, `admin/login`) also load
   `partials/tailwind-cdn.php`, which boots the Tailwind Play CDN and mirrors the
   same `@theme` tokens into `tailwind.config`. The compiled `app.css` stays
   linked because the CDN cannot generate the component layer (`.glass`, `.blob`,
   `.reveal`, `.a-table`, `.text-gradient`) or the `@keyframes`. If you add or
   change a token, edit both files, or the two compilers disagree.
-  The CDN logs one console warning per page and is meant for development only:
-  to drop it on production, delete the `<?= $view->partial(...tailwind_cdn...) ?>`
-  line from the three shells and serve the built CSS alone. Its origin is already
-  in `script-src`, so the CSP does not need touching.
+  That partial must stay BELOW the `app.css` `<link>`: it re-registers
+  `--tw-gradient-from/via/to` with `syntax: "*"`, and `@property` cascades
+  last-wins. v4 declares those three as `syntax: "<color>"` while the CDN writes
+  them as `colour + position` pairs, so whichever registration loses makes every
+  gradient on the site paint `#0000` - which is how the white WhatsApp glyph
+  disappeared. With the CDN blocked or slow, `app.css` alone still renders the
+  whole page.
+  The CDN logs one console warning per page and Tailwind documents it as
+  development-only: to drop it, delete the `<?= $view->partial(...tailwind-cdn...) ?>`
+  line from the three shells, re-run `npm run build:css` and serve the built CSS
+  alone. Its origin and `'unsafe-eval'` live in `script-src` only for it, so take
+  both out of `Response::withSecurityHeaders()` when it goes.

@@ -297,7 +297,7 @@ $steps = [
             <a href="<?= e(wa_link('Hi ' . $brandName . ', which plan do you suggest for me?')) ?>"
                target="_blank" rel="noopener"
                class="inline-flex shrink-0 items-center gap-3 rounded-brand bg-white px-6 py-4 text-base font-black text-brand-700 shadow-card transition-transform duration-200 hover:-translate-y-0.5">
-                <svg class="h-6 w-6 text-emerald-600" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg class="h-6 w-6 text-wa-600" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.3A10 10 0 1 0 12 2Zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.7-.1-.9-.3-2.3-1-3.6-2.6-1-1.2-1.6-2.5-1.7-3-.1-.6.3-1.4.8-1.8.2-.2.4-.2.6-.2h.5c.2 0 .3 0 .4.3l.6 1.4c.1.2 0 .4-.1.5l-.4.5c-.1.1-.1.3 0 .4.3.5 1.2 1.5 2.1 1.9.2.1.3.1.5-.1l.5-.6c.1-.2.3-.2.5-.1l1.4.7c.2.1.3.2.3.4 0 .2 0 .7-.3 1.2Z"/>
                 </svg>
                 Chat on WhatsApp

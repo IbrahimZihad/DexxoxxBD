@@ -97,7 +97,7 @@ $view->setSection('page_actions', '<a href="' . e(route('admin.orders', [], ['pa
 
                     <div class="flex shrink-0 flex-wrap items-center gap-2">
                         <a href="<?= e(wa_link($message)) ?>" target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-1.5 rounded-brand bg-[#25d366] px-3 py-2 text-xs font-black text-white transition-transform duration-200 hover:-translate-y-0.5">
+                           class="inline-flex items-center gap-1.5 rounded-brand bg-wa-600 px-3 py-2 text-xs font-black text-white transition-transform duration-200 hover:-translate-y-0.5">
                             <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.4A10 10 0 1 0 12 2Zm5 13.3c-.3.8-1.6 1.5-2.3 1.5-.6 0-1.4-.2-2.2-.6-1.5-.7-2.8-1.9-3.9-3.2-.9-1.1-1.3-2.1-1.3-3 0-1 .7-1.7 1.2-2 .2-.1.4-.1.6 0l1 .5c.2.1.3.3.2.5l-.4.9c-.1.2 0 .4.1.5.5.7 1.2 1.4 2 1.8.2.1.4.1.5-.1l.4-.6c.1-.2.3-.2.5-.2l1.4.7c.2.1.3.3.2.5Z"/></svg>
                             <?= e($phone === '' ? 'WhatsApp' : $phone) ?>
                         </a>

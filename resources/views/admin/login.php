@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Core\App;
-
 /**
  * Staff sign-in. It deliberately does not use layouts/admin: that shell is the
  * chrome for someone already through the door, and it would have to guess what to
@@ -20,7 +18,7 @@ $brandName = setting('brand.name', 'DexxozzBD');
 $reason = trim((string) ($reason ?? ''));
 $documentTitle = 'Staff sign in - ' . $brandName;
 
-$favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E"
+$favicon = brand_logo() !== '' ? brand_logo() : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E"
     . "%3Crect width='32' height='32' rx='8' fill='%236a31e0'/%3E"
     . "%3Cpath d='M18.6 4 8.4 18.2h5.1L11.6 28 23.2 13.4h-5.6L18.6 4Z' fill='%2322d3ee'/%3E%3C/svg%3E";
 ?>
@@ -39,6 +37,7 @@ $favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
     <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
+    <?= $view->partial('tailwind-cdn') ?>
 </head>
 <body class="min-h-screen bg-ink font-sans text-white antialiased">
     <a href="#main" class="sr-only rounded-brand bg-brand-600 px-4 py-2 font-semibold text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[9999]">Skip to the form</a>

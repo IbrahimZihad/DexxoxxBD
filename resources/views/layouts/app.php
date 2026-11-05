@@ -23,7 +23,7 @@ $canonicalUrl = $view->section('canonical', current_url());
 $favicon = brand_logo() !== '' ? brand_logo() : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E"
     . "%3Crect width='32' height='32' rx='8' fill='%236a31e0'/%3E"
     . "%3Cpath d='M18.6 4 8.4 18.2h5.1L11.6 28 23.2 13.4h-5.6L18.6 4Z' fill='%2322d3ee'/%3E%3C/svg%3E";
-$socialImage = brand_logo() !== '' ? brand_logo() : url('assets/img/og-cover.png');
+$socialImage = brand_logo();
 ?>
 <!doctype html>
 <html lang="en">
@@ -41,13 +41,17 @@ $socialImage = brand_logo() !== '' ? brand_logo() : url('assets/img/og-cover.png
     <meta property="og:title" content="<?= e($pageTitle) ?>">
     <meta property="og:description" content="<?= e($pageDescription) ?>">
     <meta property="og:url" content="<?= e($canonicalUrl) ?>">
-    <meta property="og:image" content="<?= e($socialImage) ?>">
-    <meta property="og:image:alt" content="<?= e($brandName) ?> - premium subscriptions at Bangladeshi prices">
+    <?php if ($socialImage !== ''): ?>
+        <meta property="og:image" content="<?= e($socialImage) ?>">
+        <meta property="og:image:alt" content="<?= e($brandName) ?> - premium subscriptions at Bangladeshi prices">
+    <?php endif; ?>
     <meta property="og:locale" content="en_BD">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<?= e($pageTitle) ?>">
     <meta name="twitter:description" content="<?= e($pageDescription) ?>">
-    <meta name="twitter:image" content="<?= e($socialImage) ?>">
+    <?php if ($socialImage !== ''): ?>
+        <meta name="twitter:image" content="<?= e($socialImage) ?>">
+    <?php endif; ?>
 
     <link rel="icon" href="<?= e($favicon) ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">

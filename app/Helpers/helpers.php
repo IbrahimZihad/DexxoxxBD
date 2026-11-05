@@ -46,9 +46,19 @@ if (!function_exists('url')) {
 }
 
 if (!function_exists('asset')) {
+    /**
+     * Public URL for a file under public/assets, stamped with its mtime so a
+     * rebuilt stylesheet or script reaches visitors who still hold the previous
+     * copy in cache. The stamp is a filemtime() of the one named file, and is
+     * skipped when that file is absent (a missing asset must not 500 the page).
+     */
     function asset(string $path): string
     {
-        return url('assets/' . ltrim($path, '/'));
+        $rel = 'assets/' . ltrim($path, '/');
+        $file = dirname(__DIR__, 2) . '/public/' . $rel;
+        $stamp = is_file($file) ? (string) filemtime($file) : '';
+
+        return url($rel) . ($stamp === '' ? '' : '?v=' . $stamp);
     }
 }
 

@@ -9,36 +9,6 @@
 @import "tailwindcss";
 
 /* -----------------------------------------------------------------------------
-   1a. Gradient property override (must stay ABOVE the @import's own
-   registrations: when two @property rules name the same custom property, the
-   first one parsed wins and later ones are ignored).
-
-   Tailwind v4 registers --tw-gradient-from/via/to with syntax "<color>", but
-   the Play CDN (v3) writes them as "<color> <position>" pairs
-   (--tw-gradient-from: #10b981 var(--tw-gradient-from-position)). A two-token
-   value fails the "<color>" check, so the property falls back to its
-   initial-value (#0000) and every gradient on the site paints transparent.
-
-   Re-registering with syntax "*" accepts both dialects, so gradients work
-   whether the CDN renders them or this file does.
-   -------------------------------------------------------------------------- */
-@property --tw-gradient-from {
-  syntax: "*";
-  inherits: false;
-  initial-value: #0000;
-}
-@property --tw-gradient-via {
-  syntax: "*";
-  inherits: false;
-  initial-value: #0000;
-}
-@property --tw-gradient-to {
-  syntax: "*";
-  inherits: false;
-  initial-value: #0000;
-}
-
-/* -----------------------------------------------------------------------------
    1. Sources
    The markup lives in PHP views (created by other agents) and in the vanilla
    JS bundle. Pointed at with paths relative to THIS file, so the compiler sees
@@ -116,6 +86,14 @@
   --color-rose-800: #9f1239;
   --color-rose-900: #881337;
   --color-rose-950: #4c0519;
+
+  /* wa — WhatsApp's own greens, used only by the chat widget. It is a
+     third-party affordance, so it keeps their palette instead of ours. The
+     white glyph needs 600/700: #25d366 is too bright to hold a white icon. */
+  --color-wa-400: #25d366;
+  --color-wa-500: #00a884;
+  --color-wa-600: #128c7e;
+  --color-wa-700: #075e54;
 
   /* ink — near-black navy used for all body text */
   --color-ink: #0b1020;
@@ -268,6 +246,20 @@
   }
 }
 
+/* WhatsApp ring: the generic pulse is brand violet, and a violet halo around a
+   green bubble reads as a mismatched widget. Same geometry, WhatsApp teal. */
+@keyframes zs-pulse-ring-wa {
+  0% {
+    box-shadow: 0 0 0 0 rgb(37 211 102 / 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgb(37 211 102 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(37 211 102 / 0);
+  }
+}
+
 /* -----------------------------------------------------------------------------
    5. Component classes the view agents code against.
    Written as plain rules (always shipped) inside @layer components so any
@@ -293,6 +285,9 @@
   }
   .animate-pulse-ring {
     animation: zs-pulse-ring 2.4s var(--ease-soft) infinite;
+  }
+  .animate-pulse-ring-wa {
+    animation: zs-pulse-ring-wa 2.4s var(--ease-soft) infinite;
   }
   .animate-gradient {
     background-size: 200% 200%;
@@ -471,6 +466,7 @@
   .animate-shimmer,
   .animate-pop,
   .animate-pulse-ring,
+  .animate-pulse-ring-wa,
   .animate-gradient,
   .blob {
     animation: none !important;

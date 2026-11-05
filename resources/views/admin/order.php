@@ -67,7 +67,7 @@ $requestPlain = decrypt_note($order['delivery_request'] ?? null);
 $view->extend('layouts/admin');
 $view->setSection('title', 'Order ' . $orderNo . ' - ' . $brandName);
 $view->setSection('page_title', 'Order ' . $orderNo);
-$view->setSection('page_actions', '<a href="' . e(wa_link($deliverMessage)) . '" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-brand bg-[#25d366] px-4 py-2 text-sm font-black text-white shadow-glow transition-transform duration-200 hover:-translate-y-0.5">'
+$view->setSection('page_actions', '<a href="' . e(wa_link($deliverMessage)) . '" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-brand bg-wa-600 px-4 py-2 text-sm font-black text-white shadow-glow transition-transform duration-200 hover:-translate-y-0.5">'
     . '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.4A10 10 0 1 0 12 2Zm5 13.3c-.3.8-1.6 1.5-2.3 1.5-.6 0-1.4-.2-2.2-.6-1.5-.7-2.8-1.9-3.9-3.2-.9-1.1-1.3-2.1-1.3-3 0-1 .7-1.7 1.2-2 .2-.1.4-.1.6 0l1 .5c.2.1.3.3.2.5l-.4.9c-.1.2 0 .4.1.5.5.7 1.2 1.4 2 1.8.2.1.4.1.5-.1l.4-.6c.1-.2.3-.2.5-.2l1.4.7c.2.1.3.3.2.5Z"/></svg>'
     . 'WhatsApp the customer</a> '
     . '<a href="' . e(route('admin.orders')) . '" class="rounded-brand border border-brand-200 bg-white px-4 py-2 text-sm font-bold text-brand-700 transition-colors duration-200 hover:bg-brand-50">Back to orders</a>');
@@ -383,7 +383,7 @@ $view->setSection('page_actions', '<a href="' . e(wa_link($deliverMessage)) . '"
                 <?php endif; ?>
             </div>
 
-            <a href="<?= e(wa_link($deliverMessage)) ?>" target="_blank" rel="noopener" class="mt-3 flex items-center justify-center gap-2 rounded-brand bg-[#25d366] px-4 py-2.5 text-sm font-black text-white transition-transform duration-200 hover:-translate-y-0.5">
+            <a href="<?= e(wa_link($deliverMessage)) ?>" target="_blank" rel="noopener" class="mt-3 flex items-center justify-center gap-2 rounded-brand bg-wa-600 px-4 py-2.5 text-sm font-black text-white transition-transform duration-200 hover:-translate-y-0.5">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.4A10 10 0 1 0 12 2Zm5 13.3c-.3.8-1.6 1.5-2.3 1.5-.6 0-1.4-.2-2.2-.6-1.5-.7-2.8-1.9-3.9-3.2-.9-1.1-1.3-2.1-1.3-3 0-1 .7-1.7 1.2-2 .2-.1.4-.1.6 0l1 .5c.2.1.3.3.2.5l-.4.9c-.1.2 0 .4.1.5.5.7 1.2 1.4 2 1.8.2.1.4.1.5-.1l.4-.6c.1-.2.3-.2.5-.2l1.4.7c.2.1.3.3.2.5Z"/></svg>
                 Chat with <?= e($customerName === '' ? 'them' : short_text($customerName, 20)) ?>
             </a>
