@@ -88,9 +88,25 @@ final class SettingController extends Controller
         $this->validate($request, $this->rulesFor($allowed), $this->labelsFor($allowed));
 
         $before = Settings::all();
+        // Key presence, not value presence: a field submitted empty is the admin
+        // deliberately clearing it, and that must still be written.
+        $submitted = $request->all();
         $changed = [];
+        $absent = [];
 
         foreach ($allowed as $key) {
+            // A key the payload never mentions is left exactly as it stands.
+            // Writing '' for it instead lets one partial submit - a hand-built
+            // form, a request trimmed by PHP's max_input_vars - erase the site
+            // copy field by field, which is how a bare POST came to blank 29 of
+            // the 32 settings rows. The real form renders every allowed key
+            // (booleans as hidden-0 plus checkbox), so a genuine save always
+            // carries all of them and is unaffected by this guard.
+            if (!array_key_exists($key, $submitted)) {
+                $absent[] = $key;
+                continue;
+            }
+
             $value = $this->coerce($key, (string) $request->input($key, ''));
 
             if (($before[$key] ?? '') !== $value) {
@@ -104,15 +120,25 @@ final class SettingController extends Controller
         // reads the fresh rows instead of the values loaded during this request.
         Settings::forgetCache();
 
-        AuditLog::record('settings.updated', 'settings', 0, $changed === []
+        $note = $changed === []
             ? 'Saved site settings; no values changed.'
-            : sprintf('Saved site settings; %d key(s) updated: %s.', count($changed), implode(', ', $changed))
-        );
+            : sprintf('Saved site settings; %d key(s) updated: %s.', count($changed), implode(', ', $changed));
+
+        if ($absent !== []) {
+            $note = sprintf('Partial submit: %d of the %d settings were not posted and were left untouched (%s).',
+                count($absent), count($allowed), implode(', ', array_slice($absent, 0, 12))
+            ) . ($changed === [] ? '' : ' ' . $note);
+        }
+
+        AuditLog::record('settings.updated', 'settings', 0, $note);
 
         return $this->redirect(
             route('admin.settings'),
-            'success',
-            $changed === [] ? 'Nothing had changed - settings saved as they were.' : 'Settings saved.'
+            $absent === [] ? 'success' : 'warning',
+            $absent === []
+                ? ($changed === [] ? 'Nothing had changed - settings saved as they were.' : 'Settings saved.')
+                : sprintf('Saved %d field(s). %d setting(s) were not submitted and were left unchanged - reload the page and save again to edit those.',
+                    count($changed), count($absent))
         );
     }
 
