@@ -110,7 +110,12 @@ final class Router
             'handler' => (is_string($handler) && !str_contains($handler, '\\'))
                 ? $group['namespace'] . '\\' . $handler
                 : $handler,
-            'middleware' => array_values((array) ($options['middleware'] ?? [])),
+            // Group middleware first, then the route's own: dropping the group
+            // list here would silently remove csrf, throttle and the role gates.
+            'middleware' => array_values(array_merge(
+                $group['middleware'],
+                (array) ($options['middleware'] ?? [])
+            )),
             'name' => (string) ($options['name'] ?? ''),
             'pattern' => $full,
         ];
