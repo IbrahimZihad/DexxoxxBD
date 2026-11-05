@@ -92,7 +92,7 @@ final class Auth
         Session::regenerate();
         Session::set('user_id', $userId);
         Session::set('login_ip', self::ip());
-        Session::set('login_ua', (new Request())->userAgent());
+        Session::set('login_ua', App::instance()->request()->userAgent());
         self::$cachedUser = null;
         self::$resolved = false;
 
