@@ -18,6 +18,19 @@ final class CatalogSeeder extends AbstractSeed
 
     public function run(): void
     {
+        // Truncating plans would leave existing order items pointing at rows
+        // that no longer exist, so this only runs on a shop without real sales.
+        $realOrders = (int) $this->fetchRow(
+            "select count(*) as total from orders where order_no not like 'ZS-DEMO%'"
+        )['total'];
+
+        if ($realOrders > 0) {
+            throw new RuntimeException(
+                'Refusing to rebuild the catalogue: ' . $realOrders . ' non-demo order(s) exist. '
+                . 'Edit services and plans from the admin panel instead.'
+            );
+        }
+
         // Turn checks back on after the truncate so the demo catalogue can be
         // rewritten in any order without fighting the foreign keys.
         $this->execute('SET FOREIGN_KEY_CHECKS = 0');

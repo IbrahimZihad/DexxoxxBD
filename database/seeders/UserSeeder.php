@@ -22,6 +22,19 @@ final class UserSeeder extends AbstractSeed
 
     public function run(): void
     {
+        // Seeders replace users, so they must not run on a shop that has real
+        // sales. Demo orders are allowed; anything else stops the seed.
+        $realOrders = (int) $this->fetchRow(
+            "select count(*) as total from orders where order_no not like 'ZS-DEMO%'"
+        )['total'];
+
+        if ($realOrders > 0) {
+            throw new RuntimeException(
+                'Refusing to replace users: ' . $realOrders . ' non-demo order(s) exist. '
+                . 'Seeders are for a fresh install, not a live shop.'
+            );
+        }
+
         $adminPassword = $this->required('SEED_ADMIN_PASSWORD');
         $staffPassword = $this->required('SEED_STAFF_PASSWORD');
         $customerPassword = $this->required('SEED_CUSTOMER_PASSWORD');
@@ -78,7 +91,10 @@ final class UserSeeder extends AbstractSeed
         ];
 
         $table = $this->table('users');
-        $table->truncate();
+
+        // A delete, not a truncate: demo orders still point at these ids and the
+        // foreign key quietly sets them null, so no global FK toggle is needed.
+        $this->execute('delete from users');
         $table->insert($rows)->saveData();
     }
 
