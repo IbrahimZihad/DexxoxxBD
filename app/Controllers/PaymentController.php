@@ -33,7 +33,7 @@ final class PaymentController extends Controller
 
         $rails = $this->railCards();
         $selected = $this->selectedRail($rails);
-        $payments = (array) ($order['payments'] ?? []);
+        $payments = $this->labelPayments((array) ($order['payments'] ?? []));
         $declared = $payments === [] ? null : (array) $payments[0];
 
         return $this->view('pages.pay', [
@@ -93,6 +93,10 @@ final class PaymentController extends Controller
 
         if ((string) $order['payment_status'] === 'paid') {
             return $this->declare($request, $order, false, 'This order is already verified as paid. We are working on delivery.');
+        }
+
+        if (in_array((string) $order['status'], ['cancelled', 'failed'], true)) {
+            return $this->declare($request, $order, false, 'This order is closed, so there is nothing to pay on it. Start a new one whenever you are ready.');
         }
 
         $latest = (array) (($order['payments'] ?? []) === [] ? [] : (array) $order['payments'][0]);
@@ -217,6 +221,27 @@ final class PaymentController extends Controller
             $seen[] = $orderNo;
             Session::set('viewed_orders', array_slice($seen, -25));
         }
+    }
+
+    /**
+     * Payment rows carry the config key; the readable label is resolved here so
+     * the template never reads configuration by itself.
+     *
+     * @param list<array<string, mixed>> $payments
+     * @return list<array<string, mixed>>
+     */
+    private function labelPayments(array $payments): array
+    {
+        $labelled = [];
+
+        foreach ($payments as $payment) {
+            $payment = (array) $payment;
+            $method = (string) ($payment['method'] ?? '');
+            $payment['method_label'] = $method === '' ? 'Payment' : PaymentService::label($method);
+            $labelled[] = $payment;
+        }
+
+        return $labelled;
     }
 
     /**

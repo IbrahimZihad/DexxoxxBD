@@ -34,15 +34,16 @@ final class OrderController extends Controller
         }
 
         $this->rememberOrder($orderNo);
+        $payments = $this->labelPayments((array) ($order['payments'] ?? []));
 
         return $this->view('pages.order', [
             'order' => $order,
             'orderNo' => $orderNo,
             'items' => (array) ($order['items'] ?? []),
-            'payments' => (array) ($order['payments'] ?? []),
+            'payments' => $payments,
             'history' => (array) ($order['history'] ?? []),
             'whatsappUrl' => wa_link(PaymentService::whatsappSummary(
-                $this->summaryOrder($order, (array) ($order['payments'] ?? [])),
+                $this->summaryOrder($order, $payments),
                 (array) ($order['items'] ?? [])
             )),
         ]);
@@ -83,7 +84,7 @@ final class OrderController extends Controller
         }
 
         $this->rememberOrder($orderNo);
-        $payments = (array) ($order['payments'] ?? []);
+        $payments = $this->labelPayments((array) ($order['payments'] ?? []));
 
         return $this->view('pages.track', [
             'order' => $order,
@@ -92,11 +93,33 @@ final class OrderController extends Controller
             'failure' => '',
             'items' => (array) ($order['items'] ?? []),
             'payments' => $payments,
+            'history' => (array) ($order['history'] ?? []),
             'whatsappUrl' => wa_link(PaymentService::whatsappSummary(
                 $this->summaryOrder($order, $payments),
                 (array) ($order['items'] ?? [])
             )),
         ]);
+    }
+
+    /**
+     * Payment rows carry the config key; the readable label is resolved here so
+     * the template never reads configuration by itself.
+     *
+     * @param list<array<string, mixed>> $payments
+     * @return list<array<string, mixed>>
+     */
+    private function labelPayments(array $payments): array
+    {
+        $labelled = [];
+
+        foreach ($payments as $payment) {
+            $payment = (array) $payment;
+            $method = (string) ($payment['method'] ?? '');
+            $payment['method_label'] = $method === '' ? 'Payment' : PaymentService::label($method);
+            $labelled[] = $payment;
+        }
+
+        return $labelled;
     }
 
     /**

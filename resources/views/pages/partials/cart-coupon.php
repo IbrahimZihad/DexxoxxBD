@@ -32,17 +32,14 @@ $message = trim((string) ($totals['coupon_message'] ?? ''));
         </div>
 
         <p class="mt-1.5 text-xs font-semibold text-lime-800">
-            <?php if ($discount > 0): ?>
-                You save <?= e(taka($discount)) ?>.
-                <?php echo $message !== '' ? '' : 'The discount is applied to this cart only.' ?>
+            <?php if ($message !== ''): ?>
+                <?= e($message) ?>
+            <?php elseif ($discount > 0): ?>
+                You save <?= e(taka($discount)) ?> on this cart.
             <?php else: ?>
-                The coupon is saved; it needs a bigger cart to apply.
+                The coupon is saved - it needs a bigger cart before it applies.
             <?php endif; ?>
         </p>
-
-        <?php if ($message !== '' && $discount > 0): ?>
-            <p class="mt-1 text-xs text-lime-700"><?= e($message) ?></p>
-        <?php endif; ?>
     </div>
 <?php else: ?>
     <form data-ajax method="post" action="<?= e(route('cart.coupon')) ?>" class="space-y-2">
