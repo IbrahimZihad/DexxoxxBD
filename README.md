@@ -155,3 +155,13 @@ counts and no fix-it hints unless `APP_DEBUG` is on.
 - Rails: `config/payments.php` plus the bKash/Nagad numbers in settings.
 - Look: `resources/css/input.css` holds the `@theme` tokens and keyframes; rebuild
   with `npm run build:css` (or `composer css`).
+- The three HTML shells (`layouts/app`, `layouts/admin`, `admin/login`) also load
+  `partials/tailwind-cdn.php`, which boots the Tailwind Play CDN and mirrors the
+  same `@theme` tokens into `tailwind.config`. The compiled `app.css` stays
+  linked because the CDN cannot generate the component layer (`.glass`, `.blob`,
+  `.reveal`, `.a-table`, `.text-gradient`) or the `@keyframes`. If you add or
+  change a token, edit both files, or the two compilers disagree.
+  The CDN logs one console warning per page and is meant for development only:
+  to drop it on production, delete the `<?= $view->partial(...tailwind_cdn...) ?>`
+  line from the three shells and serve the built CSS alone. Its origin is already
+  in `script-src`, so the CSP does not need touching.
