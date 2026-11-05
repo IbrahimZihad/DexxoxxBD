@@ -18,7 +18,7 @@ declare(strict_types=1);
  * @var string $rating
  * @var string $jsonLd
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $shareNames = array_slice(array_map(static fn (array $row): string => (string) $row['name'], $services), 0, 3);
 
 $view->extend('layouts/app');

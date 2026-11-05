@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @var string $instruction
  * @var string $whatsappUrl
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $agentName = setting('whatsapp.agent_name', 'the order desk');
 $hours = setting('whatsapp.hours', '9:00 AM - 11:00 PM, every day (Dhaka time)');
 $guarantee = setting('trust.guarantee', '7-day replacement on every personal plan');

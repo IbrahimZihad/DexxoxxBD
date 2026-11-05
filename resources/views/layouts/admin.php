@@ -20,7 +20,7 @@ use App\Core\Crypto;
 
 // Read the sections before anything is included: an included partial must never
 // be able to influence what the shell prints for the page.
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $documentTitle = $view->section('title', 'Admin - ' . $brandName);
 $pageHeading = $view->section('page_title', $documentTitle);
 $pageActions = $view->section('page_actions');

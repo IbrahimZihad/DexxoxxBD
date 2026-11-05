@@ -16,7 +16,7 @@ declare(strict_types=1);
  * @var array{awaiting_payment: int, in_delivery: int, delivered: int, unpaid_total: float} $counters
  * @var string $whatsappUrl
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $user = (array) ($user ?? []);
 $orders = (array) ($orders ?? []);
 $lines = (array) ($lines ?? []);
@@ -234,7 +234,7 @@ $stats = [
                 <section class="reveal overflow-hidden rounded-card bg-gradient-to-br from-emerald-600 to-emerald-700 p-5 text-white shadow-card" data-reveal style="--reveal-delay:200ms" aria-label="Support">
                     <h3 class="text-base font-black tracking-tight">Something not right?</h3>
                     <p class="mt-2 text-sm leading-relaxed text-white/85">
-                        <?= e(setting('whatsapp.agent_name', 'ZapSub Support')) ?> &middot;
+                        <?= e(setting('whatsapp.agent_name', 'DexxozzBD Support')) ?> &middot;
                         <?= e(setting('whatsapp.agent_role', 'Order desk')) ?>. Quote your order number and
                         we can see the whole history without asking you to explain it.
                     </p>

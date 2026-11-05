@@ -19,7 +19,7 @@ declare(strict_types=1);
  * @var list<array<string, mixed>> $history
  * @var string $whatsappUrl
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $order = ($order ?? null) === null ? null : (array) $order;
 $orderNo = strtoupper(trim((string) ($orderNo ?? '')));
 $items = (array) ($items ?? []);

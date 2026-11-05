@@ -15,7 +15,7 @@ declare(strict_types=1);
  * @var string $note
  * @var string $whatsappUrl
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $agentName = setting('whatsapp.agent_name', 'Rafi');
 $agentRole = setting('whatsapp.agent_role', 'Order desk, ' . $brandName);
 $hours = setting('whatsapp.hours', '9:00 AM - 11:00 PM, every day (Dhaka time)');

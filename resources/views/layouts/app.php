@@ -16,7 +16,7 @@ use App\Core\App;
 // outside a booted request (error page, CLI preview) from shipping an empty nonce.
 $nonce = (string) ($cspNonce ?? App::cspNonce());
 
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $pageTitle = $view->section('title', $brandName . ' - ' . setting('brand.tagline', 'Premium subscriptions, delivered in minutes.'));
 $pageDescription = $view->section('meta_description', setting('meta.description'));
 $canonicalUrl = $view->section('canonical', current_url());

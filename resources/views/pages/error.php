@@ -25,7 +25,7 @@ declare(strict_types=1);
  * @var list<string> $allowed
  * @var array<string, mixed>|null $incident
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $hours = setting('whatsapp.hours', '9:00 AM - 11:00 PM, every day (Dhaka time)');
 $email = setting('contact.email', 'our support address');
 

@@ -51,7 +51,7 @@ final class HealthController extends Controller
             'ok' => $healthy,
             'status' => $healthy ? 'operational' : 'degraded',
             'app' => [
-                'name' => setting('brand.name', 'ZapSub'),
+                'name' => setting('brand.name', 'DexxozzBD'),
                 'env' => (string) app()->config('app.env', 'production'),
                 'currency' => (string) app()->config('app.currency', 'BDT'),
             ],

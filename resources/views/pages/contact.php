@@ -20,7 +20,7 @@ declare(strict_types=1);
  * @var int $deliveryMinutes
  * @var int $holdMinutes
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $email = setting('contact.email', 'our support address');
 $phone = setting('contact.phone');
 $address = setting('contact.address');
@@ -182,7 +182,7 @@ $promises = [
                     <h3 class="relative mt-2 text-2xl font-black leading-tight">WhatsApp the order desk</h3>
                     <p class="relative mt-2 text-sm leading-relaxed text-white/85">
                         <?= e(setting('whatsapp.greeting', 'Hi! Need a hand choosing a plan?')) ?>
-                        One tap opens a chat with <?= e(setting('whatsapp.agent_name', 'ZapSub Support')) ?>
+                        One tap opens a chat with <?= e(setting('whatsapp.agent_name', 'DexxozzBD Support')) ?>
                         (<?= e(setting('whatsapp.agent_role', 'Order desk')) ?>).
                     </p>
                     <a href="<?= e($whatsappUrl) ?>" target="_blank" rel="noopener" class="relative mt-5 flex items-center justify-center gap-2 rounded-brand bg-white px-5 py-3.5 text-sm font-black text-brand-700 shadow-soft transition-transform duration-200 hover:-translate-y-0.5">

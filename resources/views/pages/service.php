@@ -17,7 +17,7 @@ use App\Services\PaymentService;
  * @var array{min: float, max: float} $priceRange
  * @var string $jsonLd
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $serviceName = (string) ($service['name'] ?? 'Plan');
 $serviceSlug = (string) ($service['slug'] ?? '');
 $category = (string) ($service['category'] ?? '');

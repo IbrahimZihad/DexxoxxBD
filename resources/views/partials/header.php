@@ -22,7 +22,7 @@ $searchValue = (string) $currentRequest->queryValue('search', '');
 ?>
 <header data-header class="glass sticky top-0 z-50 border-b border-brand-100">
     <div data-mobile-nav class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 lg:px-6">
-        <a href="<?= e(route('home')) ?>" class="flex shrink-0 items-center gap-2.5" aria-label="<?= e(setting('brand.name', 'ZapSub')) ?> home">
+        <a href="<?= e(route('home')) ?>" class="flex shrink-0 items-center gap-2.5" aria-label="<?= e(setting('brand.name', 'DexxozzBD')) ?> home">
             <span class="relative grid h-10 w-10 place-items-center overflow-hidden rounded-brand bg-gradient-to-br from-brand-600 via-brand-500 to-accent-400 shadow-pop">
                 <svg class="h-6 w-6 animate-pop text-white drop-shadow" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M13.1 2 4.6 13.2h5.2L8.4 22l9.6-11.9h-5.4L13.1 2Z"/>
@@ -30,7 +30,7 @@ $searchValue = (string) $currentRequest->queryValue('search', '');
                 <span class="animate-shimmer absolute inset-0 bg-gradient-to-r from-white/0 via-white/45 to-white/0"></span>
             </span>
             <span class="flex flex-col leading-none">
-                <span class="text-lg font-black tracking-tight text-ink"><?= e(setting('brand.name', 'ZapSub')) ?></span>
+                <span class="text-lg font-black tracking-tight text-ink"><?= e(setting('brand.name', 'DexxozzBD')) ?></span>
                 <span class="mt-1 hidden text-[11px] font-semibold uppercase tracking-widest text-brand-600 sm:block">Delivered on WhatsApp</span>
             </span>
         </a>

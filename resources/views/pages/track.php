@@ -18,7 +18,7 @@ declare(strict_types=1);
  * @var list<array<string, mixed>> $history
  * @var string $whatsappUrl
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $order = ($order ?? null) === null ? null : (array) $order;
 $orderNo = strtoupper(trim((string) ($orderNo ?? '')));
 $email = trim((string) ($email ?? ''));
@@ -30,7 +30,7 @@ $whatsappUrl = (string) ($whatsappUrl ?? '');
 
 $view->extend('layouts/app');
 $view->setSection('title', 'Track your order - ' . $brandName);
-$view->setSection('meta_description', 'Enter your ZapSub order number and email to see payment, verification and delivery status.');
+$view->setSection('meta_description', 'Enter your DexxozzBD order number and email to see payment, verification and delivery status.');
 $view->setSection('canonical', route('track'));
 ?>
 <div class="relative bg-gradient-to-b from-brand-50 via-white to-white">

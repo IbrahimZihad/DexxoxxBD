@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Core\Env;
 
 return [
-    'name' => Env::get('APP_NAME', 'ZapSub'),
+    'name' => Env::get('APP_NAME', 'DexxozzBD'),
     'env' => strtolower((string) Env::get('APP_ENV', 'local')),
     'debug' => filter_var((string) Env::get('APP_DEBUG', 'false'), FILTER_VALIDATE_BOOL),
     'url' => rtrim((string) Env::get('APP_URL', ''), '/'),
@@ -42,7 +42,7 @@ return [
     'mail' => [
         'driver' => Env::get('MAIL_DRIVER', 'log'),
         'from_address' => Env::get('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'from_name' => Env::get('MAIL_FROM_NAME', 'ZapSub Support'),
+        'from_name' => Env::get('MAIL_FROM_NAME', 'DexxozzBD Support'),
     ],
 
     // Only enable when the site really is served over TLS; enabling it on plain

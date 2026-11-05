@@ -21,7 +21,7 @@ declare(strict_types=1);
  * @var bool $keyPresent
  * @var string $verifiedByName
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $order = (array) ($order ?? []);
 $items = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($items ?? [])));

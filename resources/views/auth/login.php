@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @var App\Core\View $view
  * @var string $reason
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $reason = trim((string) ($reason ?? ''));
 
 $view->extend('layouts/app');

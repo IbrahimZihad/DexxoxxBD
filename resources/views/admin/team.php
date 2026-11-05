@@ -18,7 +18,7 @@ declare(strict_types=1);
  * @var int $adminCount
  * @var list<string> $roles
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $staff = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($staff ?? [])));
 $currentUserId = (int) ($currentUserId ?? 0);

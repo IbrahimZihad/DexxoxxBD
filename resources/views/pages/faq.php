@@ -19,7 +19,7 @@ declare(strict_types=1);
  * @var int $deliveryMinutes
  * @var string $jsonLd
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $agentName = setting('whatsapp.agent_name', 'the order desk');
 
 $view->extend('layouts/app');

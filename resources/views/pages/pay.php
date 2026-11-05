@@ -19,7 +19,7 @@ declare(strict_types=1);
  * @var string $selected
  * @var string $instruction
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $order = (array) ($order ?? []);
 $items = (array) ($items ?? []);
 $payments = (array) ($payments ?? []);

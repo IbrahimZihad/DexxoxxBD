@@ -1,5 +1,5 @@
 /* =============================================================================
-   ZapSub — public/assets/js/app.js
+   DexxozzBD — public/assets/js/app.js
    Vanilla ES2020, single file, loaded with `defer`, zero dependencies.
    CSP is script-src 'self' 'nonce-...' : no inline handlers, no inline scripts,
    no eval, no innerHTML for anything we build ourselves. Everything is driven
@@ -556,7 +556,7 @@
      ----------------------------------------------------------------------- */
   const WA_SEEN_KEY = 'zapsub_wa_seen';
   const WA_BOUNCE_CLASSES = ['animate-bounce', 'animate-float', 'animate-pulse-ring', 'animate-pop'];
-  const WA_DEFAULT_TEXT = 'Hello ZapSub! I have a question about a plan.';
+  const WA_DEFAULT_TEXT = 'Hello DexxozzBD! I have a question about a plan.';
 
   const storageGet = (key) => {
     try {
@@ -768,7 +768,7 @@
       } catch (error) {
         // A broken widget must never take the storefront down.
         if (typeof win.console !== 'undefined' && win.console.warn) {
-          win.console.warn('ZapSub UI module skipped:', error && error.message);
+          win.console.warn('DexxozzBD UI module skipped:', error && error.message);
         }
       }
     });

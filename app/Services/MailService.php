@@ -19,7 +19,7 @@ final class MailService
     public static function send(string $to, string $subject, string $body): bool
     {
         $from = (string) Config::get('app.mail.from_address', 'no-reply@localhost');
-        $fromName = (string) Config::get('app.mail.from_name', Settings::get('brand.name', 'ZapSub'));
+        $fromName = (string) Config::get('app.mail.from_name', Settings::get('brand.name', 'DexxozzBD'));
         $driver = (string) Config::get('app.mail.driver', 'log');
 
         if (filter_var($to, FILTER_VALIDATE_EMAIL) === false) {
@@ -33,7 +33,7 @@ final class MailService
                 'From: ' . sprintf('%s <%s>', $fromName, $from),
                 'Reply-To: ' . Settings::get('contact.email', $from),
                 'Content-Type: text/plain; charset=UTF-8',
-                'X-Mailer: ZapSub',
+                'X-Mailer: DexxozzBD',
             ]);
 
             try {
@@ -56,7 +56,7 @@ final class MailService
      */
     public static function orderPlaced(array $order, array $items): void
     {
-        $brand = Settings::get('brand.name', 'ZapSub');
+        $brand = Settings::get('brand.name', 'DexxozzBD');
 
         $lines = [];
 
@@ -91,7 +91,7 @@ final class MailService
 
     public static function resetLink(string $to, string $link, string $name = ''): void
     {
-        $brand = Settings::get('brand.name', 'ZapSub');
+        $brand = Settings::get('brand.name', 'DexxozzBD');
         $greeting = $name === '' ? 'Hi' : 'Hi ' . $name;
 
         $body = $greeting . ",\n\n"

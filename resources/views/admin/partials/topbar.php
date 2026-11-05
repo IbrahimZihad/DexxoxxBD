@@ -43,7 +43,7 @@ $initials = $words === []
         </span>
         <span class="min-w-0">
             <span class="block truncate text-sm font-black tracking-tight text-ink">
-                <?= e(setting('brand.name', 'ZapSub')) ?>
+                <?= e(setting('brand.name', 'DexxozzBD')) ?>
             </span>
             <span class="block text-[0.7rem] font-bold uppercase tracking-[0.18em] text-brand-600">Order desk</span>
         </span>

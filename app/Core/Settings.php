@@ -14,15 +14,15 @@ final class Settings
     private static ?array $cached = null;
 
     private const DEFAULTS = [
-        'brand.name' => 'ZapSub',
+        'brand.name' => 'DexxozzBD',
         'brand.tagline' => 'Premium subscriptions, delivered in minutes.',
         'meta.description' => 'Buy Netflix, Spotify, YouTube Premium, ChatGPT and more at Bangladeshi prices with instant WhatsApp support.',
         'whatsapp.enabled' => '1',
         'whatsapp.number' => '8801700000000',
-        'whatsapp.agent_name' => 'ZapSub Support',
+        'whatsapp.agent_name' => 'DexxozzBD Support',
         'whatsapp.agent_role' => 'Order desk',
         'whatsapp.greeting' => 'Hi there! Need help choosing a plan?',
-        'whatsapp.default_message' => 'Hello ZapSub, I would like to order a subscription.',
+        'whatsapp.default_message' => 'Hello DexxozzBD, I would like to order a subscription.',
         'whatsapp.hours' => 'Open 9:00 AM - 11:00 PM (Dhaka time), every day',
         'whatsapp.quick_replies' => 'Which plan suits me?|How long does delivery take?|Do you offer a replacement if the account stops working?',
         'contact.email' => 'hello@zapsub.example',
@@ -31,7 +31,7 @@ final class Settings
         'payment.bkash_number' => '01700-000000',
         'payment.nagad_number' => '01800-000000',
         'payment.rocket_number' => '01900-000000',
-        'payment.bank_account' => 'City Bank 1234 5678 9012 (ZapSub)',
+        'payment.bank_account' => 'City Bank 1234 5678 9012 (DexxozzBD)',
         'payment.instruction' => 'Send the exact amount with any personal number, then paste the TrxID below. We verify it manually and deliver within minutes.',
         'hero.badge' => 'Trusted by 12,000+ subscribers',
         'hero.title' => 'Every premium app you actually use, at a Bangladeshi price.',
@@ -42,7 +42,7 @@ final class Settings
         'trust.delivery_minutes' => '10',
         'order.pending_hold_minutes' => '90',
         'checkout.allow_guest' => '1',
-        'footer.note' => 'ZapSub is an independent reseller of publicly available subscription services. We are not affiliated with the brands we list.',
+        'footer.note' => 'DexxozzBD is an independent reseller of publicly available subscription services. We are not affiliated with the brands we list.',
     ];
 
     public static function all(): array

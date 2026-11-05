@@ -16,7 +16,7 @@ declare(strict_types=1);
  * @var App\Core\View $view
  * @var list<array<string, mixed>> $coupons
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $coupons = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($coupons ?? [])));
 

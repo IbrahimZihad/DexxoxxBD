@@ -18,7 +18,7 @@ final class SettingsSeeder extends AbstractSeed
     public function run(): void
     {
         $settings = [
-            ['general', 'brand.name', 'ZapSub'],
+            ['general', 'brand.name', 'DexxozzBD'],
             ['general', 'brand.tagline', 'Premium subscriptions, delivered in minutes.'],
             ['general', 'meta.description', 'Netflix, Spotify, YouTube Premium, ChatGPT Plus and more at Bangladeshi prices, delivered on WhatsApp in minutes.'],
             ['general', 'hero.badge', '12,400+ orders delivered across Bangladesh'],
@@ -26,21 +26,21 @@ final class SettingsSeeder extends AbstractSeed
             ['general', 'hero.subtitle', 'Pick a plan, pay with bKash or Nagad, get your account in minutes. A real human answers on WhatsApp.'],
             ['general', 'announcement.active', '1'],
             ['general', 'announcement.text', 'Instant delivery before 11 PM - bKash, Nagad, Rocket or card accepted.'],
-            ['general', 'footer.note', 'ZapSub is an independent reseller of publicly available subscription services. We are not affiliated with, or endorsed by, the brands listed here.'],
+            ['general', 'footer.note', 'DexxozzBD is an independent reseller of publicly available subscription services. We are not affiliated with, or endorsed by, the brands listed here.'],
 
             ['whatsapp', 'whatsapp.enabled', '1'],
             ['whatsapp', 'whatsapp.number', '8801712345678'],
             ['whatsapp', 'whatsapp.agent_name', 'Rafi'],
-            ['whatsapp', 'whatsapp.agent_role', 'Order desk, ZapSub'],
+            ['whatsapp', 'whatsapp.agent_role', 'Order desk, DexxozzBD'],
             ['whatsapp', 'whatsapp.greeting', 'Hi! Need a hand choosing a plan?'],
-            ['whatsapp', 'whatsapp.default_message', 'Hello ZapSub, I want to order a subscription.'],
+            ['whatsapp', 'whatsapp.default_message', 'Hello DexxozzBD, I want to order a subscription.'],
             ['whatsapp', 'whatsapp.hours', '9:00 AM - 11:00 PM, every day (Dhaka time)'],
             ['whatsapp', 'whatsapp.quick_replies', 'Which plan suits me?|How fast is delivery?|What if the account stops working?|Do you have a student price?'],
 
             ['payment', 'payment.bkash_number', '01712-345678'],
             ['payment', 'payment.nagad_number', '01812-345678'],
             ['payment', 'payment.rocket_number', '01912-345678-1'],
-            ['payment', 'payment.bank_account', 'City Bank Ltd, Dhaka branch - Account 1234 5678 9012 (ZapSub)'],
+            ['payment', 'payment.bank_account', 'City Bank Ltd, Dhaka branch - Account 1234 5678 9012 (DexxozzBD)'],
             ['payment', 'payment.instruction', 'Send the exact total, then paste the transaction ID. A person checks it against our statement before anything is marked paid.'],
 
             ['contact', 'contact.email', 'support@zapsub.test'],

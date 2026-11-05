@@ -16,7 +16,7 @@ declare(strict_types=1);
  * @var list<array<string, mixed>> $services
  * @var array{search: string, service_id: int, active: string} $filters
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $plans = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($plans ?? [])));
 $services = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($services ?? [])));

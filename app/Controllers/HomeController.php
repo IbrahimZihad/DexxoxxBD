@@ -87,7 +87,7 @@ final class HomeController extends Controller
      */
     private function jsonLd(array $featured): string
     {
-        $brand = Settings::get('brand.name', 'ZapSub');
+        $brand = Settings::get('brand.name', 'DexxozzBD');
 
         $items = [];
         $position = 0;

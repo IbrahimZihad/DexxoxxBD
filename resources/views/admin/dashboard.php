@@ -20,7 +20,7 @@ declare(strict_types=1);
  * @var int $expiredCount
  * @var int $holdMinutes
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $stats = (array) ($stats ?? []);
 $series = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($series ?? [])));

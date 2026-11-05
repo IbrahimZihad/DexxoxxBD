@@ -16,7 +16,7 @@ use App\Core\App;
  *
  * @var App\Core\View $view
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $reason = trim((string) ($reason ?? ''));
 $documentTitle = 'Staff sign in - ' . $brandName;
 

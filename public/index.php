@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * ZapSub front controller. Everything that arrives over HTTP comes through this
+ * DexxozzBD front controller. Everything that arrives over HTTP comes through this
  * file; the parent .htaccess keeps the rest of the project out of reach.
  */
 

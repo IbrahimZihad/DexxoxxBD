@@ -15,7 +15,7 @@ declare(strict_types=1);
  * @var list<array<string, mixed>> $rails
  * @var array{name: string, email: string, phone: string} $customer
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $lines = (array) ($lines ?? []);
 $rails = (array) ($rails ?? []);
 $customer = (array) ($customer ?? ['name' => '', 'email' => '', 'phone' => '']);

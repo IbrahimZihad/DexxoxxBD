@@ -16,7 +16,7 @@ declare(strict_types=1);
  * @var array{items: list<array<string, mixed>>, total: int, pages: int, page: int, per_page: int} $paging
  * @var string $search
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $paging = (array) ($paging ?? []);
 $rows = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($paging['items'] ?? [])));

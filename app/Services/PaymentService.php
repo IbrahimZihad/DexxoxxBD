@@ -111,7 +111,7 @@ final class PaymentService
 
         return sprintf(
             "Hi %s, my order is %s.\n%s\nTotal: %s\nI have sent %s (reference: %s). Please deliver it.",
-            Settings::get('brand.name', 'ZapSub'),
+            Settings::get('brand.name', 'DexxozzBD'),
             (string) $order['order_no'],
             implode("\n", $lines),
             taka((float) $order['total']),

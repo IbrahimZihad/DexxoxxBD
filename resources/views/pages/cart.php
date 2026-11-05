@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @var list<array<string, mixed>> $lines
  * @var array{subtotal: float, discount: float, total: float, coupon: string, coupon_message: string} $totals
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $lines = (array) ($lines ?? []);
 $totals = (array) ($totals ?? ['subtotal' => 0.0, 'discount' => 0.0, 'total' => 0.0, 'coupon' => '', 'coupon_message' => '']);
 $unitCount = 0;

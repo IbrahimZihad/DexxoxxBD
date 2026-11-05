@@ -181,7 +181,7 @@ final class CatalogController extends Controller
             ];
         }
 
-        $brand = Settings::get('brand.name', 'ZapSub');
+        $brand = Settings::get('brand.name', 'DexxozzBD');
 
         $graph = [
             [

@@ -1,4 +1,4 @@
-# ZapSub
+# DexxozzBD
 
 A subscription-reseller storefront: colourful catalogue, smooth cart and checkout,
 manual mobile-payment verification, a floating WhatsApp chat head, and a full
@@ -77,7 +77,7 @@ tests/          bootstrap.php, TestCase.php, Unit/, Mysql/
 ```
 
 URL: `http://localhost/DexxoxxBD/public/`. The folder is still named `DexxoxxBD`
-while the brand is ZapSub; nothing depends on the directory name (`APP_BASE_PATH`
+while the brand is DexxozzBD; nothing depends on the directory name (`APP_BASE_PATH`
 in `.env` handles the sub-folder mount), so rename it if you like.
 
 ---

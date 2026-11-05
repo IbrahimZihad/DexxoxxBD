@@ -116,7 +116,7 @@ final class PageController extends Controller
             'groups' => $groups,
             'total' => count($rows),
             'search' => $search,
-            'whatsappUrl' => wa_link('Hi ' . setting('brand.name', 'ZapSub') . ', I have a question about ordering.'),
+            'whatsappUrl' => wa_link('Hi ' . setting('brand.name', 'DexxozzBD') . ', I have a question about ordering.'),
             'deliveryMinutes' => max(1, Settings::int('trust.delivery_minutes', 10)),
             'jsonLd' => $this->faqJsonLd($groups),
         ]);
@@ -131,7 +131,7 @@ final class PageController extends Controller
             'stats' => $this->aboutStats(count($services->catalogue()), $plans->countAll()),
             'testimonials' => (new Testimonial())->published(3),
             'note' => setting('footer.note'),
-            'whatsappUrl' => wa_link('Hi ' . setting('brand.name', 'ZapSub') . ', I have a question about how you work.'),
+            'whatsappUrl' => wa_link('Hi ' . setting('brand.name', 'DexxozzBD') . ', I have a question about how you work.'),
         ]);
     }
 
@@ -253,7 +253,7 @@ final class PageController extends Controller
      */
     private function adminMailBody(array $data, string $subject, int $unread): string
     {
-        $brand = setting('brand.name', 'ZapSub');
+        $brand = setting('brand.name', 'DexxozzBD');
 
         return "New message from the contact form.\n\n"
             . 'Name: ' . (string) $data['name'] . "\n"
@@ -299,7 +299,7 @@ final class PageController extends Controller
             [
                 '@context' => 'https://schema.org',
                 '@type' => 'FAQPage',
-                'publisher' => ['@type' => 'Organization', 'name' => Settings::get('brand.name', 'ZapSub')],
+                'publisher' => ['@type' => 'Organization', 'name' => Settings::get('brand.name', 'DexxozzBD')],
                 'mainEntity' => $questions,
             ],
             JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP

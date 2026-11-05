@@ -9,7 +9,7 @@ use App\Services\PaymentService;
  * Four columns: the live catalogue, the legal pages, the money rails the shop
  * actually accepts, and the contact block. Every link goes through a route name.
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $services = (new Service())->catalogue(7);
 

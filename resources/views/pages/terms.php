@@ -9,7 +9,7 @@ declare(strict_types=1);
  *
  * @var App\Core\View $view
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $agentName = setting('whatsapp.agent_name', 'the order desk');
 $hours = setting('whatsapp.hours', '9:00 AM - 11:00 PM, every day (Dhaka time)');
 $email = setting('contact.email', 'our support address');

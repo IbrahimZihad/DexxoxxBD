@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @var list<string> $paymentStatuses
  * @var list<string> $fulfillmentStates
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $paging = (array) ($paging ?? []);
 $rows = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($paging['items'] ?? [])));

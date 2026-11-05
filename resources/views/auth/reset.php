@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @var App\Core\View $view
  * @var string $token
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $token = (string) ($token ?? '');
 
 $view->extend('layouts/app');

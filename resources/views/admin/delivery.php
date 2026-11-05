@@ -13,7 +13,7 @@ declare(strict_types=1);
  * @var int $awaiting
  * @var bool $truncated
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $queue = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($queue ?? [])));
 $awaiting = max(0, (int) ($awaiting ?? 0));

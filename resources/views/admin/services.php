@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @var list<string> $categories
  * @var string $search
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $services = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($services ?? [])));
 $planCounts = (array) ($planCounts ?? []);

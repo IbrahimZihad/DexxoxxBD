@@ -9,7 +9,7 @@ declare(strict_types=1);
  *
  * @var App\Core\View $view
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $view->extend('layouts/app');
 $view->setSection('title', 'Forgot password - ' . $brandName);

@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @var list<array<string, mixed>> $faqs
  * @var list<string> $categories
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $faqs = array_values(array_map(static fn (mixed $row): array => (array) $row, (array) ($faqs ?? [])));
 $categories = array_values(array_map('strval', (array) ($categories ?? [])));

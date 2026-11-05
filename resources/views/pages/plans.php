@@ -22,7 +22,7 @@ declare(strict_types=1);
  * @var array{min: float, max: float} $priceRange
  * @var list<string> $serviceSlugs
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 $filters = array_map('strval', (array) ($filters ?? []));
 $activeSort = (string) ($filters['sort'] ?? 'popular');
 

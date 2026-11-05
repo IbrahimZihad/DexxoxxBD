@@ -16,7 +16,7 @@ declare(strict_types=1);
  * @var list<array{name: string, fields: list<array<string, string>>}> $tabs
  * @var array<string, array{label: string, description: string}> $groupMeta
  */
-$brandName = setting('brand.name', 'ZapSub');
+$brandName = setting('brand.name', 'DexxozzBD');
 
 $tabs = array_values(array_map(static fn (mixed $tab): array => (array) $tab, (array) ($tabs ?? [])));
 $groupMeta = array_map(static fn (mixed $meta): array => (array) $meta, (array) ($groupMeta ?? []));

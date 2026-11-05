@@ -99,7 +99,7 @@ final class AccountController extends Controller
             'deliveries' => array_slice($deliveries, 0, self::DELIVERY_PREVIEW_LIMIT),
             'summary' => (new User())->orderSummary($userId),
             'counters' => $this->counters(array_map(static fn (array $row): array => (array) $row, $orderRows)),
-            'whatsappUrl' => wa_link('Hi ' . setting('brand.name', 'ZapSub') . ', I need help with my account.'),
+            'whatsappUrl' => wa_link('Hi ' . setting('brand.name', 'DexxozzBD') . ', I need help with my account.'),
         ]);
     }
 
