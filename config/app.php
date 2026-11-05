@@ -35,6 +35,8 @@ return [
         'track' => Env::pair('RATE_TRACK', '20,600'),
         'reset' => Env::pair('RATE_RESET', '4,3600'),
         'general' => Env::pair('RATE_GENERAL', '120,60'),
+        'cart' => Env::pair('RATE_CART', '40,60'),
+        'coupon' => Env::pair('RATE_COUPON', '10,60'),
     ],
 
     'mail' => [
