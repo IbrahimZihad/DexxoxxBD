@@ -107,9 +107,9 @@ $sections = [
                     </p>
                     <p>
                         <?= $brandName ?> is independent. We are not affiliated with, sponsored by or endorsed by
-                        Netflix, Spotify, YouTube, OpenAI, Adobe, Dropbox, Canva, NordVPN or any other brand listed
-                        on this site; those names belong to their owners and appear here only to describe what we
-                        resell seats of.
+                        Netflix, Spotify, YouTube, OpenAI, Anthropic, Canva, Adobe, Microsoft, Google, Disney+ or
+                        Amazon Prime Video - the brands on our plan pages - and those names belong to their owners,
+                        appearing here only to describe which plans we hold seats on.
                     </p>
                 </div>
             </article>
