@@ -43,6 +43,14 @@ return [
         'from_name' => Env::get('MAIL_FROM_NAME', 'ZapSub Support'),
     ],
 
+    // Only enable when the site really is served over TLS; enabling it on plain
+    // http://localhost bounces every request into a redirect loop.
+    'force_https' => filter_var((string) Env::get('APP_FORCE_HTTPS', 'false'), FILTER_VALIDATE_BOOL),
+
+    // Route patterns that must accept a POST without a CSRF token, for the day a
+    // payment gateway posts an IPN back to us. Empty by default.
+    'csrf_exempt' => [],
+
     // Hard cap on how many plan units one order may contain. Keeps a scripted
     // checkout from draining stock and makes an accidental bulk click harmless.
     'max_items_per_order' => 10,

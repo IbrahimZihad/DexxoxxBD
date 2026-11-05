@@ -147,7 +147,7 @@ final class Validator
                 }
 
                 if (mb_strlen($string) > (int) $argument) {
-                    return $this->fail($field, $label . ' must be 200 characters or fewer.');
+                    return $this->fail($field, $label . ' must be ' . (int) $argument . ' characters or fewer.');
                 }
 
                 return true;
@@ -199,7 +199,9 @@ final class Validator
                 return true;
 
             case 'date':
-                if (new \DateTimeImmutable($string) === false) {
+                try {
+                    new \DateTimeImmutable($string);
+                } catch (\Throwable) {
                     return $this->fail($field, $label . ' must be a valid date.');
                 }
 
