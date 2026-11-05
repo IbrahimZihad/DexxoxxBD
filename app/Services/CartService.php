@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Core;
+namespace App\Services;
 
+use App\Core\Auth;
+use App\Core\Config;
+use App\Core\Session;
 use App\Models\Plan;
 
 /**
