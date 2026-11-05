@@ -127,20 +127,30 @@ $perks = [
                         </p>
                     </div>
 
-                    <?= $view->component('field', [
-                        'name' => 'accept_terms',
-                        'label' => 'I have read the terms of sale and the privacy policy.',
-                        'type' => 'checkbox',
-                        'required' => true,
-                        'hint' => 'Buying a subscription is a digital purchase, so the refund rules matter - they are short.',
-                    ]) ?>
+                    {{-- The shipped `field` component has a live bug in its checkbox
+                         branch (see the report), so these two boxes are written out in
+                         the component's own visual language instead of calling it. --}}
+                    <div class="space-y-3">
+                        <label for="accept-terms-box" class="flex cursor-pointer items-start gap-3 rounded-brand border border-brand-100 bg-brand-50/50 p-3">
+                            <input type="checkbox" id="accept-terms-box" name="accept_terms" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded accent-brand-600" required <?= e(old('accept_terms') === '1' ? 'checked' : '') ?> <?= e(has_error('accept_terms') ? 'aria-invalid="true"' : '') ?>>
+                            <span class="text-sm text-ink">
+                                I have read the terms of sale and the privacy policy.
+                                <span class="text-rose-500" aria-hidden="true">*</span>
+                                <span class="mt-0.5 block text-xs text-ink-400">Buying a subscription is a digital purchase, so the refund rules matter - they are short.</span>
+                            </span>
+                        </label>
+                        <?php foreach (field_errors('accept_terms') as $termsError): ?>
+                            <p class="text-xs font-semibold text-rose-600"><?= e((string) $termsError) ?></p>
+                        <?php endforeach; ?>
 
-                    <?= $view->component('field', [
-                        'name' => 'marketing_opt_in',
-                        'label' => 'Message me when a big sale or a new brand lands.',
-                        'type' => 'checkbox',
-                        'hint' => 'Occasional WhatsApp or email. Say the word once and we stop - no way to unsubscribe into a void.',
-                    ]) ?>
+                        <label for="marketing-box" class="flex cursor-pointer items-start gap-3 rounded-brand border border-brand-100 bg-brand-50/50 p-3">
+                            <input type="checkbox" id="marketing-box" name="marketing_opt_in" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded accent-brand-600" <?= e(old('marketing_opt_in') === '1' ? 'checked' : '') ?>>
+                            <span class="text-sm text-ink">
+                                Message me when a big sale or a new brand lands.
+                                <span class="mt-0.5 block text-xs text-ink-400">Occasional WhatsApp or email. Say the word once and we stop - no way to unsubscribe into a void.</span>
+                            </span>
+                        </label>
+                    </div>
 
                     <p class="text-xs leading-relaxed text-ink-400">
                         By registering you agree to our
