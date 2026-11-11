@@ -20,6 +20,7 @@ require $root . '/vendor/autoload.php';
 Env::load($root . '/.env');
 
 $env = strtolower((string) Env::get('APP_ENV', 'local'));
+$defaultEnvironment = $env === 'local' ? 'development' : $env;
 
 $connection = static fn (string $suffix): array => [
     // Adapter names are matched case-sensitively by Phinx: it is "mysql".
@@ -40,7 +41,7 @@ return [
     ],
     'environments' => [
         'default_migration_table' => 'phinxlog',
-        'default_database'        => $env === 'testing' ? 'testing' : $env,
+        'default_environment'     => $defaultEnvironment,
         'development'             => $connection(''),
         'testing'                 => $connection('_test'),
         'production'              => $connection(''),
