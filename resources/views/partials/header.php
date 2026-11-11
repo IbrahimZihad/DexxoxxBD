@@ -34,7 +34,7 @@ $searchValue = (string) $currentRequest->queryValue('search', '');
             <?php foreach ($links as $link): ?>
                 <a
                     href="<?= e(route($link['route'])) ?>"
-                    class="rounded-pill px-3 py-2 text-sm font-semibold transition-colors duration-200 <?= e(is_current_path($link['path']) ? $activeClass : $idleClass) ?>"
+                    class="whitespace-nowrap rounded-pill px-3 py-2 text-[15px] font-semibold transition-colors duration-200 <?= e(is_current_path($link['path']) ? $activeClass : $idleClass) ?>"
                     <?php if (is_current_path($link['path'])): ?> aria-current="page"<?php endif; ?>
                 ><?= e($link['label']) ?></a>
             <?php endforeach; ?>
@@ -96,7 +96,7 @@ $searchValue = (string) $currentRequest->queryValue('search', '');
 
         <nav class="grid gap-1" aria-label="Mobile">
             <?php foreach ($links as $link): ?>
-                <a href="<?= e(route($link['route'])) ?>" class="rounded-brand px-3 py-2 text-sm font-semibold <?= e(is_current_path($link['path']) ? 'bg-brand-600 text-white' : 'text-ink-700 hover:bg-brand-50') ?>">
+                <a href="<?= e(route($link['route'])) ?>" class="rounded-brand px-3 py-2 text-base font-semibold <?= e(is_current_path($link['path']) ? 'bg-brand-600 text-white' : 'text-ink-700 hover:bg-brand-50') ?>">
                     <?= e($link['label']) ?>
                 </a>
             <?php endforeach; ?>
