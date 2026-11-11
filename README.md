@@ -42,10 +42,10 @@ rate-limit budgets (`RATE_LOGIN=5,900` and friends). `SEED_ADMIN_PASSWORD`,
 seeder refuses to run with a blank or short value, and nothing like a password is
 ever stored in this file's comments or in git.
 
-Read your own values with:
+Read your own value in PowerShell with:
 
-```bash
-grep '^SEED_ADMIN_PASSWORD=' .env
+```powershell
+(Select-String '^SEED_ADMIN_PASSWORD=' .env).Line
 ```
 
 ### Seeding safety
@@ -56,7 +56,7 @@ number does not start with `ZS-DEMO`. Delete the demonstration data with:
 
 ```sql
 delete from orders where order_no like 'ZS-DEMO%';
-delete from users where email in ('admin@zapsub.test','rafi@zapsub.test','tanvir@example.com','nusrat@example.com');
+delete from users where email in ('ibrahimzihad5@gmail.com','rafi@zapsub.test','tanvir@example.com','nusrat@example.com');
 delete from coupons where code in ('ZAP10','STUDENT15','ANNUAL100','FIRST50','WEEKEND','EID2024','PARTNER30');
 ```
 

@@ -44,7 +44,7 @@ final class UserSeeder extends AbstractSeed
         $rows = [
             [
                 'name' => 'Zahid Ibrahim',
-                'email' => 'admin@zapsub.test',
+                'email' => 'ibrahimzihad5@gmail.com',
                 'phone' => '01712345678',
                 'password_hash' => Auth::hash($adminPassword),
                 'role' => 'admin',
