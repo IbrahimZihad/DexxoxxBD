@@ -119,9 +119,8 @@ $badgeTone = match ($badge) {
                 <form data-ajax method="post" action="<?= e(route('cart.add')) ?>" class="mt-4">
                     <?= csrf_field() ?>
                     <input type="hidden" name="plan_id" value="<?= e((string) $id) ?>">
-                    <input type="hidden" name="quantity" value="1">
                     <button type="submit" class="w-full rounded-brand bg-gradient-to-r from-brand-600 to-brand-500 px-4 py-2.5 text-sm font-bold text-white shadow-glow transition-all duration-200 hover:from-brand-700 hover:to-brand-600 active:scale-95">
-                        Add to cart
+                        Subscribe
                     </button>
                 </form>
             <?php endif; ?>

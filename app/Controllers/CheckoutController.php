@@ -29,7 +29,7 @@ final class CheckoutController extends Controller
         $lines = CartService::lines();
 
         if ($lines === []) {
-            Session::flash('warning', 'Your cart is empty - add a plan first and checkout will open.');
+            Session::flash('warning', 'No subscription selected yet - pick a plan first and checkout will open.');
 
             return $this->redirect(route('cart'));
         }
@@ -63,7 +63,7 @@ final class CheckoutController extends Controller
         ]);
 
         if (CartService::lines() === []) {
-            $message = 'Your cart is empty - add a plan before checking out.';
+            $message = 'No subscription selected yet - pick a plan before checking out.';
 
             if ($request->wantsJson()) {
                 return $this->json(['ok' => false, 'message' => $message, 'count' => 0], 422);

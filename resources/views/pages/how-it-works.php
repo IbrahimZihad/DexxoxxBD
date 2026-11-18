@@ -34,7 +34,7 @@ $steps = [
         'points' => [
             'Every tier lists the seat count and what the plan is for.',
             'Out-of-stock tiers say so instead of taking your money.',
-            'The cart holds the exact total you will send.',
+            'Your selection holds the exact total you will send.',
         ],
         'icon' => 'grid',
         'link' => ['route' => 'plans', 'label' => 'Browse plans'],

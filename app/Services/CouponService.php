@@ -32,7 +32,7 @@ final class CouponService
         $coupon = $couponModel->usable($code, $subtotal, $email);
 
         if ($coupon === null) {
-            return self::fail('That coupon is expired, used up, or your cart does not qualify.');
+            return self::fail('That coupon is expired, used up, or your selected subscriptions do not qualify.');
         }
 
         $discount = $couponModel->discountFor($coupon, $subtotal);

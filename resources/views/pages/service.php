@@ -225,9 +225,8 @@ $view->setSection('json_ld', $jsonLd);
                                                 <form data-ajax method="post" action="<?= e(route('cart.add')) ?>" class="inline-flex">
                                                     <?= csrf_field() ?>
                                                     <input type="hidden" name="plan_id" value="<?= e((string) $row['plan_id']) ?>">
-                                                    <input type="hidden" name="quantity" value="1">
                                                     <button type="submit" class="rounded-pill bg-ink px-4 py-2 text-xs font-bold text-white transition-colors duration-200 hover:bg-brand-700 active:scale-95">
-                                                        Add to cart
+                                                        Subscribe
                                                     </button>
                                                 </form>
                                             <?php endif; ?>
@@ -248,9 +247,9 @@ $view->setSection('json_ld', $jsonLd);
         <section class="bg-gradient-to-b from-white via-brand-50/60 to-white py-16">
             <div class="mx-auto max-w-7xl px-4 lg:px-6">
                 <?= $view->component('section-heading', [
-                    'eyebrow' => 'Buy straight away',
+                    'eyebrow' => 'Choose your subscription',
                     'title' => 'Every ' . $serviceName . ' tier we can deliver today',
-                    'subtitle' => 'Add one to the cart, pay with a mobile wallet, and we hand over the login on WhatsApp.',
+                    'subtitle' => 'Pick one subscription, pay with a mobile wallet, and we hand over the login on WhatsApp.',
                 ]) ?>
 
                 <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

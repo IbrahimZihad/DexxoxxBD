@@ -17,15 +17,11 @@ $subtotal = (float) ($totals['subtotal'] ?? 0);
 $discount = (float) ($totals['discount'] ?? 0);
 $total = (float) ($totals['total'] ?? 0);
 $coupon = trim((string) ($totals['coupon'] ?? ''));
-$unitCount = 0;
-
-foreach ($lines as $line) {
-    $unitCount += max(1, (int) ($line['quantity'] ?? 1));
-}
+$planCount = count($lines);
 ?>
 <dl class="space-y-2.5 text-sm">
     <div class="flex items-baseline justify-between gap-3">
-        <dt class="text-ink-400">Subtotal <span class="text-xs">(<?= e((string) $unitCount) ?> <?php echo $unitCount === 1 ? 'item' : 'items' ?>)</span></dt>
+        <dt class="text-ink-400">Subtotal <span class="text-xs">(<?= e((string) $planCount) ?> <?php echo $planCount === 1 ? 'subscription' : 'subscriptions' ?>)</span></dt>
         <dd class="font-bold text-ink"><?= e(taka($subtotal)) ?></dd>
     </div>
 

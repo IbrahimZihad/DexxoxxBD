@@ -53,10 +53,10 @@ return [
     // payment gateway posts an IPN back to us. Empty by default.
     'csrf_exempt' => [],
 
-    // Hard cap on how many plan units one order may contain. Keeps a scripted
-    // checkout from draining stock and makes an accidental bulk click harmless.
+    // Hard cap on how many subscription plans one order may contain. Keeps a
+    // scripted checkout from draining stock and makes an accidental bulk click
+    // harmless. Each plan is one subscription, so this is also the line count.
     'max_items_per_order' => 10,
-    'max_quantity_per_line' => 5,
 
     'order_number_prefix' => 'ZS',
 ];

@@ -3,8 +3,9 @@
 declare(strict_types=1);
 
 /**
- * One cart line: its own form, so quantity, removal and a plain page reload all
- * work without JavaScript. $line is a CartService::lines() row.
+ * One selected subscription. A plan is always a single subscription, so there
+ * is no quantity control here - only the plan details and a remove action.
+ * $line is a CartService::lines() row.
  *
  * @var array<string, mixed> $line
  */
@@ -12,7 +13,6 @@ $planId = (int) ($line['plan_id'] ?? 0);
 $serviceName = (string) ($line['service_name'] ?? '');
 $serviceSlug = (string) ($line['service_slug'] ?? '');
 $title = (string) ($line['title'] ?? 'Plan');
-$quantity = max(1, (int) ($line['quantity'] ?? 1));
 $unitPrice = (float) ($line['unit_price'] ?? 0);
 $lineTotal = (float) ($line['line_total'] ?? 0);
 $months = max(1, (int) ($line['duration_months'] ?? 1));
@@ -26,13 +26,11 @@ $rawColor = (string) ($line['brand_color'] ?? '');
 $brand = preg_match('/^#[0-9a-fA-F]{3,8}$/', $rawColor) === 1 ? $rawColor : '#7c50f2';
 $tileStyle = 'background-image:linear-gradient(135deg,' . $brand . ' 0%,' . $brand . ' 35%,#1c0b47 140%)';
 
-$perLine = max(1, (int) app()->config('app.max_quantity_per_line', 5));
-$maxQuantity = $stock >= 0 ? max(1, min($perLine, $stock)) : $perLine;
 $scarce = $stock > 0 && $stock <= 3;
 ?>
 <form data-ajax
       method="post"
-      action="<?= e(route('cart.update')) ?>"
+      action="<?= e(route('cart.remove')) ?>"
       data-line-id="<?= e((string) $planId) ?>"
       class="reveal hover-lift grid gap-4 rounded-card border border-brand-100 bg-white p-4 shadow-soft sm:grid-cols-[auto_1fr] sm:p-5"
       data-reveal
@@ -71,35 +69,14 @@ $scarce = $stock > 0 && $stock <= 3;
 
             <p class="text-right">
                 <span class="block text-lg font-black text-ink"><?= e(taka($lineTotal)) ?></span>
-                <span class="block text-xs font-semibold text-ink-400"><?= e(taka($unitPrice, false)) ?> each</span>
+                <span class="block text-xs font-semibold text-ink-400">per subscription</span>
             </p>
         </div>
 
         <div class="mt-4 flex flex-wrap items-center gap-2">
-            <div data-qty data-min="1" data-max="<?= e((string) $maxQuantity) ?>"
-                 class="flex items-center gap-1 rounded-pill border border-brand-200 bg-brand-50 p-1">
-                <button type="button" data-qty-minus aria-label="Decrease quantity of <?= e($title) ?>"
-                        class="grid h-8 w-8 place-items-center rounded-pill bg-white text-lg font-black text-brand-700 shadow-soft transition-transform duration-150 hover:scale-105 active:scale-95">&minus;</button>
-                <input data-qty-input
-                       type="number"
-                       name="quantity"
-                       value="<?= e((string) $quantity) ?>"
-                       min="1"
-                       max="<?= e((string) $maxQuantity) ?>"
-                       inputmode="numeric"
-                       aria-label="Quantity for <?= e($title) ?>"
-                       class="w-12 bg-transparent text-center text-sm font-black text-ink outline-none">
-                <button type="button" data-qty-plus aria-label="Increase quantity of <?= e($title) ?>"
-                        class="grid h-8 w-8 place-items-center rounded-pill bg-white text-lg font-black text-brand-700 shadow-soft transition-transform duration-150 hover:scale-105 active:scale-95">+</button>
-            </div>
+            <span class="rounded-pill bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-700">1 subscription</span>
 
             <button type="submit"
-                    class="rounded-pill border border-brand-200 bg-white px-4 py-2 text-xs font-bold text-brand-700 transition-colors duration-200 hover:border-brand-400 hover:bg-brand-50">
-                Update
-            </button>
-
-            <button type="submit"
-                    formaction="<?= e(route('cart.remove')) ?>"
                     class="rounded-pill bg-rose-50 px-4 py-2 text-xs font-bold text-rose-700 ring-1 ring-rose-200 transition-colors duration-200 hover:bg-rose-100">
                 Remove
             </button>

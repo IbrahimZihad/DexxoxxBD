@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Checkout. One real form (so it works with JavaScript off) wrapped around three
- * tabs: review the basket, give us the details a human needs, choose how you
+ * tabs: review the plans, give us the details a human needs, choose how you
  * will pay. The amounts on this page come from CartService::totals() and are
  * written again by OrderService at insert time - nothing posted here decides
  * what the order costs.
@@ -34,8 +34,8 @@ $valueFor = static function (string $field) use ($customer): ?string {
 };
 
 $steps = [
-    ['key' => 'basket', 'label' => 'Your basket', 'hint' => count($lines) . ' plan' . (count($lines) === 1 ? '' : 's')],
-    ['key' => 'details', 'label' => 'Your details', 'hint' => 'Where we deliver'],
+    ['key' => 'basket', 'label' => 'Your plans', 'hint' => count($lines) . ' subscription' . (count($lines) === 1 ? '' : 's')],
+    ['key' => 'details', 'label' => 'Your details', 'hint' => 'Where we send your login'],
     ['key' => 'payment', 'label' => 'How you pay', 'hint' => 'bKash, Nagad, Rocket...'],
 ];
 
@@ -51,8 +51,8 @@ $view->setSection('canonical', route('checkout'));
     <div class="relative mx-auto max-w-7xl px-4 py-10 lg:px-6 lg:py-14">
         <?= $view->component('section-heading', [
             'eyebrow' => 'Checkout',
-            'title' => 'Three steps and it is on its way',
-            'subtitle' => 'We hold this cart for you while you send the payment. A real person checks it and replies on WhatsApp with your login.',
+            'title' => 'Three steps and your subscription is on its way',
+            'subtitle' => 'We hold these plans for you while you send the payment. A real person checks it and replies on WhatsApp with your login.',
         ]) ?>
 
         <div class="mt-8 grid gap-8 lg:grid-cols-[1.35fr_1fr] lg:items-start">
@@ -79,10 +79,10 @@ $view->setSection('canonical', route('checkout'));
                 <form method="post" action="<?= e(route('checkout.store')) ?>" data-ajax class="mt-5 space-y-5">
                     <?= csrf_field() ?>
 
-                    <?php /* ------------------------ step 1: basket ------------------------*/ ?>
+                    <?php /* ------------------------ step 1: plans -------------------------*/ ?>
                     <section data-tab-panel="basket"
                              role="tabpanel"
-                             aria-label="Your basket"
+                             aria-label="Your plans"
                              class="reveal overflow-hidden rounded-card border border-brand-100 bg-white shadow-card"
                              data-reveal>
                         <ul class="divide-y divide-brand-50">
@@ -100,9 +100,9 @@ $view->setSection('canonical', route('checkout'));
                                         <span class="block text-xs font-bold uppercase tracking-widest text-brand-600"><?= e((string) $line['service_name']) ?></span>
                                         <span class="mt-0.5 block truncate text-sm font-bold text-ink"><?= e((string) $line['title']) ?></span>
                                         <span class="mt-0.5 block text-xs text-ink-400">
-                                            <?= e((int) $line['duration_months'] === 1 ? '1 month' : (int) $line['duration_months'] . ' months') ?>
+                                            <?= e((int) $line['duration_months'] === 1 ? '1 month subscription' : (int) $line['duration_months'] . ' month subscription') ?>
                                             &middot;
-                                            <?= e((string) $line['quantity']) ?> x <?= e(taka((float) $line['unit_price'], false)) ?>
+                                            <?= e(taka((float) $line['unit_price'], false)) ?>
                                         </span>
                                     </span>
                                     <span class="shrink-0 text-sm font-black text-ink"><?= e(taka((float) $line['line_total'])) ?></span>
@@ -112,7 +112,7 @@ $view->setSection('canonical', route('checkout'));
 
                         <div class="flex flex-wrap items-center justify-between gap-3 border-t border-brand-50 bg-brand-50/50 p-4">
                             <a href="<?= e(route('cart')) ?>" class="rounded-pill border border-brand-200 bg-white px-4 py-2 text-xs font-bold text-brand-700 transition-colors duration-200 hover:bg-brand-100">
-                                Change quantities in the cart
+                                Change your plans
                             </a>
                             <p class="text-xs text-ink-400">Prices are read from our server, never from this page.</p>
                         </div>
@@ -217,7 +217,7 @@ $view->setSection('canonical', route('checkout'));
                                 Nothing is marked paid until a human verifies your transaction.
                             </p>
                             <p class="mt-2 text-xs leading-relaxed text-brand-800">
-                                Placing this order reserves the cart. The next page gives you the number to send money to
+                                Placing this order reserves these subscriptions. The next page gives you the number to send money to
                                 and asks for the reference - only then does our order desk check its own statement and deliver.
                             </p>
                         </div>
@@ -240,8 +240,8 @@ $view->setSection('canonical', route('checkout'));
                     <div class="relative overflow-hidden bg-gradient-to-r from-brand-600 to-brand-500 px-5 py-4">
                         <span class="animate-shimmer absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0" aria-hidden="true"></span>
                         <h2 class="relative flex items-center gap-2 text-sm font-black uppercase tracking-widest text-white">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8Z" stroke-linejoin="round"/><path d="M9 8a3 3 0 0 1 6 0" stroke-linecap="round"/></svg>
-                            Amount due
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 2l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 11V9a4 4 0 0 1 4-4h14" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 22l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 13v2a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Subscription total
                         </h2>
                     </div>
 

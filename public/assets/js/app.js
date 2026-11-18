@@ -273,60 +273,6 @@
   };
 
   /* --------------------------------------------------------------------------
-     [data-qty] — clamped stepper keeping the input in sync.
-     ----------------------------------------------------------------------- */
-  const clampQty = (group, rawValue) => {
-    const min = toNumber(group.getAttribute('data-min'), 1);
-    const max = toNumber(group.getAttribute('data-max'), 999);
-    const value = Math.round(toNumber(rawValue, min));
-    return Math.min(Math.max(value, min), max);
-  };
-
-  const initQty = () => {
-    findAll('[data-qty]').forEach((group) => {
-      const input = group.querySelector('[data-qty-input]');
-      const minus = group.querySelector('[data-qty-minus]');
-      const plus = group.querySelector('[data-qty-plus]');
-      if (!input) return;
-
-      let syncing = false; // stops our own change event from re-entering write()
-      const read = () => clampQty(group, input.value);
-      const write = (value) => {
-        input.value = String(value);
-        if (syncing) return;
-        syncing = true;
-        input.dispatchEvent(new win.Event('change', { bubbles: true }));
-        syncing = false;
-      };
-
-      if (minus) {
-        minus.addEventListener('click', (event) => {
-          event.preventDefault();
-          write(clampQty(group, read() - 1));
-        });
-      }
-      if (plus) {
-        plus.addEventListener('click', (event) => {
-          event.preventDefault();
-          write(clampQty(group, read() + 1));
-        });
-      }
-      input.addEventListener('change', () => {
-        if (syncing) return;
-        write(read());
-      });
-      input.addEventListener('blur', () => {
-        if (syncing) return;
-        write(read());
-      });
-
-      // Normalise whatever the server pre-filled.
-      const initial = read();
-      if (String(initial) !== String(input.value).trim()) input.value = String(initial);
-    });
-  };
-
-  /* --------------------------------------------------------------------------
      [data-header] — condensed after ~12px of scroll.
      ----------------------------------------------------------------------- */
   const initHeader = () => {
@@ -751,7 +697,6 @@
     initCounters,
     initTabs,
     initAccordion,
-    initQty,
     initHeader,
     initMobileNav,
     initAjaxForms,

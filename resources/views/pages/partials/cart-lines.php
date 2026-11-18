@@ -15,8 +15,8 @@ $lines = (array) ($lines ?? []);
 if ($lines === []) {
     echo $view->component('empty-state', [
         'icon' => 'bag',
-        'title' => 'Your cart is empty',
-        'text' => 'Pick a brand, choose how many months you want, and it lands here. Nothing is charged until you send the payment and a human checks it.',
+        'title' => 'No subscription selected yet',
+        'text' => 'Pick a plan and choose how many months you want; it lands here as one subscription. Nothing is charged until you send the payment and a human checks it.',
         'action_url' => route('plans'),
         'action_label' => 'Browse plans',
     ]);

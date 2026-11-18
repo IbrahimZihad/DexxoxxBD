@@ -86,7 +86,7 @@ $view->setSection('page_actions', '<a href="' . e(route('admin.services')) . '" 
                     <label class="block">
                         <span class="<?= e($labelClass) ?>">Minimum order (&#2547;)</span>
                         <input type="number" name="min_order" value="<?= e(old('min_order', '0')) ?>" min="0" step="0.01" inputmode="decimal" class="<?= e($input) ?> mt-1">
-                        <span class="mt-1 block text-xs text-ink-400">0 = no basket minimum.</span>
+                        <span class="mt-1 block text-xs text-ink-400">0 = no order minimum.</span>
                     </label>
 
                     <label class="block">
@@ -226,7 +226,7 @@ $view->setSection('page_actions', '<a href="' . e(route('admin.services')) . '" 
                                         <label class="block">
                                             <span class="<?= e($labelClass) ?>">Minimum order (&#2547;)</span>
                                             <input type="number" name="min_order" value="<?= e(number_format($minOrder, 2, '.', '')) ?>" min="0" step="0.01" inputmode="decimal" class="<?= e($input) ?> mt-1">
-                                            <span class="mt-1 block text-xs text-ink-400">0 = no basket minimum.</span>
+                                            <span class="mt-1 block text-xs text-ink-400">0 = no order minimum.</span>
                                         </label>
 
                                         <label class="block">

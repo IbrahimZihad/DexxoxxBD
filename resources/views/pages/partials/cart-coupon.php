@@ -35,9 +35,9 @@ $message = trim((string) ($totals['coupon_message'] ?? ''));
             <?php if ($message !== ''): ?>
                 <?= e($message) ?>
             <?php elseif ($discount > 0): ?>
-                You save <?= e(taka($discount)) ?> on this cart.
+                You save <?= e(taka($discount)) ?> on this selection.
             <?php else: ?>
-                The coupon is saved - it needs a bigger cart before it applies.
+                The coupon is saved - it needs a bigger selection before it applies.
             <?php endif; ?>
         </p>
     </div>
@@ -59,6 +59,6 @@ $message = trim((string) ($totals['coupon_message'] ?? ''));
                 Apply
             </button>
         </div>
-        <p class="text-[11px] leading-relaxed text-ink-400">Codes are case-insensitive and only work on carts that meet their rules.</p>
+        <p class="text-[11px] leading-relaxed text-ink-400">Codes are case-insensitive and only work on selections that meet their rules.</p>
     </form>
 <?php endif; ?>

@@ -84,8 +84,9 @@ in `.env` handles the sub-folder mount), so rename it if you like.
 
 ## Money path
 
-1. Cart lives in the session and is re-priced from MySQL on every request, so a
-   tampered price never survives a page load.
+1. The subscription selection lives in the session and is re-priced from MySQL on
+   every request, so a tampered price never survives a page load. A plan is one
+   subscription - there is no quantity to tamper with.
 2. `POST /checkout` writes an order with `payment_status = unpaid`.
 3. The customer declares a payment (`bKash`/`Nagad`/`Rocket`/card) with a TrxID.
    That only produces `pending_verification` and a `pending` payment row.

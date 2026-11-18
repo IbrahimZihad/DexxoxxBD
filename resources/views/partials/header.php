@@ -58,9 +58,12 @@ $searchValue = (string) $currentRequest->queryValue('search', '');
             </div>
         </form>
 
-        <a href="<?= e(route('cart')) ?>" class="relative ml-1 grid h-10 w-10 shrink-0 place-items-center rounded-brand border border-brand-200 bg-white/80 text-ink-700 transition-colors duration-200 hover:border-brand-400 hover:text-brand-700" aria-label="Cart">
+        <a href="<?= e(route('cart')) ?>" class="relative ml-1 grid h-10 w-10 shrink-0 place-items-center rounded-brand border border-brand-200 bg-white/80 text-ink-700 transition-colors duration-200 hover:border-brand-400 hover:text-brand-700" aria-label="Your subscriptions">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                <path d="M6 8h12l-1 12H7L6 8Z" stroke-linejoin="round"/><path d="M9 8a3 3 0 0 1 6 0" stroke-linecap="round"/>
+                <path d="M17 2l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3 11V9a4 4 0 0 1 4-4h14" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 22l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M21 13v2a4 4 0 0 1-4 4H3" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span data-cart-count class="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-pill bg-accent-500 px-1 text-[11px] font-black text-white"><?= e(cart_count()) ?></span>
         </a>
@@ -101,7 +104,7 @@ $searchValue = (string) $currentRequest->queryValue('search', '');
                 </a>
             <?php endforeach; ?>
             <a href="<?= e(route('home')) ?>" class="rounded-brand px-3 py-2 text-sm font-semibold text-ink-700 hover:bg-brand-50">Home</a>
-            <a href="<?= e(route('cart')) ?>" class="rounded-brand px-3 py-2 text-sm font-semibold text-ink-700 hover:bg-brand-50">Cart (<span data-cart-count><?= e(cart_count()) ?></span>)</a>
+            <a href="<?= e(route('cart')) ?>" class="rounded-brand px-3 py-2 text-sm font-semibold text-ink-700 hover:bg-brand-50">Subscriptions (<span data-cart-count><?= e(cart_count()) ?></span>)</a>
             <?php if (auth_check()): ?>
                 <a href="<?= e(route('account')) ?>" class="rounded-brand bg-brand-50 px-3 py-2 text-sm font-bold text-brand-700">My account</a>
             <?php else: ?>

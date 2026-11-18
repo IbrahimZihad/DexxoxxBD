@@ -10,9 +10,13 @@ use App\Core\Session;
 use App\Models\Plan;
 
 /**
- * Session cart. Only the plan id and a quantity are kept; price, title and
- * service are re-read from MySQL on every render so a stale cart can never be
- * used to buy a ৳499 plan for ৳49.
+ * Session cart. Only the plan ids are kept; price, title and service are
+ * re-read from MySQL on every render so a stale cart can never be used to buy a
+ * ৳499 plan for ৳49.
+ *
+ * This shop sells subscriptions, not stock: each plan is a single subscription
+ * and cannot be bought in multiples. A customer can still put several different
+ * plans in one order.
  */
 final class CartService
 {
@@ -39,10 +43,9 @@ final class CartService
             }
 
             $id = (int) $planId;
-            $quantity = max(1, (int) ($line['quantity'] ?? 1));
 
             if ($id > 0) {
-                $lines[$id] = ['plan_id' => $id, 'quantity' => $quantity];
+                $lines[$id] = ['plan_id' => $id, 'quantity' => 1];
             }
         }
 
@@ -75,8 +78,6 @@ final class CartService
                 continue;
             }
 
-            $quantity = min($line['quantity'], self::capFor($plan));
-
             $cart[] = [
                 'plan_id' => (int) $plan['id'],
                 'service_name' => (string) $plan['service_name'],
@@ -89,8 +90,8 @@ final class CartService
                 'quality' => (string) ($plan['quality'] ?? ''),
                 'unit_price' => (float) $plan['price'],
                 'compare_at_price' => (float) ($plan['compare_at_price'] ?? 0),
-                'quantity' => $quantity,
-                'line_total' => round((float) $plan['price'] * $quantity, 2),
+                'quantity' => 1,
+                'line_total' => round((float) $plan['price'], 2),
                 'stock' => (int) ($plan['stock'] ?? -1),
                 'service_id' => (int) $plan['service_id'],
             ];
@@ -135,15 +136,10 @@ final class CartService
         ];
     }
 
+    /** One subscription per plan, so the badge counts distinct plans. */
     public static function count(): int
     {
-        $total = 0;
-
-        foreach (self::raw() as $line) {
-            $total += (int) $line['quantity'];
-        }
-
-        return $total;
+        return count(self::raw());
     }
 
     public static function isEmpty(): bool
@@ -151,8 +147,13 @@ final class CartService
         return self::lines() === [];
     }
 
-    /** @return array{ok: bool, message: string, count: int} */
-    public static function add(int $planId, int $quantity = 1): array
+    /**
+     * Add a subscription. A plan is always one subscription, so adding the same
+     * plan twice is a no-op rather than a quantity bump.
+     *
+     * @return array{ok: bool, message: string, count: int}
+     */
+    public static function add(int $planId): array
     {
         $plan = (new Plan())->withService($planId);
 
@@ -160,78 +161,58 @@ final class CartService
             return ['ok' => false, 'message' => 'That plan is no longer on sale.', 'count' => self::count()];
         }
 
-        $lines = self::raw();
-        $existing = (int) ($lines[$planId]['quantity'] ?? 0);
-        $wanted = $existing + max(1, $quantity);
-
-        $cap = self::capFor($plan);
-        $available = self::availableStock($plan);
-
-        if ($available <= 0) {
+        if (self::availableStock($plan) <= 0) {
             return ['ok' => false, 'message' => 'Sold out for now - ping us on WhatsApp and we will restock it.', 'count' => self::count()];
         }
 
-        if ($wanted > self::maxPerLine()) {
-            $wanted = self::maxPerLine();
+        $lines = self::raw();
+
+        if (isset($lines[$planId])) {
+            return ['ok' => true, 'message' => 'That subscription is already selected.', 'count' => self::count()];
         }
 
-        if ($wanted > $cap) {
-            $wanted = $cap;
+        if (count($lines) >= self::maxPlansPerOrder()) {
+            return [
+                'ok' => false,
+                'message' => 'An order can hold up to ' . self::maxPlansPerOrder() . ' subscription plans.',
+                'count' => self::count(),
+            ];
         }
 
-        if ($wanted > $available) {
-            $wanted = $available;
-        }
-
-        if ($wanted <= 0) {
-            return ['ok' => false, 'message' => 'That plan is no longer on sale.', 'count' => self::count()];
-        }
-
-        $lines[$planId] = ['plan_id' => $planId, 'quantity' => $wanted];
+        $lines[$planId] = ['plan_id' => $planId, 'quantity' => 1];
         Session::set(self::KEY, $lines);
 
-        $message = $wanted === $existing
-            ? 'You already have the maximum quantity of this plan.'
-            : $plan['service_name'] . ' - ' . $plan['title'] . ' added to your cart.';
-
-        return ['ok' => true, 'message' => $message, 'count' => self::count()];
+        return [
+            'ok' => true,
+            'message' => $plan['service_name'] . ' - ' . $plan['title'] . ' added to your subscriptions.',
+            'count' => self::count(),
+        ];
     }
 
-    /** @return array{ok: bool, message: string, count: int} */
+    /**
+     * Kept for the old update endpoint. Subscription quantities are fixed at
+     * one; a zero quantity still removes the line.
+     *
+     * @return array{ok: bool, message: string, count: int}
+     */
     public static function update(int $planId, int $quantity): array
     {
         $lines = self::raw();
 
         if (!isset($lines[$planId])) {
-            return ['ok' => false, 'message' => 'That item is not in your cart.', 'count' => self::count()];
+            return ['ok' => false, 'message' => 'That subscription is not selected.', 'count' => self::count()];
         }
 
         if ($quantity <= 0) {
             self::remove($planId);
 
-            return ['ok' => true, 'message' => 'Item removed.', 'count' => self::count()];
+            return ['ok' => true, 'message' => 'Subscription removed.', 'count' => self::count()];
         }
 
-        $plan = (new Plan())->withService($planId);
-
-        if ($plan === null) {
-            self::remove($planId);
-
-            return ['ok' => false, 'message' => 'That plan is no longer on sale.', 'count' => self::count()];
-        }
-
-        $quantity = min($quantity, self::maxPerLine(), self::capFor($plan), max(0, self::availableStock($plan)));
-
-        if ($quantity <= 0) {
-            self::remove($planId);
-
-            return ['ok' => false, 'message' => 'Sold out for now.', 'count' => self::count()];
-        }
-
-        $lines[$planId]['quantity'] = $quantity;
+        $lines[$planId]['quantity'] = 1;
         Session::set(self::KEY, $lines);
 
-        return ['ok' => true, 'message' => 'Cart updated.', 'count' => self::count()];
+        return ['ok' => true, 'message' => 'Each plan is a single subscription.', 'count' => self::count()];
     }
 
     public static function remove(int $planId): void
@@ -286,13 +267,8 @@ final class CartService
         return $user === null ? null : (string) $user['email'];
     }
 
-    private static function maxPerLine(): int
-    {
-        return max(1, (int) Config::get('app.max_quantity_per_line', 5));
-    }
-
-    /** A plan can never be ordered more than the order-wide cap allows. */
-    private static function capFor(array $plan): int
+    /** The order-wide cap on distinct subscription plans. */
+    private static function maxPlansPerOrder(): int
     {
         return max(1, (int) Config::get('app.max_items_per_order', 10));
     }

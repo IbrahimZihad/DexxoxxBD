@@ -17,7 +17,7 @@ use App\Services\CartService;
  * plain form post, which is what a customer without JavaScript gets.
  *
  * Prices are never touched here - CartService reads them from MySQL, so the
- * only thing this controller passes around is plan ids and quantities.
+ * only thing this controller passes around is plan ids.
  */
 final class CartController extends Controller
 {
@@ -31,12 +31,12 @@ final class CartController extends Controller
 
     public function add(Request $request): Response
     {
+        // A plan is one subscription; there is deliberately no quantity field.
         $data = $this->validate($request, [
             'plan_id' => 'required|integer|min:1',
-            'quantity' => 'required|integer|min:1|max:50',
-        ], ['plan_id' => 'Plan', 'quantity' => 'Quantity']);
+        ], ['plan_id' => 'Plan']);
 
-        $result = CartService::add((int) $data['plan_id'], (int) $data['quantity']);
+        $result = CartService::add((int) $data['plan_id']);
 
         if ($request->wantsJson()) {
             // Add-to-cart buttons live on catalogue pages, where there is no
@@ -60,8 +60,8 @@ final class CartController extends Controller
             'quantity' => 'required|integer|min:0|max:50',
         ], ['plan_id' => 'Plan', 'quantity' => 'Quantity']);
 
-        // CartService turns a zero quantity into a removal, which is exactly
-        // what the minus button does when it reaches the bottom.
+        // Zero still removes a line; a positive value is normalised to the one
+        // subscription that a plan represents.
         $result = CartService::update((int) $data['plan_id'], (int) $data['quantity']);
 
         return $this->respond((bool) $result['ok'], (string) $result['message'], $request);
@@ -83,23 +83,23 @@ final class CartController extends Controller
         }
 
         if (!$wasInCart) {
-            return $this->respond(false, 'That item is not in your cart.', $request);
+            return $this->respond(false, 'That subscription is not in your selection.', $request);
         }
 
         CartService::remove($planId);
 
-        return $this->respond(true, 'Item removed from your cart.', $request);
+        return $this->respond(true, 'Subscription removed.', $request);
     }
 
     public function clear(Request $request): Response
     {
         if (CartService::lines() === []) {
-            return $this->respond(false, 'Your cart is already empty.', $request);
+            return $this->respond(false, 'No subscriptions are selected yet.', $request);
         }
 
         CartService::clear();
 
-        return $this->respond(true, 'Cart cleared.', $request);
+        return $this->respond(true, 'Selection cleared.', $request);
     }
 
     public function applyCoupon(Request $request): Response
@@ -117,7 +117,7 @@ final class CartController extends Controller
     public function removeCoupon(Request $request): Response
     {
         if (CartService::coupon() === '') {
-            return $this->respond(false, 'There is no coupon on this cart.', $request);
+            return $this->respond(false, 'There is no coupon on this selection.', $request);
         }
 
         CartService::forgetCoupon();

@@ -87,10 +87,10 @@ $sections = [
                     <p>If you order, we keep:</p>
                     <ul class="space-y-2">
                         <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400"></span><span><strong class="font-bold text-ink">Identity:</strong> your name, email address and Bangladeshi phone number. The phone number is the delivery address, so it has to be right.</span></li>
-                        <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400"></span><span><strong class="font-bold text-ink">Orders:</strong> the plan and tier you bought, quantity, price, total, order status, payment status, fulfilment status, the transaction ID you declared, and the timestamps of payment and delivery.</span></li>
+                        <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400"></span><span><strong class="font-bold text-ink">Orders:</strong> the plan and tier you bought, price, total, order status, payment status, fulfilment status, the transaction ID you declared, and the timestamps of payment and delivery.</span></li>
                         <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400"></span><span><strong class="font-bold text-ink">A few technical fields:</strong> the IP address that placed the order, and - if you signed up - a hashed password plus a marketing opt-in flag.</span></li>
                         <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400"></span><span><strong class="font-bold text-ink">Messages:</strong> whatever you send through the contact form or write into our WhatsApp thread, plus its IP, so the thread can be answered and abuse can be traced.</span></li>
-                        <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400"></span><span><strong class="font-bold text-ink">Cart:</strong> the basket can sit in your browser session so a refresh does not lose it. Nothing in a cart becomes a record until you order.</span></li>
+                        <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400"></span><span><strong class="font-bold text-ink">Selection:</strong> the subscription plans you pick can sit in your browser session so a refresh does not lose them. Nothing in a selection becomes a record until you order.</span></li>
                     </ul>
                     <p>
                         We do not use fingerprinting, we do not run heatmaps or session recorders, and we do not
@@ -141,7 +141,7 @@ $sections = [
                         is <strong class="font-bold text-ink">HttpOnly</strong> (so scripts on other pages cannot read
                         it), <strong class="font-bold text-ink">SameSite=Lax</strong>, and it goes idle after about
                         <?= e((string) $sessionHours) ?> hour<?= e($sessionHours === 1 ? '' : 's') ?> of no activity.
-                        The cart, your sign-in state and the anti-CSRF token all live behind
+                        Your selected subscriptions, your sign-in state and the anti-CSRF token all live behind
                         that single identifier, on our side.
                     </p>
                     <p>

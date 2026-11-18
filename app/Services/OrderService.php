@@ -15,7 +15,7 @@ use App\Models\Payment;
 use App\Models\Plan;
 
 /**
- * Writes an order from the cart inside one transaction.
+ * Writes an order from the selected subscriptions inside one transaction.
  *
  * Two rules matter here: prices always come from the database (never from the
  * request), and payment_status starts as "unpaid". Nothing this class does can
@@ -37,17 +37,17 @@ final class OrderService
         $lines = CartService::lines();
 
         if ($lines === []) {
-            return ['ok' => false, 'order_no' => '', 'message' => 'Your cart is empty.', 'order_id' => 0];
+            return ['ok' => false, 'order_no' => '', 'message' => 'No subscription is selected.', 'order_id' => 0];
         }
 
         $totals = CartService::totals();
-        $unitCount = array_sum(array_column($lines, 'quantity'));
 
-        if ($unitCount > (int) Config::get('app.max_items_per_order', 10)) {
+        // A subscription is always one plan; there is no quantity to count.
+        if (count($lines) > (int) Config::get('app.max_items_per_order', 10)) {
             return [
                 'ok' => false,
                 'order_no' => '',
-                'message' => 'An order can hold up to ' . (int) Config::get('app.max_items_per_order', 10) . ' plans.',
+                'message' => 'An order can hold up to ' . (int) Config::get('app.max_items_per_order', 10) . ' subscription plans.',
                 'order_id' => 0,
             ];
         }
@@ -84,13 +84,12 @@ final class OrderService
                     $fresh = $planModel->withService((int) $line['plan_id']);
 
                     if ($fresh === null) {
-                        throw new \App\Exceptions\HttpException(422, 'One of the plans in your cart is no longer available.');
+                        throw new \App\Exceptions\HttpException(422, 'One of the selected plans is no longer available.');
                     }
 
                     $unitPrice = (float) $fresh['price'];
-                    $quantity = (int) $line['quantity'];
 
-                    if ((int) ($fresh['stock'] ?? -1) >= 0 && !$planModel->takeStock((int) $fresh['id'], $quantity)) {
+                    if ((int) ($fresh['stock'] ?? -1) >= 0 && !$planModel->takeStock((int) $fresh['id'], 1)) {
                         throw new \App\Exceptions\HttpException(422, $fresh['service_name'] . ' just sold out. Remove it and try again.');
                     }
 
@@ -100,8 +99,8 @@ final class OrderService
                         'service_name' => (string) $fresh['service_name'],
                         'plan_title' => (string) $fresh['title'],
                         'unit_price' => $unitPrice,
-                        'quantity' => $quantity,
-                        'line_total' => round($unitPrice * $quantity, 2),
+                        'quantity' => 1,
+                        'line_total' => round($unitPrice, 2),
                         'status' => 'pending',
                     ]);
                 }
@@ -121,7 +120,7 @@ final class OrderService
                     (new Coupon())->recordUsage((string) $totals['coupon']);
                 }
 
-                self::history($id, 'pending', 'Order created from the cart.');
+                self::history($id, 'pending', 'Order created from the selected subscription plans.');
 
                 return $id;
             });

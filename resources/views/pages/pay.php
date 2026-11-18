@@ -110,7 +110,7 @@ $view->setSection('canonical', route('order.pay', ['orderNo' => $orderNo]));
                         <h2 class="text-base font-black text-rose-800">This order is closed</h2>
                         <p class="mt-2 text-sm leading-relaxed text-rose-700">
                             The status is <strong class="font-black"><?= e(status_label($orderStatus)) ?></strong>, so nothing is owed on it and no payment can be attached.
-                            Build a new basket whenever you are ready - it takes a minute.
+                            Select a new plan whenever you are ready - it takes a minute.
                         </p>
                         <a href="<?= e(route('plans')) ?>" class="mt-4 inline-flex rounded-brand bg-rose-600 px-5 py-2.5 text-sm font-black text-white transition-colors duration-200 hover:bg-rose-700">
                             Browse plans

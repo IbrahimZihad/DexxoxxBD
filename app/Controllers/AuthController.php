@@ -157,7 +157,7 @@ final class AuthController extends Controller
         // flush() empties the session (cart, tracked order numbers, everything
         // the previous identity left behind); the flash is written afterwards so
         // it survives on the rotated id instead of being destroyed with it.
-        Session::flash('success', 'Signed out. Your cart and session data were cleared.');
+        Session::flash('success', 'Signed out. Your selected subscriptions and session data were cleared.');
 
         return Response::redirect(route('home'));
     }
