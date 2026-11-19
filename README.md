@@ -15,9 +15,9 @@ Reference site for product shape only; the brand, design and code are original.
 | --- | --- | --- |
 | PHP | 8.3+ (built on 8.5.12) | `/f/Xamp/php/php.exe -v` |
 | MySQL/MariaDB | running, reachable | `127.0.0.1:3307` in this setup |
-| Apache | `mod_rewrite`, docroot at `public/` | 2.4.65 |
+| Apache | `mod_rewrite`, docroot at `public_html/` | 2.4.65 |
 | Composer | for dependencies | vendor/ is committed here |
-| Node/npm | only to rebuild the CSS | optional; `public/assets/css/app.css` is committed |
+| Node/npm | only to rebuild the CSS | optional; `public_html/assets/css/app.css` is committed |
 
 ## Install
 
@@ -30,7 +30,7 @@ composer seed             # catalogue, plans, coupons, users, demo orders, inbox
 npm install && npm run build:css   # only if you change resources/
 ```
 
-Point the vhost/docroot at `public/` only. The parent `.htaccess` denies the rest
+Point the vhost/docroot at `public_html/` only. The parent `.htaccess` denies the rest
 of the project, so `.env`, `app/`, `storage/`, `database/` and `vendor/` are not
 reachable over HTTP (verified: each returns 403).
 
@@ -70,13 +70,14 @@ app/            Core (router, request, session, crypto, limiter), controllers,
 config/         php arrays read through Config::get('app.debug') style keys
 database/       migrations/ (Phinx) and seeders/
 resources/      views/ (layouts, partials, components, pages, admin) and css/input.css
-public/         the only web-exposed directory: index.php, assets/, .htaccess
+public_html/    the only web-exposed directory: index.php, assets/, admin/, api/, .htaccess
+includes/       shared deployment bootstrap
 routes/web.php  every route, grouped with middleware
 storage/        logs/, rate/ (limiter buckets), cache/ - outside the web root
 tests/          bootstrap.php, TestCase.php, Unit/, Mysql/
 ```
 
-URL: `http://localhost/DexxoxxBD/public/`. The folder is still named `DexxoxxBD`
+URL: `http://localhost/DexxoxxBD/public_html/`. The folder is still named `DexxoxxBD`
 while the brand is DexxozzBD; nothing depends on the directory name (`APP_BASE_PATH`
 in `.env` handles the sub-folder mount), so rename it if you like.
 
@@ -158,7 +159,7 @@ counts and no fix-it hints unless `APP_DEBUG` is on.
   with `npm run build:css` (or `composer css`). The chat widget uses its own
   `wa-*` greens rather than the emerald status colours, because the white
   WhatsApp glyph needs `wa-600`/`wa-700` to stay legible.
-- Logo: `brand.logo` (path relative to `public/assets`, currently
+- Logo: `brand.logo` (path relative to `public_html/assets`, currently
   `img/dexxoxxbd.jpeg`) feeds `brand_logo()`, which the `brand-mark` component,
   the favicon and `og:image`/`twitter:image` all read. If the file is not on disk
   every one of those falls back to the drawn bolt, so a renamed upload never

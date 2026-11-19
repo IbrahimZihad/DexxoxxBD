@@ -8,7 +8,7 @@ use Throwable;
 
 /**
  * Day-rotated flat-file logs under storage/logs. Nothing is web-exposed: the
- * parent .htaccess denies the whole project directory except public/.
+ * parent .htaccess denies the whole project directory except public_html/.
  */
 final class Logger
 {

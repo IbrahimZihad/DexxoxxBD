@@ -38,14 +38,14 @@
         "test": "phpunit",
         "test:unit": "phpunit --testsuite unit",
         "test:mysql": "phpunit --testsuite mysql",
-        "css": "npx @tailwindcss/cli -i resources/css/input.css -o public/assets/css/app.css",
+        "css": "npx @tailwindcss/cli -i resources/css/input.css -o public_html/assets/css/app.css",
         "key": "@php scripts/key.php"
     },
     "scripts-descriptions": {
         "migrate": "Apply every outstanding database migration.",
         "seed": "Populate settings, services, plans and admin users (repeatable).",
         "status": "Show which migrations have run.",
-        "css": "Compile the Tailwind stylesheet into public/assets/css/app.css.",
+        "css": "Compile the Tailwind stylesheet into public_html/assets/css/app.css.",
         "key": "Print a fresh APP_KEY for .env (needed by credential encryption)."
     }
 }

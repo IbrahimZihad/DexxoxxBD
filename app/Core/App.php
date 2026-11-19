@@ -157,7 +157,7 @@ final class App
 
     public function publicPath(string $append = ''): string
     {
-        return $this->basePath('public' . ($append === '' ? '' : '/' . trim($append, '/\\')));
+        return $this->basePath('public_html' . ($append === '' ? '' : '/' . trim($append, '/\\')));
     }
 
     private function sessionCookiePath(): string

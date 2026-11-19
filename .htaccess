@@ -1,4 +1,4 @@
-# Deny by default. Only public/ is meant to be reachable over HTTP; this file is
+# Deny by default. Only public_html/ is meant to be reachable over HTTP; this file is
 # what stops a XAMPP-style "everything under htdocs is web root" setup from
 # serving .env, app/, config/, storage/ or vendor/ to the internet.
 <IfModule mod_authz_core.c>

@@ -47,7 +47,7 @@ if (!function_exists('url')) {
 
 if (!function_exists('asset')) {
     /**
-     * Public URL for a file under public/assets, stamped with its mtime so a
+     * Public URL for a file under public_html/assets, stamped with its mtime so a
      * rebuilt stylesheet or script reaches visitors who still hold the previous
      * copy in cache. The stamp is a filemtime() of the one named file, and is
      * skipped when that file is absent (a missing asset must not 500 the page).
@@ -55,7 +55,7 @@ if (!function_exists('asset')) {
     function asset(string $path): string
     {
         $rel = 'assets/' . ltrim($path, '/');
-        $file = dirname(__DIR__, 2) . '/public/' . $rel;
+        $file = dirname(__DIR__, 2) . '/public_html/' . $rel;
         $stamp = is_file($file) ? (string) filemtime($file) : '';
 
         return url($rel) . ($stamp === '' ? '' : '?v=' . $stamp);
@@ -77,7 +77,7 @@ if (!function_exists('brand_logo')) {
             return '';
         }
 
-        $file = dirname(__DIR__, 2) . '/public/assets/' . ltrim($path, '/');
+        $file = dirname(__DIR__, 2) . '/public_html/assets/' . ltrim($path, '/');
 
         return is_file($file) ? asset($path) : '';
     }

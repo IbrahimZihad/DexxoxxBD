@@ -7,7 +7,7 @@ use App\Core\App;
 /**
  * Tailwind Play CDN bootstrap.
  *
- * The compiled stylesheet (public/assets/css/app.css) stays linked: it carries
+ * The compiled stylesheet (public_html/assets/css/app.css) stays linked: it carries
  * the component layer (.glass, .blob, .reveal, .a-table) and the @keyframes,
  * which the CDN cannot generate. This partial only adds the runtime utility
  * compiler, so a page still renders correctly with the CDN blocked and looks
@@ -28,7 +28,7 @@ $cspNonce = (string) ($nonce ?? $cspNonce ?? App::cspNonce());
 ?>
     <style>
         /* Gradient dialect bridge between the two Tailwinds on this page.
-           v4 (public/assets/css/app.css) registers --tw-gradient-from/via/to
+           v4 (public_html/assets/css/app.css) registers --tw-gradient-from/via/to
            with syntax "<color>"; the CDN (v3) writes them as
            "<color> <position>" pairs. That two-token value fails the "<color>"
            check, the property falls back to its initial #0000, and every

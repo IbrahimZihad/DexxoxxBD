@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * The brand mark. It renders the uploaded logo (setting `brand.logo`, relative
- * to public/assets) and falls back to the drawn bolt when that file is not on
+ * to public_html/assets) and falls back to the drawn bolt when that file is not on
  * disk, so a missing or renamed asset never shows as a broken image.
  *
  * @var mixed $size     Tailwind size classes, default h-10 w-10

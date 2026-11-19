@@ -19,7 +19,7 @@ $autoload = $root . '/vendor/autoload.php';
  * The primary domain's document root is fixed at public_html, so this file may
  * be copied there while the application stays in a sibling directory. Resolve
  * the application root from APP_ROOT when the host sets it, otherwise try the
- * conventional folder names. The normal layout (docroot = public/) needs none
+ * conventional folder names. The normal layout (docroot = public_html/) needs none
  * of this and resolves on the first check above.
  */
 if (!is_file($autoload)) {

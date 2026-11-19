@@ -13,7 +13,7 @@ DirectoryIndex index.php
 <IfModule mod_rewrite.c>
     RewriteEngine On
     # No RewriteBase on purpose: the app is written to run at any mount point
-    # (http://localhost/zapsub/public/ as well as https://example.com/), and a
+    # (http://localhost/zapsub/public_html/ as well as https://example.com/), and a
     # hardcoded "/" resolves every clean URL against the server root, which
     # silently hands unknown paths to whatever owns that document root.
     RewriteCond %{REQUEST_FILENAME} !-f
