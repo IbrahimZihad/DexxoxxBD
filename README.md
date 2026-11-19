@@ -75,7 +75,6 @@ config/         php arrays read through Config::get('app.debug') style keys
 database/       migrations/ (Phinx) and seeders/
 resources/      views/ (layouts, partials, components, pages, admin) and css/input.css
 public_html/    the only web-exposed directory: index.php, assets/, .htaccess
-includes/       shared front-controller bootstrap, outside the web root
 routes/web.php  every route, grouped with middleware
 storage/        logs/, rate/ (limiter buckets), cache/ - outside the web root
 tests/          bootstrap.php, TestCase.php, Unit/, Mysql/

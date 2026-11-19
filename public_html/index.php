@@ -62,7 +62,7 @@ if (!is_file($autoload)) {
     return;
 }
 
-require $root . '/includes/bootstrap.php';
+require $autoload;
 
 use App\Core\App;
 use App\Core\ErrorHandler;
