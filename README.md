@@ -31,7 +31,7 @@ npm install && npm run build:css   # only if you change resources/
 ```
 
 For Webuzo/cPanel, keep the project root one directory above the domain's
-`public_html/`: upload `app/`, `config/`, `database/`, `includes/`, `resources/`,
+`public_html/`: upload `app/`, `config/`, `database/`, `resources/`,
 `routes/`, `storage/`, `vendor/`, `.env` and the Composer files beside it. Put
 only the web entry point, `.htaccess` and browser assets in `public_html/`.
 Set the domain document root to `public_html/`; do not move the application
