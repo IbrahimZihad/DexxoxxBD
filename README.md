@@ -30,9 +30,13 @@ composer seed             # catalogue, plans, coupons, users, demo orders, inbox
 npm install && npm run build:css   # only if you change resources/
 ```
 
-Point the vhost/docroot at `public_html/` only. The parent `.htaccess` denies the rest
-of the project, so `.env`, `app/`, `storage/`, `database/` and `vendor/` are not
-reachable over HTTP (verified: each returns 403).
+For Webuzo/cPanel, keep the project root one directory above the domain's
+`public_html/`: upload `app/`, `config/`, `database/`, `includes/`, `resources/`,
+`routes/`, `storage/`, `vendor/`, `.env` and the Composer files beside it. Put
+only the web entry point, `.htaccess` and browser assets in `public_html/`.
+Set the domain document root to `public_html/`; do not move the application
+folders into it. The front controller loads Composer from the parent directory,
+and the parent `.htaccess` denies direct web access to the project files.
 
 ### Environment
 
@@ -70,8 +74,8 @@ app/            Core (router, request, session, crypto, limiter), controllers,
 config/         php arrays read through Config::get('app.debug') style keys
 database/       migrations/ (Phinx) and seeders/
 resources/      views/ (layouts, partials, components, pages, admin) and css/input.css
-public_html/    the only web-exposed directory: index.php, assets/, admin/, api/, .htaccess
-includes/       shared deployment bootstrap
+public_html/    the only web-exposed directory: index.php, assets/, .htaccess
+includes/       shared front-controller bootstrap, outside the web root
 routes/web.php  every route, grouped with middleware
 storage/        logs/, rate/ (limiter buckets), cache/ - outside the web root
 tests/          bootstrap.php, TestCase.php, Unit/, Mysql/

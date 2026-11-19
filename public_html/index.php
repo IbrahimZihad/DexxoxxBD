@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 /**
  * DexxozzBD front controller. Everything that arrives over HTTP comes through this
- * file; the parent .htaccess keeps the rest of the project out of reach.
+ * file; application code, configuration and dependencies stay in the directory
+ * above public_html and are never served as web files.
  */
 
 // Split layout (public_html + app folder elsewhere): uncomment and set this.
@@ -61,7 +62,7 @@ if (!is_file($autoload)) {
     return;
 }
 
-require $autoload;
+require $root . '/includes/bootstrap.php';
 
 use App\Core\App;
 use App\Core\ErrorHandler;
